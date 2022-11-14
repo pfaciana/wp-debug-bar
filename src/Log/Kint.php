@@ -86,7 +86,7 @@ if ( function_exists( 'has_filter' ) && !has_filter( 'console.log' ) ) {
 \Kint\Renderer\RichRenderer::$object_plugins['notification'] = '\\DebugBar\\Log\\Renderer\\Rich\\Notification';
 
 if ( defined( 'RWD_DEBUG_BAR_PLUGIN_DIR' ) ) {
-\Kint\Renderer\RichRenderer::$theme = RWD_DEBUG_BAR_PLUGIN_DIR . '/css/dist/kint-dark-theme.css';
+	\Kint\Renderer\RichRenderer::$theme = RWD_DEBUG_BAR_PLUGIN_DIR . '/css/dist/kint-dark-theme.css';
 }
 
 if ( function_exists( 'wp_doing_ajax' ) && !wp_doing_ajax() ) {
