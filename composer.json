@@ -21,7 +21,6 @@
 			"src/Log/Console.php"
 		],
 		"files": [
-			"src/Log/Kint.php",
 			"load.php"
 		]
 	},

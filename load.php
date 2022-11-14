@@ -1,12 +1,14 @@
 <?php
 
-if ( function_exists( 'add_action' ) ) {
+if ( function_exists( 'add_action' ) && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) ) {
 
 	!defined( 'WP_START_TIMESTAMP' ) && define( 'WP_START_TIMESTAMP', $GLOBALS['timestart'] ?? NULL );
 	!defined( 'SAVEQUERIES' ) && define( "SAVEQUERIES", TRUE );
 	define( 'RWD_DEBUG_BAR_PLUGIN_DIR', ( __DIR__ ) );
 	define( 'RWD_DEBUG_BAR_PLUGIN_FILE', ( __FILE__ ) );
 	define( 'KINT_SKIP_HELPERS', !class_exists( 'console' ) );
+
+	require __DIR__ . '/src/Log/Kint.php';
 
 	new DebugBar\Hooks();
 	DebugBar\Routine\Routines::get_instance();
@@ -34,6 +36,6 @@ if ( function_exists( 'add_action' ) ) {
 
 			return $panels;
 		}, PHP_INT_MAX );
-	}, PHP_INT_MIN );
+	}, -9e3 );
 
 }
