@@ -66,6 +66,10 @@ class DebugBar
 
 			$this->init_panels();
 		}
+		elseif ( $this->orig_debug_bar && !wp_doing_ajax() ) {
+			add_action( 'wp_enqueue_scripts', function () { $this->enqueue_scripts(); } );
+			add_action( 'admin_enqueue_scripts', function () { $this->enqueue_scripts(); } );
+		}
 	}
 
 	protected function enable_debug_bar ( $enable = FALSE )
