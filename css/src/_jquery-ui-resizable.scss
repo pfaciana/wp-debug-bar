@@ -1,0 +1,15 @@
+.ui-resizable-handle {
+	background-color: rgba(#00b9eb, .1);
+
+	&:hover, &:active, &:focus {
+		background-color: rgba(#00b9eb, .5);
+	}
+}
+
+.ui-resizable-n {
+	height: 10px;
+}
+
+.ui-resizable-w {
+	width: 10px;
+}

@@ -1,0 +1,943 @@
+// Pallette
+
+$pink: #FF3399;
+$red: #FF3333;
+$burnt: #C04000;
+$dark-orange: #FF6600;
+$orange: #FFCC33;
+$yellow: #FFFF00;
+$glow: #CCFF00;
+$green: #33CC33;
+$neon-green: #AAEE33;
+$neon-blue: #66D9EF;
+$blue: #99CCFF;
+$purple: #CC99FF;
+$neon-purple: #BB99FF;
+$white: #FFFFFF;
+$gray: #AEAEAE;
+$dark: #0C1021;
+$black: #000000;
+
+// Variables for themes to override
+$spacing: 5;
+$font-size: 13.5;
+
+$backdrop-color: $dark;
+$main-background: $dark;
+$secondary-background: $dark;
+$parent-bar-background: $dark;
+$tab-bar-background: $dark;
+$trace-background: $dark;
+
+$text-color: $blue;
+$variable-name-color: $blue;
+$variable-type-color: $blue;
+$variable-type-color-hover: $blue;
+$text-highlight: $yellow;
+
+$border-color: $dark;
+$border-color-hover: $dark;
+$border: 1px solid $border-color;
+
+$foldout-max-size: calc(100vh - 80px);
+$foldout-zindex: 999999;
+
+$caret-color: $neon-purple;
+$caret-color-hover: $white;
+$caret-color-open: $blue;
+$caret-color-locked: $burnt;
+$caret-background: $dark;
+
+.kint-fixed {
+	.kint-rich {
+		background: $backdrop-color;
+
+		&.kint-folder {
+			position: fixed;
+			bottom: 40px;
+			left: 20px;
+			right: 20px;
+			z-index: $foldout-zindex;
+			width: calc(100vw - 40px);
+
+			dd.kint-folder {
+				max-height: $foldout-max-size;
+				padding-right: $spacing * 2px;
+				overflow-y: scroll;
+			}
+		}
+
+	}
+}
+
+.kint-rich {
+	font-size: $font-size * 1px;
+	overflow-x: auto;
+	white-space: nowrap;
+
+	dt.kint-nav-bar {
+		position: absolute;
+		top: 0;
+		left: 10px;
+		right: 20px;
+		z-index: 9999;
+		margin: 10px auto;
+		padding-left: 10px;
+
+		+ dd {
+			margin-top: 40px;
+			display: block !important;
+		}
+
+		a {
+			.fa {
+				font-size: 135%;
+				line-height: 1;
+			}
+		}
+
+		nav:first-child {
+			display: none;
+		}
+	}
+
+	&:not(.kint-folder) {
+		background: $backdrop-color;
+	}
+
+	.kint-rich {
+		padding: 5px;
+	}
+
+	&.kint-folder {
+		margin: 0;
+		display: none;
+
+		&.kint-show {
+			display: block;
+		}
+	}
+
+	.kint-hide {
+		display: none !important;
+	}
+
+	.kint-persistent-show {
+		display: inherit !important;
+	}
+
+	&::selection, &::-moz-selection, &::-webkit-selection {
+		background: $border-color-hover;
+		color: $text-color;
+	}
+
+	.kint-focused {
+		box-shadow: 0 0 3px 2px $variable-type-color-hover;
+	}
+
+	&, &::before, &::after,
+	& *, & *::before, & *::after {
+		box-sizing: border-box;
+		border-radius: 0;
+		color: $text-color;
+		float: none !important;
+		font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+		line-height: 15px;
+		margin: 0;
+		padding: 0;
+		text-align: left;
+	}
+
+	& {
+		margin: ($spacing * 2px) 0;
+	}
+
+	dt,
+	dl {
+		width: auto;
+	}
+
+	dt,
+	div.access-path {
+		background: $main-background;
+		border: $border;
+		color: $text-color;
+		display: block;
+		font-weight: bold;
+		list-style: none outside none;
+		overflow: auto;
+		padding: $spacing * 1px;
+
+		&:hover {
+			border-color: $border-color-hover;
+		}
+	}
+
+	> dl dl {
+		padding: 0 0 0 ($spacing * 3px);
+	}
+
+	dt.kint-parent:hover {
+		cursor: pointer;
+	}
+
+	// Caret styles
+	dt.kint-parent > nav,
+	> footer > nav {
+		position: relative;
+		background-color: $caret-background;
+		border: 1px solid $caret-color;
+		cursor: pointer;
+		display: inline-block;
+		height: 15px;
+		width: 15px;
+		margin-right: $spacing * 1px;
+		vertical-align: middle;
+
+		&::before, &::after {
+			content: " ";
+			position: absolute;
+			top: 50%;
+			left: 20%;
+			right: 20%;
+			height: 1px;
+			background-color: $caret-color;
+		}
+
+		&::before {
+			transform: translateY(-50%);
+		}
+
+		&::after {
+			transform: translateY(-50%) rotate(90deg);
+		}
+	}
+
+	dt.kint-parent.kint-show > nav,
+	> footer.kint-show > nav {
+		border: 1px solid $caret-color-open;
+
+		&::before, &::after {
+			background-color: $caret-color-open;
+		}
+
+		&::after {
+			content: none;
+		}
+	}
+
+	dt.kint-parent.kint-locked > nav { // locked
+		border: 1px solid $caret-color-locked;
+
+		&::before, &::after {
+			background-color: $caret-color-locked;
+		}
+
+		&::before {
+			transform: translateY(-50%) rotate(45deg);
+		}
+
+		&::after {
+			transform: translateY(-50%) rotate(135deg);
+		}
+	}
+
+	dt.kint-parent:hover > nav,
+	> footer > nav:hover {
+		cursor: pointer;
+		border: 1px solid $caret-color-hover;
+
+		&::before, &::after {
+			background-color: $caret-color-hover;
+		}
+	}
+
+	dt.kint-parent + dd {
+		display: none;
+		//border-left: 1px dashed $border-color;
+	}
+
+	dt.kint-parent.kint-show + dd {
+		display: block;
+	}
+
+	// Other styles
+	var,
+	var a {
+		color: $variable-type-color;
+		font-style: normal;
+	}
+
+	dt:hover var,
+	dt:hover var a {
+		color: $variable-type-color-hover;
+	}
+
+	dfn {
+		font-style: normal;
+		font-family: monospace;
+		color: $variable-name-color;
+	}
+
+	pre {
+		color: $text-color;
+		margin: 0 0 0 ($spacing * 3px);
+		padding: 5px;
+		overflow-y: hidden;
+		border-top: 0;
+		border: $border;
+		background: $main-background;
+		display: block;
+		word-break: normal;
+	}
+
+	.kint-popup-trigger,
+	.kint-access-path-trigger,
+	.kint-search-trigger {
+		//background: rgba($text-color, 0.8);
+		border-radius: 3px;
+		height: $font-size * 1px;
+		font-size: $font-size * 1px;
+		margin-left: 5px;
+		font-weight: bold;
+		width: $font-size * 1px;
+		text-align: center;
+		float: right !important;
+		cursor: pointer;
+		color: $main-background;
+		position: relative;
+		overflow: hidden;
+
+		// Carefully balanced on multiple browsers
+		line-height: $font-size * 1.1 * 1px;
+
+		&:hover {
+			color: $text-color;
+			background: $main-background;
+		}
+	}
+
+	.kint-popup-trigger {
+		line-height: 1.4;
+	}
+
+	// The &telrec; icon is slightly smaller than the &lrarr; icon,
+	// so make it a bit bigger to line it out better
+	.kint-search-trigger {
+		font-size: $font-size * 1.25 * 1px;
+		line-height: .7;
+	}
+
+	input.kint-search {
+		display: none;
+		border: $border;
+		border-top-width: 0;
+		border-bottom-width: 0;
+		padding: $spacing * 1px;
+		float: right !important;
+		margin: ($spacing * -1px) 0;
+		color: $variable-name-color;
+		background: $secondary-background;
+		height: $font-size * 1px + $spacing * 2px;
+		width: $font-size * 10px;
+		position: relative;
+		z-index: 100;
+
+		&.kint-show {
+			display: block;
+		}
+	}
+
+	.kint-search-root ul.kint-tabs > li:not(.kint-search-match) {
+		background: desaturate($secondary-background, 100%);
+		opacity: 0.5;
+	}
+
+	.kint-search-root dl:not(.kint-search-match) {
+		opacity: 0.5;
+
+		> dt {
+			background: desaturate($main-background, 100%);
+		}
+
+		dl,
+		ul.kint-tabs > li:not(.kint-search-match) {
+			opacity: 1;
+		}
+	}
+
+	div.access-path {
+		background: $secondary-background;
+		display: none;
+		margin-top: 5px;
+		padding: 4px;
+		white-space: pre;
+
+		&.kint-show {
+			display: block;
+		}
+	}
+
+	footer {
+		padding: 4px 8px;
+		font-size: $font-size * .75px;
+		background: transparent;
+
+		> .kint-popup-trigger {
+			background: transparent;
+			color: $text-color;
+		}
+
+		nav {
+			height: 10px;
+			width: 10px;
+			background-size: 10px 50px;
+		}
+
+		> ol {
+			display: none;
+			margin-left: 32px;
+		}
+
+		&.kint-show {
+			> ol {
+				display: block;
+			}
+		}
+	}
+
+	a {
+		color: $text-color;
+		text-shadow: none;
+		text-decoration: underline;
+
+		&:hover {
+			color: $variable-name-color;
+			//border-bottom: 1px dotted $variable-name-color;
+		}
+	}
+
+	// Tab styles
+	ul {
+		list-style: none;
+		padding-left: $spacing * 3px;
+
+		&:not(.kint-tabs) {
+			li {
+				border-left: 1px dashed $border-color;
+
+				> dl {
+					border-left: none;
+				}
+			}
+		}
+
+		&.kint-tabs {
+			margin: 0 0 0 ($spacing * 3px);
+			padding-left: 0;
+			background: $main-background;
+			border: $border;
+			border-top: 0;
+
+			> li {
+				background: $secondary-background;
+				border: $border;
+				cursor: pointer;
+				display: inline-block;
+				height: $spacing * 6px;
+				margin: round($spacing / 2) * 1px;
+				padding: 0 (2px + round($spacing * 2.5px));
+				vertical-align: top;
+
+				&:hover,
+				&.kint-active-tab:hover {
+					border-color: $border-color-hover;
+					color: $variable-type-color-hover;
+				}
+
+				&.kint-active-tab {
+					background: $main-background;
+					border-top: 0;
+					margin-top: -1px;
+					height: 27px;
+					line-height: 24px;
+				}
+
+				&:not(.kint-active-tab) {
+					line-height: $spacing * 5px;
+				}
+			}
+
+			li + li {
+				margin-left: 0;
+			}
+		}
+
+		&:not(.kint-tabs) > li:not(:first-child) {
+			display: none;
+		}
+	}
+
+	dt:hover + dd > ul > li.kint-active-tab {
+		border-color: $border-color-hover;
+		color: $variable-type-color-hover;
+	}
+
+	dt > .kint-color-preview {
+		width: $font-size * 1px;
+		height: $font-size * 1px;
+		display: inline-block;
+		vertical-align: middle;
+		margin-left: 10px;
+		border: $border;
+		background: {
+			color: #ccc;
+			image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><path fill="%23FFF" d="M0 0h1v2h1V1H0z"/></svg>');
+			size: if($font-size >= 30, 30px, 100%);
+		}
+
+		&:hover {
+			border-color: $border-color-hover;
+		}
+
+		> div {
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	// Table representation
+	table {
+		border-collapse: collapse;
+		empty-cells: show;
+		border-spacing: 0;
+
+		* {
+			font-size: $font-size * 1px;
+		}
+
+		dt {
+			background: none;
+			padding: $spacing / 2 * 1px;
+
+			.kint-parent {
+				min-width: 100%;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+		}
+
+		td,
+		th {
+			border: $border;
+			padding: $spacing / 2 * 1px;
+			vertical-align: center;
+		}
+
+		th {
+			cursor: alias;
+		}
+
+		td:first-child,
+		th {
+			font-weight: bold;
+			background: $secondary-background;
+			color: $variable-name-color;
+		}
+
+		td {
+			background: $main-background;
+			white-space: pre;
+
+			> dl {
+				padding: 0;
+			}
+		}
+
+		pre {
+			border-top: 0;
+			border-right: 0;
+		}
+
+		thead th:first-child {
+			background: none;
+			border: 0;
+		}
+
+		tr:hover {
+			> td {
+				box-shadow: 0 0 1px 0 $border-color-hover inset;
+			}
+
+			var {
+				color: $variable-type-color-hover;
+			}
+		}
+
+		ul.kint-tabs li.kint-active-tab {
+			height: 20px;
+			line-height: 17px;
+		}
+	}
+
+	// Source representation
+	pre.kint-source {
+		margin-left: -1px;
+
+		&:before {
+			display: block;
+			content: attr(data-kint-sourcerange);
+			margin-bottom: 0.5em;
+			padding-bottom: 0.5em;
+			border-bottom: 1px solid $secondary-background;
+		}
+
+		> div.kint-highlight {
+			background: $secondary-background;
+		}
+	}
+
+	// Microtime representation
+	.kint-microtime-lap {
+		text-shadow: -1px 0 $border-color-hover, 0 1px $border-color-hover, 1px 0 $border-color-hover, 0 -1px $border-color-hover;
+		color: $main-background;
+		font-weight: bold;
+	}
+
+	> dl > dt {
+		background: $parent-bar-background;
+	}
+
+	ul.kint-tabs {
+		background: $tab-bar-background;
+	}
+
+	& > dl:not(.kint-trace) > dd > ul.kint-tabs li {
+		background: $main-background;
+
+		&.kint-active-tab {
+			background: $secondary-background;
+		}
+	}
+
+	& > dl.kint-trace > dt {
+		background: $trace-background;
+	}
+
+	.kint-source .kint-highlight {
+		background: $text-highlight;
+	}
+
+	$action-alpha: .95;
+
+	dt, dt:hover, table {
+
+		> a {
+			float: right !important;
+			display: inline-block;
+			margin: 0 4px;
+
+			> svg {
+				height: 15px;
+			}
+		}
+
+		[data-action]:not(.action-scope) {
+			&, * {
+				&, &::before, &::after {
+					color: rgba($blue, .75);
+				}
+			}
+		}
+
+		&:hover {
+			[data-action]:not(.action-scope) {
+				&, * {
+					&, &::before, &::after {
+						color: rgba($purple, .85);
+					}
+				}
+			}
+		}
+
+		[data-action]:not(.action-scope) {
+			&:hover, &:active, &:focus {
+				&, * {
+					&, &::before, &::after {
+						color: $yellow;
+					}
+				}
+			}
+		}
+
+		.kint-public {
+			color: $green;
+		}
+
+		a[data-scope="public"] {
+			&, * {
+				&, &::before, &::after {
+					color: rgba($green, $action-alpha);
+				}
+			}
+		}
+
+		.kint-protected {
+			color: $burnt;
+		}
+
+		a[data-scope="protected"] {
+			&, * {
+				&, &::before, &::after {
+					color: rgba($orange, $action-alpha);
+				}
+			}
+		}
+
+		.kint-private {
+			color: $burnt;
+		}
+
+		a[data-scope="private"] {
+			&, * {
+				&, &::before, &::after {
+					color: rgba($burnt, $action-alpha);
+				}
+			}
+		}
+
+		dfn {
+			color: $orange;
+		}
+
+		.kint-protected + span + dfn, .kint-private + span + dfn {
+			color: $dark-orange;
+		}
+
+		dfn + .kint-value,
+		dfn + .kint-colon + .kint-type + .kint-value {
+			color: $gray;
+		}
+
+		.kint-arrow {
+			color: $gray;
+		}
+
+		.kint-string + .kint-value, [title^="string"] {
+			color: $green;
+		}
+
+		.kint-integer + .kint-value, [title^="int"] {
+			color: $red;
+		}
+
+		.kint-double + .kint-value, .kint-float + .kint-value, [title^="double"], [title^="float"] {
+			color: $burnt;
+		}
+
+		.kint-boolean + .kint-value, [title^="bool"] {
+			text-transform: uppercase;
+			color: $neon-blue;
+		}
+
+		.kint-null, [title^="null"] {
+			text-transform: uppercase;
+			color: $gray;
+		}
+
+		.kint-array + .kint-value, [title^="array"] {
+			color: $purple;
+		}
+	}
+
+	dl dd {
+		ul.kint-tabs.kint-tabs {
+			li {
+				color: rgba($blue, .5);
+
+				&.kint-active-tab {
+					color: darken($blue, 10%);
+					background-color: rgba($white, .1);
+					border-bottom: solid 1px rgba($white, .5);
+				}
+			}
+		}
+	}
+
+	table {
+		tr {
+			> * {
+				border: dotted 1px rgba($blue, .33);
+				padding: 4px;
+			}
+
+			td {
+				&:hover {
+					background-color: rgba($white, .1);
+				}
+			}
+		}
+	}
+
+	.fa {
+		&, *, &::before, &::after {
+			font-family: 'FontAwesome' !important;
+		}
+	}
+
+	.kint-persistent-show {
+		> dt {
+			> .action-visibility[data-action="show"] {
+				&, * {
+					color: $glow;
+				}
+			}
+
+			&:hover {
+				> .action-visibility[data-action="show"] {
+					&, * {
+						color: $orange;
+					}
+				}
+			}
+		}
+	}
+
+	time {
+		float: left !important;
+		margin-right: 10px;
+	}
+
+	.kint-message {
+		margin: 10px 0;
+		padding: 15px 10px;
+		background-color: $dark;
+		font-size: 14px;
+		font-weight: bold;
+		text-align: center;
+		overflow: auto;
+		white-space: normal;
+
+		pre {
+			white-space: pre-wrap;
+		}
+
+		dl {
+			margin-right: 10px;
+			float: right !important;
+		}
+
+		dl, dt {
+			margin: 0;
+			padding: 0;
+			border: none;
+			overflow: initial;
+		}
+
+		a {
+			&, * {
+				color: $blue;
+			}
+		}
+
+		svg {
+			height: 15px;
+		}
+	}
+
+	.kint-header {
+		margin-top: 40px;
+		color: $glow;
+	}
+
+	@keyframes blinker {
+		25% {
+			opacity: .25;
+		}
+	}
+
+	@mixin message-prefix($prefix) {
+		@content;
+		display: inline-block;
+		padding: 10px 7px;
+		font-weight: bold;
+		*, ::before, ::after {
+			color: currentColor;
+		}
+		&-with-prefix {
+			@content;
+			display: inline-block;
+			padding: 10px 7px;
+
+			&::before {
+				content: '#{$prefix}: ';
+				text-transform: uppercase;
+				color: $white;
+			}
+		}
+	}
+
+	.kint-log {
+		@include message-prefix('log') {
+			color: #0F0;
+		}
+	}
+
+	.kint-debug {
+		@include message-prefix('debug') {
+			color: $neon-green;
+		}
+	}
+
+	.kint-info {
+		@include message-prefix('info') {
+			color: $white;
+		}
+	}
+
+	.kint-notice {
+		@include message-prefix('notice') {
+			color: $yellow;
+		}
+	}
+
+	.kint-warning {
+		@include message-prefix('warning') {
+			color: $orange;
+		}
+	}
+
+	.kint-alert {
+		@include message-prefix('alert') {
+			color: $red;
+			animation: blinker 3.333s ease-out 0s 3;
+		}
+	}
+
+	.kint-error {
+		@include message-prefix('error') {
+			color: $red;
+		}
+	}
+
+	.kint-critical {
+		@include message-prefix('critical') {
+			color: $red;
+			font-style: italic;
+			animation: blinker 2s ease-out 0s 5;
+		}
+	}
+
+	.kint-emergency {
+		@include message-prefix('emergency') {
+			color: $red;
+			font-style: italic;
+			animation: blinker 1s ease-out 0s 10;
+		}
+	}
+
+	.kint-dim-call-stack ~ footer {
+		opacity: 0.5;
+	}
+}

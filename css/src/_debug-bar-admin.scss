@@ -1,0 +1,17 @@
+#wp-admin-bar-rwd-debug-bar {
+	display: block !important;
+
+	.fa {
+		font-family: FontAwesome !important;
+		color: #a7aaad;
+	}
+
+	@media screen and (max-width: 782px) {
+		a span {
+			display: none;
+		}
+		.fa {
+			font-size: 22px;
+		}
+	}
+}

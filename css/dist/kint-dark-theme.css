@@ -1,0 +1,960 @@
+.kint-fixed .kint-rich {
+  background: #0C1021;
+}
+
+.kint-fixed .kint-rich.kint-folder {
+  position: fixed;
+  bottom: 40px;
+  left: 20px;
+  right: 20px;
+  z-index: 999999;
+  width: calc(100vw - 40px);
+}
+
+.kint-fixed .kint-rich.kint-folder dd.kint-folder {
+  max-height: calc(100vh - 80px);
+  padding-right: 10px;
+  overflow-y: scroll;
+}
+
+.kint-rich {
+  font-size: 13.5px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.kint-rich dt.kint-nav-bar {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  right: 20px;
+  z-index: 9999;
+  margin: 10px auto;
+  padding-left: 10px;
+}
+
+.kint-rich dt.kint-nav-bar + dd {
+  margin-top: 40px;
+  display: block !important;
+}
+
+.kint-rich dt.kint-nav-bar a .fa {
+  font-size: 135%;
+  line-height: 1;
+}
+
+.kint-rich dt.kint-nav-bar nav:first-child {
+  display: none;
+}
+
+.kint-rich:not(.kint-folder) {
+  background: #0C1021;
+}
+
+.kint-rich .kint-rich {
+  padding: 5px;
+}
+
+.kint-rich.kint-folder {
+  margin: 0;
+  display: none;
+}
+
+.kint-rich.kint-folder.kint-show {
+  display: block;
+}
+
+.kint-rich .kint-hide {
+  display: none !important;
+}
+
+.kint-rich .kint-persistent-show {
+  display: inherit !important;
+}
+
+.kint-rich::selection, .kint-rich::-moz-selection, .kint-rich::-webkit-selection {
+  background: #0C1021;
+  color: #99CCFF;
+}
+
+.kint-rich .kint-focused {
+  box-shadow: 0 0 3px 2px #99CCFF;
+}
+
+.kint-rich, .kint-rich::before, .kint-rich::after,
+.kint-rich *, .kint-rich *::before, .kint-rich *::after {
+  box-sizing: border-box;
+  border-radius: 0;
+  color: #99CCFF;
+  float: none !important;
+  font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  line-height: 15px;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.kint-rich {
+  margin: 10px 0;
+}
+
+.kint-rich dt,
+.kint-rich dl {
+  width: auto;
+}
+
+.kint-rich dt,
+.kint-rich div.access-path {
+  background: #0C1021;
+  border: 1px solid #0C1021;
+  color: #99CCFF;
+  display: block;
+  font-weight: bold;
+  list-style: none outside none;
+  overflow: auto;
+  padding: 5px;
+}
+
+.kint-rich dt:hover,
+.kint-rich div.access-path:hover {
+  border-color: #0C1021;
+}
+
+.kint-rich > dl dl {
+  padding: 0 0 0 15px;
+}
+
+.kint-rich dt.kint-parent:hover {
+  cursor: pointer;
+}
+
+.kint-rich dt.kint-parent > nav,
+.kint-rich > footer > nav {
+  position: relative;
+  background-color: #0C1021;
+  border: 1px solid #BB99FF;
+  cursor: pointer;
+  display: inline-block;
+  height: 15px;
+  width: 15px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.kint-rich dt.kint-parent > nav::before, .kint-rich dt.kint-parent > nav::after,
+.kint-rich > footer > nav::before,
+.kint-rich > footer > nav::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background-color: #BB99FF;
+}
+
+.kint-rich dt.kint-parent > nav::before,
+.kint-rich > footer > nav::before {
+  transform: translateY(-50%);
+}
+
+.kint-rich dt.kint-parent > nav::after,
+.kint-rich > footer > nav::after {
+  transform: translateY(-50%) rotate(90deg);
+}
+
+.kint-rich dt.kint-parent.kint-show > nav,
+.kint-rich > footer.kint-show > nav {
+  border: 1px solid #99CCFF;
+}
+
+.kint-rich dt.kint-parent.kint-show > nav::before, .kint-rich dt.kint-parent.kint-show > nav::after,
+.kint-rich > footer.kint-show > nav::before,
+.kint-rich > footer.kint-show > nav::after {
+  background-color: #99CCFF;
+}
+
+.kint-rich dt.kint-parent.kint-show > nav::after,
+.kint-rich > footer.kint-show > nav::after {
+  content: none;
+}
+
+.kint-rich dt.kint-parent.kint-locked > nav {
+  border: 1px solid #C04000;
+}
+
+.kint-rich dt.kint-parent.kint-locked > nav::before, .kint-rich dt.kint-parent.kint-locked > nav::after {
+  background-color: #C04000;
+}
+
+.kint-rich dt.kint-parent.kint-locked > nav::before {
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.kint-rich dt.kint-parent.kint-locked > nav::after {
+  transform: translateY(-50%) rotate(135deg);
+}
+
+.kint-rich dt.kint-parent:hover > nav,
+.kint-rich > footer > nav:hover {
+  cursor: pointer;
+  border: 1px solid #FFFFFF;
+}
+
+.kint-rich dt.kint-parent:hover > nav::before, .kint-rich dt.kint-parent:hover > nav::after,
+.kint-rich > footer > nav:hover::before,
+.kint-rich > footer > nav:hover::after {
+  background-color: #FFFFFF;
+}
+
+.kint-rich dt.kint-parent + dd {
+  display: none;
+}
+
+.kint-rich dt.kint-parent.kint-show + dd {
+  display: block;
+}
+
+.kint-rich var,
+.kint-rich var a {
+  color: #99CCFF;
+  font-style: normal;
+}
+
+.kint-rich dt:hover var,
+.kint-rich dt:hover var a {
+  color: #99CCFF;
+}
+
+.kint-rich dfn {
+  font-style: normal;
+  font-family: monospace;
+  color: #99CCFF;
+}
+
+.kint-rich pre {
+  color: #99CCFF;
+  margin: 0 0 0 15px;
+  padding: 5px;
+  overflow-y: hidden;
+  border-top: 0;
+  border: 1px solid #0C1021;
+  background: #0C1021;
+  display: block;
+  word-break: normal;
+}
+
+.kint-rich .kint-popup-trigger,
+.kint-rich .kint-access-path-trigger,
+.kint-rich .kint-search-trigger {
+  border-radius: 3px;
+  height: 13.5px;
+  font-size: 13.5px;
+  margin-left: 5px;
+  font-weight: bold;
+  width: 13.5px;
+  text-align: center;
+  float: right !important;
+  cursor: pointer;
+  color: #0C1021;
+  position: relative;
+  overflow: hidden;
+  line-height: 14.85px;
+}
+
+.kint-rich .kint-popup-trigger:hover,
+.kint-rich .kint-access-path-trigger:hover,
+.kint-rich .kint-search-trigger:hover {
+  color: #99CCFF;
+  background: #0C1021;
+}
+
+.kint-rich .kint-popup-trigger {
+  line-height: 1.4;
+}
+
+.kint-rich .kint-search-trigger {
+  font-size: 16.875px;
+  line-height: .7;
+}
+
+.kint-rich input.kint-search {
+  display: none;
+  border: 1px solid #0C1021;
+  border-top-width: 0;
+  border-bottom-width: 0;
+  padding: 5px;
+  float: right !important;
+  margin: -5px 0;
+  color: #99CCFF;
+  background: #0C1021;
+  height: 23.5px;
+  width: 135px;
+  position: relative;
+  z-index: 100;
+}
+
+.kint-rich input.kint-search.kint-show {
+  display: block;
+}
+
+.kint-rich .kint-search-root ul.kint-tabs > li:not(.kint-search-match) {
+  background: #171717;
+  opacity: 0.5;
+}
+
+.kint-rich .kint-search-root dl:not(.kint-search-match) {
+  opacity: 0.5;
+}
+
+.kint-rich .kint-search-root dl:not(.kint-search-match) > dt {
+  background: #171717;
+}
+
+.kint-rich .kint-search-root dl:not(.kint-search-match) dl,
+.kint-rich .kint-search-root dl:not(.kint-search-match) ul.kint-tabs > li:not(.kint-search-match) {
+  opacity: 1;
+}
+
+.kint-rich div.access-path {
+  background: #0C1021;
+  display: none;
+  margin-top: 5px;
+  padding: 4px;
+  white-space: pre;
+}
+
+.kint-rich div.access-path.kint-show {
+  display: block;
+}
+
+.kint-rich footer {
+  padding: 4px 8px;
+  font-size: 10.125px;
+  background: transparent;
+}
+
+.kint-rich footer > .kint-popup-trigger {
+  background: transparent;
+  color: #99CCFF;
+}
+
+.kint-rich footer nav {
+  height: 10px;
+  width: 10px;
+  background-size: 10px 50px;
+}
+
+.kint-rich footer > ol {
+  display: none;
+  margin-left: 32px;
+}
+
+.kint-rich footer.kint-show > ol {
+  display: block;
+}
+
+.kint-rich a {
+  color: #99CCFF;
+  text-shadow: none;
+  text-decoration: underline;
+}
+
+.kint-rich a:hover {
+  color: #99CCFF;
+}
+
+.kint-rich ul {
+  list-style: none;
+  padding-left: 15px;
+}
+
+.kint-rich ul:not(.kint-tabs) li {
+  border-left: 1px dashed #0C1021;
+}
+
+.kint-rich ul:not(.kint-tabs) li > dl {
+  border-left: none;
+}
+
+.kint-rich ul.kint-tabs {
+  margin: 0 0 0 15px;
+  padding-left: 0;
+  background: #0C1021;
+  border: 1px solid #0C1021;
+  border-top: 0;
+}
+
+.kint-rich ul.kint-tabs > li {
+  background: #0C1021;
+  border: 1px solid #0C1021;
+  cursor: pointer;
+  display: inline-block;
+  height: 30px;
+  margin: 3px;
+  padding: 0 15px;
+  vertical-align: top;
+}
+
+.kint-rich ul.kint-tabs > li:hover, .kint-rich ul.kint-tabs > li.kint-active-tab:hover {
+  border-color: #0C1021;
+  color: #99CCFF;
+}
+
+.kint-rich ul.kint-tabs > li.kint-active-tab {
+  background: #0C1021;
+  border-top: 0;
+  margin-top: -1px;
+  height: 27px;
+  line-height: 24px;
+}
+
+.kint-rich ul.kint-tabs > li:not(.kint-active-tab) {
+  line-height: 25px;
+}
+
+.kint-rich ul.kint-tabs li + li {
+  margin-left: 0;
+}
+
+.kint-rich ul:not(.kint-tabs) > li:not(:first-child) {
+  display: none;
+}
+
+.kint-rich dt:hover + dd > ul > li.kint-active-tab {
+  border-color: #0C1021;
+  color: #99CCFF;
+}
+
+.kint-rich dt > .kint-color-preview {
+  width: 13.5px;
+  height: 13.5px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
+  border: 1px solid #0C1021;
+  background-color: #ccc;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><path fill="%23FFF" d="M0 0h1v2h1V1H0z"/></svg>');
+  background-size: 100%;
+}
+
+.kint-rich dt > .kint-color-preview:hover {
+  border-color: #0C1021;
+}
+
+.kint-rich dt > .kint-color-preview > div {
+  width: 100%;
+  height: 100%;
+}
+
+.kint-rich table {
+  border-collapse: collapse;
+  empty-cells: show;
+  border-spacing: 0;
+}
+
+.kint-rich table * {
+  font-size: 13.5px;
+}
+
+.kint-rich table dt {
+  background: none;
+  padding: 2.5px;
+}
+
+.kint-rich table dt .kint-parent {
+  min-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kint-rich table td,
+.kint-rich table th {
+  border: 1px solid #0C1021;
+  padding: 2.5px;
+  vertical-align: center;
+}
+
+.kint-rich table th {
+  cursor: alias;
+}
+
+.kint-rich table td:first-child,
+.kint-rich table th {
+  font-weight: bold;
+  background: #0C1021;
+  color: #99CCFF;
+}
+
+.kint-rich table td {
+  background: #0C1021;
+  white-space: pre;
+}
+
+.kint-rich table td > dl {
+  padding: 0;
+}
+
+.kint-rich table pre {
+  border-top: 0;
+  border-right: 0;
+}
+
+.kint-rich table thead th:first-child {
+  background: none;
+  border: 0;
+}
+
+.kint-rich table tr:hover > td {
+  box-shadow: 0 0 1px 0 #0C1021 inset;
+}
+
+.kint-rich table tr:hover var {
+  color: #99CCFF;
+}
+
+.kint-rich table ul.kint-tabs li.kint-active-tab {
+  height: 20px;
+  line-height: 17px;
+}
+
+.kint-rich pre.kint-source {
+  margin-left: -1px;
+}
+
+.kint-rich pre.kint-source:before {
+  display: block;
+  content: attr(data-kint-sourcerange);
+  margin-bottom: 0.5em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #0C1021;
+}
+
+.kint-rich pre.kint-source > div.kint-highlight {
+  background: #0C1021;
+}
+
+.kint-rich .kint-microtime-lap {
+  text-shadow: -1px 0 #0C1021, 0 1px #0C1021, 1px 0 #0C1021, 0 -1px #0C1021;
+  color: #0C1021;
+  font-weight: bold;
+}
+
+.kint-rich > dl > dt {
+  background: #0C1021;
+}
+
+.kint-rich ul.kint-tabs {
+  background: #0C1021;
+}
+
+.kint-rich > dl:not(.kint-trace) > dd > ul.kint-tabs li {
+  background: #0C1021;
+}
+
+.kint-rich > dl:not(.kint-trace) > dd > ul.kint-tabs li.kint-active-tab {
+  background: #0C1021;
+}
+
+.kint-rich > dl.kint-trace > dt {
+  background: #0C1021;
+}
+
+.kint-rich .kint-source .kint-highlight {
+  background: #FFFF00;
+}
+
+.kint-rich dt > a, .kint-rich dt:hover > a, .kint-rich table > a {
+  float: right !important;
+  display: inline-block;
+  margin: 0 4px;
+}
+
+.kint-rich dt > a > svg, .kint-rich dt:hover > a > svg, .kint-rich table > a > svg {
+  height: 15px;
+}
+
+.kint-rich dt [data-action]:not(.action-scope), .kint-rich dt [data-action]:not(.action-scope)::before, .kint-rich dt [data-action]:not(.action-scope)::after, .kint-rich dt [data-action]:not(.action-scope) *, .kint-rich dt [data-action]:not(.action-scope) *::before, .kint-rich dt [data-action]:not(.action-scope) *::after, .kint-rich dt:hover [data-action]:not(.action-scope), .kint-rich dt:hover [data-action]:not(.action-scope)::before, .kint-rich dt:hover [data-action]:not(.action-scope)::after, .kint-rich dt:hover [data-action]:not(.action-scope) *, .kint-rich dt:hover [data-action]:not(.action-scope) *::before, .kint-rich dt:hover [data-action]:not(.action-scope) *::after, .kint-rich table [data-action]:not(.action-scope), .kint-rich table [data-action]:not(.action-scope)::before, .kint-rich table [data-action]:not(.action-scope)::after, .kint-rich table [data-action]:not(.action-scope) *, .kint-rich table [data-action]:not(.action-scope) *::before, .kint-rich table [data-action]:not(.action-scope) *::after {
+  color: rgba(153, 204, 255, 0.75);
+}
+
+.kint-rich dt:hover [data-action]:not(.action-scope), .kint-rich dt:hover [data-action]:not(.action-scope)::before, .kint-rich dt:hover [data-action]:not(.action-scope)::after, .kint-rich dt:hover [data-action]:not(.action-scope) *, .kint-rich dt:hover [data-action]:not(.action-scope) *::before, .kint-rich dt:hover [data-action]:not(.action-scope) *::after, .kint-rich dt:hover:hover [data-action]:not(.action-scope), .kint-rich dt:hover:hover [data-action]:not(.action-scope)::before, .kint-rich dt:hover:hover [data-action]:not(.action-scope)::after, .kint-rich dt:hover:hover [data-action]:not(.action-scope) *, .kint-rich dt:hover:hover [data-action]:not(.action-scope) *::before, .kint-rich dt:hover:hover [data-action]:not(.action-scope) *::after, .kint-rich table:hover [data-action]:not(.action-scope), .kint-rich table:hover [data-action]:not(.action-scope)::before, .kint-rich table:hover [data-action]:not(.action-scope)::after, .kint-rich table:hover [data-action]:not(.action-scope) *, .kint-rich table:hover [data-action]:not(.action-scope) *::before, .kint-rich table:hover [data-action]:not(.action-scope) *::after {
+  color: rgba(204, 153, 255, 0.85);
+}
+
+.kint-rich dt [data-action]:not(.action-scope):hover, .kint-rich dt [data-action]:not(.action-scope):hover::before, .kint-rich dt [data-action]:not(.action-scope):hover::after, .kint-rich dt [data-action]:not(.action-scope):hover *, .kint-rich dt [data-action]:not(.action-scope):hover *::before, .kint-rich dt [data-action]:not(.action-scope):hover *::after, .kint-rich dt [data-action]:not(.action-scope):active, .kint-rich dt [data-action]:not(.action-scope):active::before, .kint-rich dt [data-action]:not(.action-scope):active::after, .kint-rich dt [data-action]:not(.action-scope):active *, .kint-rich dt [data-action]:not(.action-scope):active *::before, .kint-rich dt [data-action]:not(.action-scope):active *::after, .kint-rich dt [data-action]:not(.action-scope):focus, .kint-rich dt [data-action]:not(.action-scope):focus::before, .kint-rich dt [data-action]:not(.action-scope):focus::after, .kint-rich dt [data-action]:not(.action-scope):focus *, .kint-rich dt [data-action]:not(.action-scope):focus *::before, .kint-rich dt [data-action]:not(.action-scope):focus *::after, .kint-rich dt:hover [data-action]:not(.action-scope):hover, .kint-rich dt:hover [data-action]:not(.action-scope):hover::before, .kint-rich dt:hover [data-action]:not(.action-scope):hover::after, .kint-rich dt:hover [data-action]:not(.action-scope):hover *, .kint-rich dt:hover [data-action]:not(.action-scope):hover *::before, .kint-rich dt:hover [data-action]:not(.action-scope):hover *::after, .kint-rich dt:hover [data-action]:not(.action-scope):active, .kint-rich dt:hover [data-action]:not(.action-scope):active::before, .kint-rich dt:hover [data-action]:not(.action-scope):active::after, .kint-rich dt:hover [data-action]:not(.action-scope):active *, .kint-rich dt:hover [data-action]:not(.action-scope):active *::before, .kint-rich dt:hover [data-action]:not(.action-scope):active *::after, .kint-rich dt:hover [data-action]:not(.action-scope):focus, .kint-rich dt:hover [data-action]:not(.action-scope):focus::before, .kint-rich dt:hover [data-action]:not(.action-scope):focus::after, .kint-rich dt:hover [data-action]:not(.action-scope):focus *, .kint-rich dt:hover [data-action]:not(.action-scope):focus *::before, .kint-rich dt:hover [data-action]:not(.action-scope):focus *::after, .kint-rich table [data-action]:not(.action-scope):hover, .kint-rich table [data-action]:not(.action-scope):hover::before, .kint-rich table [data-action]:not(.action-scope):hover::after, .kint-rich table [data-action]:not(.action-scope):hover *, .kint-rich table [data-action]:not(.action-scope):hover *::before, .kint-rich table [data-action]:not(.action-scope):hover *::after, .kint-rich table [data-action]:not(.action-scope):active, .kint-rich table [data-action]:not(.action-scope):active::before, .kint-rich table [data-action]:not(.action-scope):active::after, .kint-rich table [data-action]:not(.action-scope):active *, .kint-rich table [data-action]:not(.action-scope):active *::before, .kint-rich table [data-action]:not(.action-scope):active *::after, .kint-rich table [data-action]:not(.action-scope):focus, .kint-rich table [data-action]:not(.action-scope):focus::before, .kint-rich table [data-action]:not(.action-scope):focus::after, .kint-rich table [data-action]:not(.action-scope):focus *, .kint-rich table [data-action]:not(.action-scope):focus *::before, .kint-rich table [data-action]:not(.action-scope):focus *::after {
+  color: #FFFF00;
+}
+
+.kint-rich dt .kint-public, .kint-rich dt:hover .kint-public, .kint-rich table .kint-public {
+  color: #33CC33;
+}
+
+.kint-rich dt a[data-scope="public"], .kint-rich dt a[data-scope="public"]::before, .kint-rich dt a[data-scope="public"]::after, .kint-rich dt a[data-scope="public"] *, .kint-rich dt a[data-scope="public"] *::before, .kint-rich dt a[data-scope="public"] *::after, .kint-rich dt:hover a[data-scope="public"], .kint-rich dt:hover a[data-scope="public"]::before, .kint-rich dt:hover a[data-scope="public"]::after, .kint-rich dt:hover a[data-scope="public"] *, .kint-rich dt:hover a[data-scope="public"] *::before, .kint-rich dt:hover a[data-scope="public"] *::after, .kint-rich table a[data-scope="public"], .kint-rich table a[data-scope="public"]::before, .kint-rich table a[data-scope="public"]::after, .kint-rich table a[data-scope="public"] *, .kint-rich table a[data-scope="public"] *::before, .kint-rich table a[data-scope="public"] *::after {
+  color: rgba(51, 204, 51, 0.95);
+}
+
+.kint-rich dt .kint-protected, .kint-rich dt:hover .kint-protected, .kint-rich table .kint-protected {
+  color: #C04000;
+}
+
+.kint-rich dt a[data-scope="protected"], .kint-rich dt a[data-scope="protected"]::before, .kint-rich dt a[data-scope="protected"]::after, .kint-rich dt a[data-scope="protected"] *, .kint-rich dt a[data-scope="protected"] *::before, .kint-rich dt a[data-scope="protected"] *::after, .kint-rich dt:hover a[data-scope="protected"], .kint-rich dt:hover a[data-scope="protected"]::before, .kint-rich dt:hover a[data-scope="protected"]::after, .kint-rich dt:hover a[data-scope="protected"] *, .kint-rich dt:hover a[data-scope="protected"] *::before, .kint-rich dt:hover a[data-scope="protected"] *::after, .kint-rich table a[data-scope="protected"], .kint-rich table a[data-scope="protected"]::before, .kint-rich table a[data-scope="protected"]::after, .kint-rich table a[data-scope="protected"] *, .kint-rich table a[data-scope="protected"] *::before, .kint-rich table a[data-scope="protected"] *::after {
+  color: rgba(255, 204, 51, 0.95);
+}
+
+.kint-rich dt .kint-private, .kint-rich dt:hover .kint-private, .kint-rich table .kint-private {
+  color: #C04000;
+}
+
+.kint-rich dt a[data-scope="private"], .kint-rich dt a[data-scope="private"]::before, .kint-rich dt a[data-scope="private"]::after, .kint-rich dt a[data-scope="private"] *, .kint-rich dt a[data-scope="private"] *::before, .kint-rich dt a[data-scope="private"] *::after, .kint-rich dt:hover a[data-scope="private"], .kint-rich dt:hover a[data-scope="private"]::before, .kint-rich dt:hover a[data-scope="private"]::after, .kint-rich dt:hover a[data-scope="private"] *, .kint-rich dt:hover a[data-scope="private"] *::before, .kint-rich dt:hover a[data-scope="private"] *::after, .kint-rich table a[data-scope="private"], .kint-rich table a[data-scope="private"]::before, .kint-rich table a[data-scope="private"]::after, .kint-rich table a[data-scope="private"] *, .kint-rich table a[data-scope="private"] *::before, .kint-rich table a[data-scope="private"] *::after {
+  color: rgba(192, 64, 0, 0.95);
+}
+
+.kint-rich dt dfn, .kint-rich dt:hover dfn, .kint-rich table dfn {
+  color: #FFCC33;
+}
+
+.kint-rich dt .kint-protected + span + dfn, .kint-rich dt .kint-private + span + dfn, .kint-rich dt:hover .kint-protected + span + dfn, .kint-rich dt:hover .kint-private + span + dfn, .kint-rich table .kint-protected + span + dfn, .kint-rich table .kint-private + span + dfn {
+  color: #FF6600;
+}
+
+.kint-rich dt dfn + .kint-value,
+.kint-rich dt dfn + .kint-colon + .kint-type + .kint-value, .kint-rich dt:hover dfn + .kint-value,
+.kint-rich dt:hover dfn + .kint-colon + .kint-type + .kint-value, .kint-rich table dfn + .kint-value,
+.kint-rich table dfn + .kint-colon + .kint-type + .kint-value {
+  color: #AEAEAE;
+}
+
+.kint-rich dt .kint-arrow, .kint-rich dt:hover .kint-arrow, .kint-rich table .kint-arrow {
+  color: #AEAEAE;
+}
+
+.kint-rich dt .kint-string + .kint-value, .kint-rich dt [title^="string"], .kint-rich dt:hover .kint-string + .kint-value, .kint-rich dt:hover [title^="string"], .kint-rich table .kint-string + .kint-value, .kint-rich table [title^="string"] {
+  color: #33CC33;
+}
+
+.kint-rich dt .kint-integer + .kint-value, .kint-rich dt [title^="int"], .kint-rich dt:hover .kint-integer + .kint-value, .kint-rich dt:hover [title^="int"], .kint-rich table .kint-integer + .kint-value, .kint-rich table [title^="int"] {
+  color: #FF3333;
+}
+
+.kint-rich dt .kint-double + .kint-value, .kint-rich dt .kint-float + .kint-value, .kint-rich dt [title^="double"], .kint-rich dt [title^="float"], .kint-rich dt:hover .kint-double + .kint-value, .kint-rich dt:hover .kint-float + .kint-value, .kint-rich dt:hover [title^="double"], .kint-rich dt:hover [title^="float"], .kint-rich table .kint-double + .kint-value, .kint-rich table .kint-float + .kint-value, .kint-rich table [title^="double"], .kint-rich table [title^="float"] {
+  color: #C04000;
+}
+
+.kint-rich dt .kint-boolean + .kint-value, .kint-rich dt [title^="bool"], .kint-rich dt:hover .kint-boolean + .kint-value, .kint-rich dt:hover [title^="bool"], .kint-rich table .kint-boolean + .kint-value, .kint-rich table [title^="bool"] {
+  text-transform: uppercase;
+  color: #66D9EF;
+}
+
+.kint-rich dt .kint-null, .kint-rich dt [title^="null"], .kint-rich dt:hover .kint-null, .kint-rich dt:hover [title^="null"], .kint-rich table .kint-null, .kint-rich table [title^="null"] {
+  text-transform: uppercase;
+  color: #AEAEAE;
+}
+
+.kint-rich dt .kint-array + .kint-value, .kint-rich dt [title^="array"], .kint-rich dt:hover .kint-array + .kint-value, .kint-rich dt:hover [title^="array"], .kint-rich table .kint-array + .kint-value, .kint-rich table [title^="array"] {
+  color: #CC99FF;
+}
+
+.kint-rich dl dd ul.kint-tabs.kint-tabs li {
+  color: rgba(153, 204, 255, 0.5);
+}
+
+.kint-rich dl dd ul.kint-tabs.kint-tabs li.kint-active-tab {
+  color: #66b3ff;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-bottom: solid 1px rgba(255, 255, 255, 0.5);
+}
+
+.kint-rich table tr > * {
+  border: dotted 1px rgba(153, 204, 255, 0.33);
+  padding: 4px;
+}
+
+.kint-rich table tr td:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.kint-rich .fa, .kint-rich .fa *, .kint-rich .fa::before, .kint-rich .fa::after {
+  font-family: 'FontAwesome' !important;
+}
+
+.kint-rich .kint-persistent-show > dt > .action-visibility[data-action="show"], .kint-rich .kint-persistent-show > dt > .action-visibility[data-action="show"] * {
+  color: #CCFF00;
+}
+
+.kint-rich .kint-persistent-show > dt:hover > .action-visibility[data-action="show"], .kint-rich .kint-persistent-show > dt:hover > .action-visibility[data-action="show"] * {
+  color: #FFCC33;
+}
+
+.kint-rich time {
+  float: left !important;
+  margin-right: 10px;
+}
+
+.kint-rich .kint-message {
+  margin: 10px 0;
+  padding: 15px 10px;
+  background-color: #0C1021;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  overflow: auto;
+  white-space: normal;
+}
+
+.kint-rich .kint-message pre {
+  white-space: pre-wrap;
+}
+
+.kint-rich .kint-message dl {
+  margin-right: 10px;
+  float: right !important;
+}
+
+.kint-rich .kint-message dl, .kint-rich .kint-message dt {
+  margin: 0;
+  padding: 0;
+  border: none;
+  overflow: initial;
+}
+
+.kint-rich .kint-message a, .kint-rich .kint-message a * {
+  color: #99CCFF;
+}
+
+.kint-rich .kint-message svg {
+  height: 15px;
+}
+
+.kint-rich .kint-header {
+  margin-top: 40px;
+  color: #CCFF00;
+}
+
+@keyframes blinker {
+  25% {
+    opacity: .25;
+  }
+}
+
+.kint-rich .kint-log {
+  color: #0F0;
+  display: inline-block;
+  padding: 10px 7px;
+  font-weight: bold;
+}
+
+.kint-rich .kint-log *, .kint-rich .kint-log ::before, .kint-rich .kint-log ::after {
+  color: currentColor;
+}
+
+.kint-rich .kint-log-with-prefix {
+  color: #0F0;
+  display: inline-block;
+  padding: 10px 7px;
+}
+
+.kint-rich .kint-log-with-prefix::before {
+  content: "log: ";
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.kint-rich .kint-debug {
+  color: #AAEE33;
+  display: inline-block;
+  padding: 10px 7px;
+  font-weight: bold;
+}
+
+.kint-rich .kint-debug *, .kint-rich .kint-debug ::before, .kint-rich .kint-debug ::after {
+  color: currentColor;
+}
+
+.kint-rich .kint-debug-with-prefix {
+  color: #AAEE33;
+  display: inline-block;
+  padding: 10px 7px;
+}
+
+.kint-rich .kint-debug-with-prefix::before {
+  content: "debug: ";
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.kint-rich .kint-info {
+  color: #FFFFFF;
+  display: inline-block;
+  padding: 10px 7px;
+  font-weight: bold;
+}
+
+.kint-rich .kint-info *, .kint-rich .kint-info ::before, .kint-rich .kint-info ::after {
+  color: currentColor;
+}
+
+.kint-rich .kint-info-with-prefix {
+  color: #FFFFFF;
+  display: inline-block;
+  padding: 10px 7px;
+}
+
+.kint-rich .kint-info-with-prefix::before {
+  content: "info: ";
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.kint-rich .kint-notice {
+  color: #FFFF00;
+  display: inline-block;
+  padding: 10px 7px;
+  font-weight: bold;
+}
+
+.kint-rich .kint-notice *, .kint-rich .kint-notice ::before, .kint-rich .kint-notice ::after {
+  color: currentColor;
+}
+
+.kint-rich .kint-notice-with-prefix {
+  color: #FFFF00;
+  display: inline-block;
+  padding: 10px 7px;
+}
+
+.kint-rich .kint-notice-with-prefix::before {
+  content: "notice: ";
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.kint-rich .kint-warning {
+  color: #FFCC33;
+  display: inline-block;
+  padding: 10px 7px;
+  font-weight: bold;
+}
+
+.kint-rich .kint-warning *, .kint-rich .kint-warning ::before, .kint-rich .kint-warning ::after {
+  color: currentColor;
+}
+
+.kint-rich .kint-warning-with-prefix {
+  color: #FFCC33;
+  display: inline-block;
+  padding: 10px 7px;
+}
+
+.kint-rich .kint-warning-with-prefix::before {
+  content: "warning: ";
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.kint-rich .kint-alert {
+  color: #FF3333;
+  animation: blinker 3.333s ease-out 0s 3;
+  display: inline-block;
+  padding: 10px 7px;
+  font-weight: bold;
+}
+
+.kint-rich .kint-alert *, .kint-rich .kint-alert ::before, .kint-rich .kint-alert ::after {
+  color: currentColor;
+}
+
+.kint-rich .kint-alert-with-prefix {
+  color: #FF3333;
+  animation: blinker 3.333s ease-out 0s 3;
+  display: inline-block;
+  padding: 10px 7px;
+}
+
+.kint-rich .kint-alert-with-prefix::before {
+  content: "alert: ";
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.kint-rich .kint-error {
+  color: #FF3333;
+  display: inline-block;
+  padding: 10px 7px;
+  font-weight: bold;
+}
+
+.kint-rich .kint-error *, .kint-rich .kint-error ::before, .kint-rich .kint-error ::after {
+  color: currentColor;
+}
+
+.kint-rich .kint-error-with-prefix {
+  color: #FF3333;
+  display: inline-block;
+  padding: 10px 7px;
+}
+
+.kint-rich .kint-error-with-prefix::before {
+  content: "error: ";
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.kint-rich .kint-critical {
+  color: #FF3333;
+  font-style: italic;
+  animation: blinker 2s ease-out 0s 5;
+  display: inline-block;
+  padding: 10px 7px;
+  font-weight: bold;
+}
+
+.kint-rich .kint-critical *, .kint-rich .kint-critical ::before, .kint-rich .kint-critical ::after {
+  color: currentColor;
+}
+
+.kint-rich .kint-critical-with-prefix {
+  color: #FF3333;
+  font-style: italic;
+  animation: blinker 2s ease-out 0s 5;
+  display: inline-block;
+  padding: 10px 7px;
+}
+
+.kint-rich .kint-critical-with-prefix::before {
+  content: "critical: ";
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.kint-rich .kint-emergency {
+  color: #FF3333;
+  font-style: italic;
+  animation: blinker 1s ease-out 0s 10;
+  display: inline-block;
+  padding: 10px 7px;
+  font-weight: bold;
+}
+
+.kint-rich .kint-emergency *, .kint-rich .kint-emergency ::before, .kint-rich .kint-emergency ::after {
+  color: currentColor;
+}
+
+.kint-rich .kint-emergency-with-prefix {
+  color: #FF3333;
+  font-style: italic;
+  animation: blinker 1s ease-out 0s 10;
+  display: inline-block;
+  padding: 10px 7px;
+}
+
+.kint-rich .kint-emergency-with-prefix::before {
+  content: "emergency: ";
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.kint-rich .kint-dim-call-stack ~ footer {
+  opacity: 0.5;
+}
