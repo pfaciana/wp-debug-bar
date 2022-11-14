@@ -292,10 +292,12 @@
 			return false;
 		}
 
-		defineLocalStorage();
-		initTheDebugBarWindowAndPanels();
-		initTheDebugBarTabs();
-		attachEventHandlers();
+		if ($container.length) {
+			defineLocalStorage();
+			initTheDebugBarWindowAndPanels();
+			initTheDebugBarTabs();
+			attachEventHandlers();
+		}
 
 	});
 	$(function () {
