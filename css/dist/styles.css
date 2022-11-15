@@ -701,24 +701,3 @@ ul.debug-bar-tabs > li.active a, ul.debug-bar-tabs > li.active a:hover, ul.debug
 .ui-resizable-w {
   width: 10px;
 }
-
-[data-routine-id] a {
-  cursor: pointer;
-}
-
-[data-routine-id] .routine-output-buffer {
-  white-space: pre-line;
-  border: solid 1px black;
-  margin: 10px auto;
-  padding: 10px;
-  height: 50vh;
-  overflow: auto;
-  background-color: black;
-  color: #0F0;
-  font-weight: bold;
-  font-family: monospace;
-}
-
-[data-routine-id] .routine-output-buffer a {
-  color: #0F0;
-}

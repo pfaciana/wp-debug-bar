@@ -1,6 +1,6 @@
 <?php
 
-if ( function_exists( 'add_action' ) && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) ) {
+if ( isset( $GLOBALS['wp'] ) && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) ) {
 
 	!defined( 'WP_START_TIMESTAMP' ) && define( 'WP_START_TIMESTAMP', $GLOBALS['timestart'] ?? NULL );
 	!defined( 'SAVEQUERIES' ) && define( "SAVEQUERIES", TRUE );
@@ -11,7 +11,7 @@ if ( function_exists( 'add_action' ) && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) 
 	require __DIR__ . '/src/Log/Kint.php';
 
 	new DebugBar\Hooks();
-	DebugBar\Routine\Routines::get_instance();
+	WP_Routines\Routines::get_instance();
 
 	$GLOBALS['rwd_debug_bar'] = new DebugBar\DebugBar();
 

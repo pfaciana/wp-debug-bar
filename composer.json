@@ -1,6 +1,6 @@
 {
 	"name": "pfaciana/wp-debug-bar",
-	"version": "0.0.2",
+	"version": "0.1.0",
 	"description": "Debug Bar that adds a debug menu to the admin bar that shows query, cache, and other helpful debugging information.",
 	"keywords": [],
 	"homepage": "https://renderdev.com/",
@@ -13,6 +13,11 @@
 			"role": "Developer"
 		}
 	],
+	"config": {
+		"platform": {
+			"php": "7.4.21"
+		}
+	},
 	"autoload": {
 		"psr-4": {
 			"DebugBar\\": "src/"
@@ -32,6 +37,7 @@
 	},
 	"require": {
 		"kint-php/kint": "^3",
-		"greenlion/php-sql-parser": "^4"
+		"greenlion/php-sql-parser": "^4",
+		"pfaciana/wp-routines": "^0"
 	}
 }

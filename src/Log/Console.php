@@ -46,11 +46,11 @@ if ( !class_exists( 'console' ) ) {
 					return static::$method( ...func_get_args() );
 				};
 				if ( function_exists( 'add_filter' ) ) {
-				foreach ( $prefixes as $prefix ) {
-					add_filter( $prefix . $method, $callback, 10, 9e9 );
+					foreach ( $prefixes as $prefix ) {
+						add_filter( $prefix . $method, $callback, 10, 9e9 );
+					}
 				}
 			}
-		}
 		}
 
 		protected static function shift_args ( $args, $count = 1 )
