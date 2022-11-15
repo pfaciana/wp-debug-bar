@@ -1,6 +1,6 @@
 <?php
 
-if ( isset( $GLOBALS['wp'] ) && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) ) {
+if ( isset( $GLOBALS['wp_version'] ) && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) ) {
 
 	!defined( 'WP_START_TIMESTAMP' ) && define( 'WP_START_TIMESTAMP', $GLOBALS['timestart'] ?? NULL );
 	!defined( 'SAVEQUERIES' ) && define( "SAVEQUERIES", TRUE );
