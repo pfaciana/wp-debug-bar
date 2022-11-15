@@ -297,7 +297,7 @@ window.arrayColumn = function (array) {
         firstTime = $.inArray(id, panelStack) == -1;
       localStorage.rwdDebugBarPanel = id;
       $('.rwd-debug-bar-content > section').hide();
-      $('.wp-has-current-submenu').removeClass('wp-has-current-submenu').addClass('wp-not-current-submenu');
+      $('#rwd-debug-bar-side-menu').find('.wp-has-current-submenu').removeClass('wp-has-current-submenu').addClass('wp-not-current-submenu');
       $('#rwd-debug-menu-link-' + id + ', #rwd-debug-menu-link-' + id + ' > a').removeClass('wp-not-current-submenu').addClass('wp-has-current-submenu');
       $container.show();
       $panel.show();
