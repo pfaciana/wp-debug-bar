@@ -211,20 +211,6 @@ class Globals extends \Debug_Bar_Panel
 		'_ENV'     => [],
 	];
 
-	public function setDefinedVars ( $definedVars = [] )
-	{
-		$superGlobals = array_keys( $this->superGlobals );
-
-		foreach ( $definedVars as $key => $value ) {
-			if ( in_array( $key, $superGlobals ) ) {
-				$this->superGlobals[$key] = $value;
-				unset( $definedVars[$key] );
-			}
-		}
-
-		$this->definedVars = $definedVars;
-	}
-
 	public function render ()
 	{
 		$php_defined_constants  = get_defined_constants( TRUE );
@@ -234,7 +220,6 @@ class Globals extends \Debug_Bar_Panel
 		$this->addTab( 'WP Constants', function () use ( $user_defined_constants ) { $this->getUserConstants( $user_defined_constants ); } );
 		$this->addTab( 'WP Globals', [ $this, 'getGlobals' ] );
 		$this->addTab( 'WP Conditionals', [ $this, 'getConditionals' ] );
-		$this->addTab( 'PHP Global', [ $this, 'getVars' ] );
 		$this->addTab( 'Class Constants', [ $this, 'getClassInfo' ] );
 		$this->addTab( 'PHP Constants', function () use ( $php_defined_constants ) { $this->getPHPConstants( $php_defined_constants ); } );
 		$this->showTabs( $this->_panel_id );
@@ -302,7 +287,7 @@ class Globals extends \Debug_Bar_Panel
 		$superGlobalKeys = array_keys( $this->superGlobals );
 
 		$wp_globals = [];
-		foreach ( $this->superGlobals['GLOBALS'] as $key => $value ) {
+		foreach ( $GLOBALS as $key => $value ) {
 			if ( !in_array( $key, $superGlobalKeys ) ) {
 				$wp_globals[] = [ 'name' => $key, 'value' => $this->formatValue( $value, [ 'maxStrLength' => 100 ] ), 'type' => gettype( $value ), 'group' => $this->getGroup( 'globals', $key, 'Other' ) ];
 			}
@@ -327,55 +312,6 @@ class Globals extends \Debug_Bar_Panel
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Group', field: 'group', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							{
-								title: 'Name', field: 'name', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',
-								formatter: function (cell, formatterParams, onRendered) {
-									if (cell.getValue() === null) {
-										return '';
-									}
-
-									return `<span data-type="string">${cell.getValue()}</span>`;
-								}
-							},
-							{
-								title: 'Value', field: 'value', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center',
-								headerFilter: 'input', headerFilterFunc: T.filters.args,
-								formatter: T.formatters.args, sorter: T.sorter.args,
-							},
-							{title: 'Type', field: 'type', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-						],
-					});
-				}
-			});
-		</script>
-		<?php
-	}
-
-	protected function getVars ()
-	{
-		$defined_vars = [];
-		foreach ( $this->definedVars as $key => $value ) {
-			$defined_vars[] = [ 'name' => $key, 'value' => $this->formatValue( $value, [ 'maxStrLength' => 100 ] ), 'type' => gettype( $value ), ];
-		}
-		?>
-
-		<h3>Global Variables</h3>
-		<div id="defined-vars-table"></div>
-
-		<script type="application/javascript">
-			jQuery(function ($) {
-				var T = window.Tabulator;
-				var definedVars = <?= json_encode( $defined_vars ?? [] ) ?>;
-
-				if (definedVars.length) {
-					new Tabulator("#defined-vars-table", {
-						data: definedVars,
-						pagination: 'local',
-						paginationSize: 5,
-						paginationSizeSelector: [5, 10, 20, 50, 100],
-						paginationButtonCount: 15,
-						layout: 'fitDataStretch',
-						columns: [
 							{
 								title: 'Name', field: 'name', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',
 								formatter: function (cell, formatterParams, onRendered) {

@@ -19,7 +19,6 @@ if ( isset( $GLOBALS['wp'] ) && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) ) {
 	add_action( 'plugins_loaded', function () use ( $definedVars ) {
 		$queryPanel   = new DebugBar\Panel\Queries( 'Queries' );
 		$globalsPanel = new DebugBar\Panel\Globals( 'Globals' );
-		$globalsPanel->setDefinedVars( $definedVars );
 		add_filter( 'debug_bar_panels', function ( $panels ) use ( $queryPanel, $globalsPanel ) {
 			$panels[] = $globalsPanel;
 			$panels[] = new DebugBar\Panel\PostTypes( 'Post Types' );
