@@ -255,6 +255,7 @@ class Globals extends \Debug_Bar_Panel
 						paginationSize: 20,
 						paginationSizeSelector: [5, 10, 20, 50, 100, true],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Group', field: 'group', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
@@ -309,6 +310,7 @@ class Globals extends \Debug_Bar_Panel
 						paginationSize: 20,
 						paginationSizeSelector: [5, 10, 20, 50, 100],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Group', field: 'group', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
@@ -376,6 +378,7 @@ class Globals extends \Debug_Bar_Panel
 						paginationSize: 20,
 						paginationSizeSelector: [5, 10, 20, 50, 100],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Group', field: 'group', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
@@ -416,6 +419,7 @@ class Globals extends \Debug_Bar_Panel
 						paginationSize: 10,
 						paginationSizeSelector: [5, 10, 20, 50, 100],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Group', field: 'group', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
@@ -469,6 +473,7 @@ class Globals extends \Debug_Bar_Panel
 						paginationSize: 20,
 						paginationSizeSelector: [5, 10, 20, 50, 100],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Group', field: 'group', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
@@ -544,6 +549,7 @@ class Globals extends \Debug_Bar_Panel
 						paginationSize: 20,
 						paginationSizeSelector: [10, 20, 50, 100, true],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
 							T.filters.boolean({title: 'Yes/No', field: 'return', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),

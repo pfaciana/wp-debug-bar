@@ -74,6 +74,7 @@ class UserRoles extends \Debug_Bar_Panel
 						paginationSize: 20,
 						paginationSizeSelector: [20, 50, 100, true],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: <?= json_encode( $rolesConfig ?? [] ) ?>,
 					});
@@ -111,6 +112,7 @@ class UserRoles extends \Debug_Bar_Panel
 						paginationSize: true,
 						paginationSizeSelector: [20, 50, 100, true],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						columns: <?= json_encode( $capabilitiesConfig ?? [] ) ?>,
 					});
 				}

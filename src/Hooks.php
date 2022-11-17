@@ -275,6 +275,7 @@ class Hooks
 						paginationSize: 20,
 						paginationSizeSelector: [10, 20, 50, 100, true],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Tracking ID(s)', field: 'trackers', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', ...Tabulator.common.valuesArray},
@@ -297,12 +298,13 @@ class Hooks
 				var hooks = <?=json_encode( $hooks ) ?>;
 
 				if (hooks.length) {
-					window.table = new Tabulator("#hooks-table", {
+					new Tabulator("#hooks-table", {
 						data: hooks,
 						pagination: 'local',
 						paginationSize: 20,
 						paginationSizeSelector: [10, 20, 50, 100, true],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Hook Name', field: 'name', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input', headerFilterFunc: Tabulator.filters.advanced,},

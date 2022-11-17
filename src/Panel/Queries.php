@@ -35,7 +35,7 @@ class Queries extends \Debug_Bar_Panel
 		$bt = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
 		foreach ( $bt as $data ) {
 			foreach ( $this->ignoreFiles as $ignoreFile ) {
-				if ( str_ends_with( $data['file'], $ignoreFile ) ) {
+				if ( array_key_exists( 'file', $data ) && str_ends_with( $data['file'], $ignoreFile ) ) {
 					$found = TRUE;
 					continue 2;
 				}
@@ -112,6 +112,7 @@ class Queries extends \Debug_Bar_Panel
 						paginationSize: 5,
 						paginationSizeSelector: [5, 10, 20, 50, 100, true],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Type', field: 'type', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
