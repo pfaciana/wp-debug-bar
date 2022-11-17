@@ -146,8 +146,9 @@ class PostTypes extends \Debug_Bar_Panel
 						data: postTypes,
 						pagination: 'local',
 						paginationSize: 20,
-						paginationSizeSelector: [20, 50, 100, true],
+						paginationSizeSelector: [5, 10, 20, 50, 100, true],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: <?= json_encode( $postTypesConfig ?? [] ) ?>,
 					});
@@ -193,8 +194,9 @@ class PostTypes extends \Debug_Bar_Panel
 						data: taxonomies,
 						pagination: 'local',
 						paginationSize: 20,
-						paginationSizeSelector: [20, 50, 100, true],
+						paginationSizeSelector: [5, 10, 20, 50, 100, true],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: <?= json_encode( $taxonomiesConfig ?? [] ) ?>,
 					});
@@ -209,46 +211,113 @@ class PostTypes extends \Debug_Bar_Panel
 		global $wp_post_types, $wp_taxonomies;
 
 		$pairings = [];
-
 		foreach ( $wp_post_types as $wp_post_type ) {
-			$pairing    = [ 'name' => $wp_post_type->name, 'label' => $wp_post_type->label ];
-			$taxonomies = get_object_taxonomies( $wp_post_type->name );
-			foreach ( $wp_taxonomies as $wp_taxonomy ) {
-				$pairing[$wp_taxonomy->name] = in_array( $wp_taxonomy->name, $taxonomies );
-			}
-			$pairings[] = $pairing;
+			$pairings[$wp_post_type->name] = get_object_taxonomies( $wp_post_type->name );
 		}
 
-		$pairingsConfig = [];
-		foreach ( $pairings[0] as $field => $value ) {
+		$taxonomyPairings        = [];
+		$taxonomyPairingsCounter = [];
+
+		foreach ( $wp_taxonomies as $wp_taxonomy ) {
+			$pairing = [ 'name' => $wp_taxonomy->name, 'label' => $wp_taxonomy->label ];
+			foreach ( $pairings as $post_type => $taxonomies ) {
+				if ( $exists = in_array( $wp_taxonomy->name, $taxonomies ) ) {
+					if ( !array_key_exists( $post_type, $taxonomyPairingsCounter ) ) {
+						$taxonomyPairingsCounter[$post_type] = 0;
+					}
+					$taxonomyPairingsCounter[$post_type]++;
+				}
+				$pairing[$post_type] = $exists;
+			}
+			$taxonomyPairings[] = $pairing;
+		}
+
+		arsort( $taxonomyPairingsCounter );
+		$taxonomyPairingsConfig = [];
+		foreach ( [ 'name' => NULL, 'label' => NULL ] + $taxonomyPairingsCounter as $field => $count ) {
+			if ( in_array( $field, $this->frozen ) ) {
+				$pairingConfig = [ 'title' => str_replace( '_', ' ', $field ), 'field' => $field, ] + $this->tabulatorConfigs['string'] + $this->tabulatorConfigs['frozen'];
+			}
+			else {
+				$pairingConfig = [ 'title' => $field, 'headerTooltip' => $wp_post_types[$field]->label, 'tooltip' => $wp_post_types[$field]->label, 'field' => $field, ] + $this->tabulatorConfigs['boolean'];
+			}
+			$taxonomyPairingsConfig[] = $pairingConfig;
+		}
+
+		?>
+
+		<h3>Taxonomy Pairings</h3>
+		<div id="taxonomy-pairings-table"></div>
+
+		<script type="application/javascript">
+			jQuery(function ($) {
+				var T = window.Tabulator;
+				var taxonomyPairings = <?= json_encode( array_values( $taxonomyPairings ?? [] ) ) ?>;
+
+				if (taxonomyPairings.length) {
+					new Tabulator("#taxonomy-pairings-table", {
+						data: taxonomyPairings,
+						pagination: 'local',
+						paginationSize: 10,
+						paginationSizeSelector: [5, 10, 20, 50, 100, true],
+						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
+						columns: <?= json_encode( $taxonomyPairingsConfig ?? [] ) ?>,
+					});
+				}
+			});
+		</script>
+		<?php
+
+		$postTypePairings        = [];
+		$postTypePairingsCounter = [];
+
+		foreach ( $wp_post_types as $wp_post_type ) {
+			$pairing = [ 'name' => $wp_post_type->name, 'label' => $wp_post_type->label ];
+			foreach ( $wp_taxonomies as $wp_taxonomy ) {
+				if ( $exists = in_array( $wp_taxonomy->name, $pairings[$wp_post_type->name] ) ) {
+					if ( !array_key_exists( $wp_taxonomy->name, $postTypePairingsCounter ) ) {
+						$postTypePairingsCounter[$wp_taxonomy->name] = 0;
+					}
+					$postTypePairingsCounter[$wp_taxonomy->name]++;
+				}
+				$pairing[$wp_taxonomy->name] = $exists;
+			}
+			$postTypePairings[] = $pairing;
+		}
+
+		arsort( $postTypePairingsCounter );
+		$postTypePairingsConfig = [];
+		foreach ( [ 'name' => NULL, 'label' => NULL ] + $postTypePairingsCounter as $field => $count ) {
 			if ( in_array( $field, $this->frozen ) ) {
 				$pairingConfig = [ 'title' => str_replace( '_', ' ', $field ), 'field' => $field, ] + $this->tabulatorConfigs['string'] + $this->tabulatorConfigs['frozen'];
 			}
 			else {
 				$pairingConfig = [ 'title' => $field, 'headerTooltip' => $wp_taxonomies[$field]->label, 'tooltip' => $wp_taxonomies[$field]->label, 'field' => $field, ] + $this->tabulatorConfigs['boolean'];
 			}
-			$pairingsConfig[] = $pairingConfig;
+			$postTypePairingsConfig[] = $pairingConfig;
 		}
 
 		?>
 
-		<h3>Pairings</h3>
-		<div id="pairings-table"></div>
+		<h3>Post Type Pairings</h3>
+		<div id="post-type-pairings-table"></div>
 
 		<script type="application/javascript">
 			jQuery(function ($) {
 				var T = window.Tabulator;
-				var pairings = <?= json_encode( array_values( $pairings ?? [] ) ) ?>;
+				var postTypePairings = <?= json_encode( array_values( $postTypePairings ?? [] ) ) ?>;
 
-				if (pairings.length) {
-					new Tabulator("#pairings-table", {
-						data: pairings,
+				if (postTypePairings.length) {
+					new Tabulator("#post-type-pairings-table", {
+						data: postTypePairings,
 						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [20, 50, 100, true],
+						paginationSize: 10,
+						paginationSizeSelector: [5, 10, 20, 50, 100, true],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
-						columns: <?= json_encode( $pairingsConfig ?? [] ) ?>,
+						columns: <?= json_encode( $postTypePairingsConfig ?? [] ) ?>,
 					});
 				}
 			});
@@ -308,6 +377,7 @@ class PostTypes extends \Debug_Bar_Panel
 						paginationSize: 20,
 						paginationSizeSelector: [20, 50, 100, true],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						columns: <?= json_encode( $pairingsConfig ?? [] ) ?>,
 					});
 				}
@@ -360,6 +430,7 @@ class PostTypes extends \Debug_Bar_Panel
 						paginationSize: 20,
 						paginationSizeSelector: [20, 50, 100, true],
 						paginationButtonCount: 15,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						columns: <?= json_encode( $imageSizesConfig ?? [] ) ?>,
 					});
 				}
