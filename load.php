@@ -1,6 +1,6 @@
 <?php
 
-if ( isset( $GLOBALS['wp_version'] ) && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) ) {
+if ( isset( $GLOBALS['wp_version'] ) && !isset( $_GET['_wp-find-template'] ) && !wp_is_json_request() && !wp_is_jsonp_request() && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) ) {
 
 	!defined( 'WP_START_TIMESTAMP' ) && define( 'WP_START_TIMESTAMP', $GLOBALS['timestart'] ?? NULL );
 	!defined( 'SAVEQUERIES' ) && define( "SAVEQUERIES", TRUE );
@@ -15,14 +15,14 @@ if ( isset( $GLOBALS['wp_version'] ) && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) 
 
 	$GLOBALS['rwd_debug_bar'] = new DebugBar\DebugBar();
 
-	$definedVars = get_defined_vars();
-	add_action( 'plugins_loaded', function () use ( $definedVars ) {
+	add_action( 'plugins_loaded', function () {
 		$queryPanel   = new DebugBar\Panel\Queries( 'Queries' );
 		$globalsPanel = new DebugBar\Panel\Globals( 'Globals' );
 		add_filter( 'debug_bar_panels', function ( $panels ) use ( $queryPanel, $globalsPanel ) {
 			$panels[] = $globalsPanel;
 			$panels[] = new DebugBar\Panel\PostTypes( 'Post Types' );
 			$panels[] = new DebugBar\Panel\Template( 'Templating' );
+			$panels[] = new DebugBar\Panel\Blocks( 'Blocks' );
 			$panels[] = new DebugBar\Panel\UserRoles( 'User Roles' );
 			$panels[] = $queryPanel;
 
