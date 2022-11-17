@@ -188,9 +188,6 @@ window.arrayColumn = function (array) {
       $(document).on('click', '.rwd-debug-menu-link', function (e) {
         goToPanel($(this).closest('[data-panel]').data('panel'));
       });
-      $(document).on('hover', '.wp-has-submenu.wp-not-current-submenu', function (e) {
-        $(this).closest('li').addClass('opensub');
-      });
 
       // Each panel's activate/deactivate toggle controls
       $('.rwd-debug-panel-action').on('click', function (e) {
@@ -752,8 +749,8 @@ window.Tabulator.filters.advancedFile = function (headerValue, rowValue, rowData
     rowValue = rowValue.map(x => x.text).join(' ');
   }
   if ('strict' in filterParams && !filterParams.strict) {
-    headerValue = headerValue.toLowerCase();
-    rowValue = rowValue.toLowerCase();
+    headerValue = (headerValue || '').toLowerCase();
+    rowValue = (rowValue || '').toLowerCase();
   }
   return Tabulator.filters.advanced(headerValue, rowValue, rowData, filterParams);
 };
@@ -788,18 +785,31 @@ window.Tabulator.filters.boolean = function (config) {
     ...config
   };
 };
+(function ($, window, document, undefined) {
+  $(document).on('click', '.clear-all-table-filters', function () {
+    $(this).closest('.tabulator').each(function () {
+      $.each(window.Tabulator.findTable(this), function () {
+        this.clearHeaderFilter();
+      });
+    });
+  });
+})(jQuery, window, document);
 "use strict";
 
 var _window$Tabulator;
 (_window$Tabulator = window.Tabulator).formatters ?? (_window$Tabulator.formatters = {});
-window.Tabulator.formatters.file = function (cell, formatterParams, onRendered) {
-  if (!Array.isArray(cell.getValue())) {
-    return cell.getValue();
+window.Tabulator.formatters.files = function (cell, formatterParams, onRendered) {
+  var files = cell.getValue();
+  if (typeof files === 'object' && 'text' in files) {
+    files = [files];
   }
-  var files = cell.getValue().map(function (value) {
-    return value.url ? `<a href="${value.url}" target="_blank" class="debug-bar-file-link-format debug-bar-ide-link">${value.text}</a>` : value.text;
+  if (!Array.isArray(files)) {
+    return files ? files : '';
+  }
+  var links = files.map(function (file) {
+    return file.url ? `<a href="${file.url}" target="_blank" class="debug-bar-file-link-format debug-bar-ide-link">${file.text}</a>` : file.text;
   });
-  return files.join(formatterParams.join || " | ");
+  return links.join(formatterParams.join || " | ");
 };
 window.Tabulator.formatters.timeMs = function (cell, formatterParams, onRendered) {
   return cell.getValue().toLocaleString(undefined, {
@@ -824,7 +834,13 @@ window.Tabulator.formatters.args = function (cell, formatterParams, onRendered) 
 
 var _window$Tabulator;
 (_window$Tabulator = window.Tabulator).sorter ?? (_window$Tabulator.sorter = {});
-window.Tabulator.sorter.file = function (a, b, aRow, bRow, column, dir, sorterParams) {
+window.Tabulator.sorter.files = function (a, b, aRow, bRow, column, dir, sorterParams) {
+  if (!a) {
+    a = '';
+  }
+  if (!b) {
+    b = '';
+  }
   if (Array.isArray(a)) {
     a = a.map(x => x.text).join(' ');
   }
@@ -917,7 +933,7 @@ window.Tabulator.common.arrayByLength = {
     if (!component.getValue().length) {
       return '';
     }
-    return Tabulator.formatters.file(component, {
+    return Tabulator.formatters.files(component, {
       join: "<br>"
     }, onRendered);
   }
@@ -928,11 +944,11 @@ window.Tabulator.common.filesArray = {
     strict: false
   },
   headerFilterFunc: Tabulator.filters.advancedFile,
-  sorter: Tabulator.sorter.file,
+  sorter: Tabulator.sorter.files,
   formatterParams: {
     join: " | "
   },
-  formatter: Tabulator.formatters.file
+  formatter: Tabulator.formatters.files
 };
 window.Tabulator.common.valuesArray = {
   headerFilter: 'list',
