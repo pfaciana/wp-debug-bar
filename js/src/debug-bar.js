@@ -161,10 +161,6 @@
 				goToPanel($(this).closest('[data-panel]').data('panel'));
 			});
 
-			$(document).on('hover', '.wp-has-submenu.wp-not-current-submenu', function (e) {
-				$(this).closest('li').addClass('opensub');
-			});
-
 			// Each panel's activate/deactivate toggle controls
 			$('.rwd-debug-panel-action').on('click', function (e) {
 				var $this = $(this);
