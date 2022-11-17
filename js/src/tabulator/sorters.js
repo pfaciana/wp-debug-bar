@@ -1,6 +1,14 @@
 window.Tabulator.sorter ??= {};
 
-window.Tabulator.sorter.file = function (a, b, aRow, bRow, column, dir, sorterParams) {
+window.Tabulator.sorter.files = function (a, b, aRow, bRow, column, dir, sorterParams) {
+	if (!a) {
+		a = '';
+	}
+
+	if (!b) {
+		b = '';
+	}
+
 	if (Array.isArray(a)) {
 		a = a.map(x => x.text).join(' ');
 	}

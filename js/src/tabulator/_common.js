@@ -72,7 +72,7 @@ window.Tabulator.common.arrayByLength = {
 			return '';
 		}
 
-		return Tabulator.formatters.file(component, {join: "<br>"}, onRendered);
+		return Tabulator.formatters.files(component, {join: "<br>"}, onRendered);
 	},
 };
 
@@ -80,9 +80,9 @@ window.Tabulator.common.filesArray = {
 	headerFilter: 'input',
 	headerFilterFuncParams: {strict: false},
 	headerFilterFunc: Tabulator.filters.advancedFile,
-	sorter: Tabulator.sorter.file,
+	sorter: Tabulator.sorter.files,
 	formatterParams: {join: " | "},
-	formatter: Tabulator.formatters.file,
+	formatter: Tabulator.formatters.files,
 };
 
 window.Tabulator.common.valuesArray = {

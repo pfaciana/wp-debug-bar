@@ -1,15 +1,21 @@
 window.Tabulator.formatters ??= {};
 
-window.Tabulator.formatters.file = function (cell, formatterParams, onRendered) {
-	if (!Array.isArray(cell.getValue())) {
-		return cell.getValue();
+window.Tabulator.formatters.files = function (cell, formatterParams, onRendered) {
+	var files = cell.getValue();
+
+	if (typeof files === 'object' && 'text' in files) {
+		files = [files];
 	}
 
-	var files = cell.getValue().map(function (value) {
-		return value.url ? `<a href="${value.url}" target="_blank" class="debug-bar-file-link-format debug-bar-ide-link">${value.text}</a>` : value.text;
+	if (!Array.isArray(files)) {
+		return files ? files : '';
+	}
+
+	var links = files.map(function (file) {
+		return file.url ? `<a href="${file.url}" target="_blank" class="debug-bar-file-link-format debug-bar-ide-link">${file.text}</a>` : file.text;
 	});
 
-	return files.join(formatterParams.join || " | ");
+	return links.join(formatterParams.join || " | ");
 };
 
 window.Tabulator.formatters.timeMs = function (cell, formatterParams, onRendered) {
