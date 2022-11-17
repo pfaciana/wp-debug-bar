@@ -205,6 +205,9 @@ class DebugBar
 	protected function top_menu ()
 	{
 		?>
+		<li id="rwd-debug-bar-flip">
+			<button><span class="dashicons dashicons-image-rotate-left"></span></button>
+		</li>
 		<li id="rwd-debug-bar-window-size"></li>
 		<?php
 	}
@@ -220,9 +223,6 @@ class DebugBar
 		</li>
 		<li id="rwd-debug-bar-maximize">
 			<button><i class="fa fa-window-maximize" aria-hidden="true"></i></button>
-		</li>
-		<li id="rwd-debug-bar-flip">
-			<button><span class="dashicons dashicons-image-rotate-left"></span></button>
 		</li>
 		<li id="rwd-debug-bar-close">
 			<button><i class="fa fa-times" aria-hidden="true"></i>&nbsp;</button>
