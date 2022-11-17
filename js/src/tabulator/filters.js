@@ -88,8 +88,8 @@ window.Tabulator.filters.advancedFile = function (headerValue, rowValue, rowData
 	}
 
 	if ('strict' in filterParams && !filterParams.strict) {
-		headerValue = headerValue.toLowerCase();
-		rowValue = rowValue.toLowerCase();
+		headerValue = (headerValue || '').toLowerCase();
+		rowValue = (rowValue || '').toLowerCase();
 	}
 
 	return Tabulator.filters.advanced(headerValue, rowValue, rowData, filterParams);
@@ -121,3 +121,13 @@ window.Tabulator.filters.boolean = function (config) {
 
 	return {...base, ...config};
 };
+
+(function ($, window, document, undefined) {
+	$(document).on('click', '.clear-all-table-filters', function () {
+		$(this).closest('.tabulator').each(function () {
+			$.each(window.Tabulator.findTable(this), function () {
+				this.clearHeaderFilter();
+			});
+		});
+	});
+}(jQuery, window, document));
