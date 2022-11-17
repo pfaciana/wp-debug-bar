@@ -186,18 +186,20 @@ class DebugBar
 
 	protected function enqueue_scripts ()
 	{
-		wp_enqueue_style( 'jquery-ui', '//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css', [], NULL );
-
 		$prefix = isset( $GLOBALS['debug_bar'] ) ? 'rwd-' : '';
-		wp_enqueue_style( $prefix . 'debug-bar', plugins_url( '/css/dist/styles.css', RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'admin-menu' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . '/css/dist/styles.min.css' ) );
-		wp_enqueue_script( $prefix . 'debug-bar', plugins_url( '/js/dist/scripts.js', RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'jquery-ui-resizable', 'common' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . '/js/dist/scripts.min.js' ), TRUE );
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		wp_enqueue_style( 'tabulator', 'https://unpkg.com/tabulator-tables@5.4.1/dist/css/tabulator.min.css', [], NULL );
-		wp_enqueue_script( 'tabulator', 'https://unpkg.com/tabulator-tables@5.4.1/dist/js/tabulator.min.js', [ 'jquery' ], '5.4.1', FALSE );
+		wp_enqueue_style( 'jquery-ui', "//code.jquery.com/ui/1.13.2/themes/base/jquery-ui{$suffix}.css", [], NULL );
 
-		wp_enqueue_script( 'beautify-js', 'https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.9.0-beta5/beautify.min.js' );
+		wp_enqueue_style( $prefix . 'debug-bar', plugins_url( "/css/dist/styles{$suffix}.css", RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'admin-menu' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . "/css/dist/styles{$suffix}.css" ) );
+		wp_enqueue_script( $prefix . 'debug-bar', plugins_url( "/js/dist/scripts{$suffix}.js", RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'jquery-ui-resizable', 'common' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . "/js/dist/scripts{$suffix}.js" ), TRUE );
 
-		wp_enqueue_style( 'fontawesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css', [], '4.7.0' );
+		wp_enqueue_style( 'tabulator', "https://unpkg.com/tabulator-tables@5.4.1/dist/css/tabulator{$suffix}.css", [], NULL );
+		wp_enqueue_script( 'tabulator', "https://unpkg.com/tabulator-tables@5.4.1/dist/js/tabulator{$suffix}.js", [ 'jquery' ], NULL, FALSE );
+
+		wp_enqueue_script( 'beautify-js', "https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.9.0-beta5/beautify{$suffix}.js" );
+
+		wp_enqueue_style( 'fontawesome', "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome{$suffix}.css", [], '4.7.0' );
 
 		echo '<script> var output_buffering = ', intval( ini_get( 'output_buffering' ) ?? 0 ), ';</script>', PHP_EOL;
 	}
