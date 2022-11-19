@@ -77,22 +77,20 @@ window.arrayColumn = function (array) {
       $content.show();
       $tabs.find('.active').removeClass('active');
       $tabs.find(`[data-tab-id="${tabId}"]`).parent().addClass('active');
-      groupId ?? (groupId = $contentGroup.data('group-id'));
+      groupId ??= $contentGroup.data('group-id');
       saveOpenedTab(groupId, tabId);
     }
     function saveOpenedTab(groupId, tabId) {
-      var _localStorage;
-      var tabs = JSON.parse((_localStorage = localStorage).rwdDebugBarTabs ?? (_localStorage.rwdDebugBarTabs = '{}'));
+      var tabs = JSON.parse(localStorage.rwdDebugBarTabs ??= '{}');
       tabs[groupId] = tabId;
       localStorage.rwdDebugBarTabs = JSON.stringify(tabs);
     }
     function openSavedTabs() {
-      var _localStorage2;
       var $tabs = $container.find('.debug-bar-tabs-content');
       $tabs.children().hide();
       $tabs.children(':first-child').show();
       $container.find('.debug-bar-tabs').children(':first-child').addClass('active');
-      var tabs = JSON.parse((_localStorage2 = localStorage).rwdDebugBarTabs ?? (_localStorage2.rwdDebugBarTabs = '{}'));
+      var tabs = JSON.parse(localStorage.rwdDebugBarTabs ??= '{}');
       $.each(tabs, function (groupId, tabId) {
         goToTab(tabId, groupId);
       });
@@ -601,9 +599,14 @@ window.arrayColumn = function (array) {
       }
     }
     function isSerialized(str) {
-      var origStr = decodeURIComponent(str),
-        json = $.deparam(origStr, true),
+      var origStr, json, newStr;
+      try {
+        origStr = decodeURIComponent(str);
+        json = $.deparam(origStr, true);
         newStr = decodeURIComponent($.param(json));
+      } catch (e) {
+        return false;
+      }
       return origStr === newStr ? json : false;
     }
 
@@ -666,8 +669,7 @@ window.arrayColumn = function (array) {
 })(jQuery, window, document);
 "use strict";
 
-var _window$Tabulator;
-(_window$Tabulator = window.Tabulator).filters ?? (_window$Tabulator.filters = {});
+window.Tabulator.filters ??= {};
 window.Tabulator.filters.minMax = function (array, config) {
   let filterMin = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
   let filterMax = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
@@ -675,10 +677,10 @@ window.Tabulator.filters.minMax = function (array, config) {
   var min = Math.min(...values);
   var max = Math.max(...values);
   var empty = window.Tabulator.empty;
-  config.sorter ?? (config.sorter = function (a, b, aRow, bRow, column, dir, sorterParams) {
+  config.sorter ??= function (a, b, aRow, bRow, column, dir, sorterParams) {
     return empty.includes(a) ? dir === 'asc' ? 1 : -1 : empty.includes(b) ? dir === 'asc' ? -1 : 1 : a - b;
-  });
-  config.headerFilter ?? (config.headerFilter = function (cell, onRendered, success, cancel, editorParams) {
+  };
+  config.headerFilter ??= function (cell, onRendered, success, cancel, editorParams) {
     var start = document.createElement('input'),
       end = document.createElement('input'),
       container = document.createElement('span');
@@ -709,8 +711,8 @@ window.Tabulator.filters.minMax = function (array, config) {
     filterMin && createInput(start, 'Min');
     filterMax && createInput(end, 'Max');
     return container;
-  });
-  config.headerFilterFunc ?? (config.headerFilterFunc = function (headerValue, rowValue, rowData, filterParams) {
+  };
+  config.headerFilterFunc ??= function (headerValue, rowValue, rowData, filterParams) {
     if ((headerValue.start !== "" || headerValue.end !== "") && rowValue === null) {
       return false;
     }
@@ -728,8 +730,8 @@ window.Tabulator.filters.minMax = function (array, config) {
       }
     }
     return true;
-  });
-  config.headerFilterLiveFilter ?? (config.headerFilterLiveFilter = false);
+  };
+  config.headerFilterLiveFilter ??= false;
   return config;
 };
 window.Tabulator.filters.advanced = function (headerValue, rowValue, rowData, filterParams) {
@@ -796,8 +798,7 @@ window.Tabulator.filters.boolean = function (config) {
 })(jQuery, window, document);
 "use strict";
 
-var _window$Tabulator;
-(_window$Tabulator = window.Tabulator).formatters ?? (_window$Tabulator.formatters = {});
+window.Tabulator.formatters ??= {};
 window.Tabulator.formatters.files = function (cell, formatterParams, onRendered) {
   var files = cell.getValue();
   if (typeof files === 'object' && 'text' in files) {
@@ -832,8 +833,7 @@ window.Tabulator.formatters.args = function (cell, formatterParams, onRendered) 
 };
 "use strict";
 
-var _window$Tabulator;
-(_window$Tabulator = window.Tabulator).sorter ?? (_window$Tabulator.sorter = {});
+window.Tabulator.sorter ??= {};
 window.Tabulator.sorter.files = function (a, b, aRow, bRow, column, dir, sorterParams) {
   if (!a) {
     a = '';
@@ -865,8 +865,7 @@ window.Tabulator.sorter.args = function (o1, o2, aRow, bRow, column, dir, sorter
 };
 "use strict";
 
-var _window, _window$Tabulator;
-(_window = window).Tabulator ?? (_window.Tabulator = {});
+window.Tabulator ??= {};
 window.Tabulator.empty = [null, ''];
 window.Tabulator.search = function search(keyword, content) {
   if (keyword.startsWith('regex:i:')) {
@@ -900,7 +899,7 @@ window.Tabulator.search = function search(keyword, content) {
   }
   return true;
 };
-(_window$Tabulator = window.Tabulator).common ?? (_window$Tabulator.common = {});
+window.Tabulator.common ??= {};
 window.Tabulator.common.arrayByLength = {
   headerSortStartingDir: 'desc',
   sorter: function (a, b, aRow, bRow, column, dir, sorterParams) {

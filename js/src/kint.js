@@ -275,10 +275,14 @@
 		}
 
 		function isSerialized(str) {
-			var origStr = decodeURIComponent(str),
-				json = $.deparam(origStr, true),
+			var origStr, json, newStr;
+			try {
+				origStr = decodeURIComponent(str);
+				json = $.deparam(origStr, true);
 				newStr = decodeURIComponent($.param(json));
-
+			} catch (e) {
+				return false;
+			}
 			return origStr === newStr ? json : false;
 		}
 
