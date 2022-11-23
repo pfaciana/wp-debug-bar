@@ -24,6 +24,8 @@ if ( isset( $GLOBALS['wp_version'] ) && !isset( $_GET['_wp-find-template'] ) && 
 			$panels[] = new DebugBar\Panel\Template( 'Templating' );
 			$panels[] = new DebugBar\Panel\Blocks( 'Blocks' );
 			$panels[] = new DebugBar\Panel\UserRoles( 'User Roles' );
+			$panels[] = new DebugBar\Panel\RewriteRules( 'Rewrite Rules' );
+			$panels[] = new DebugBar\Panel\StylesScripts( 'Styles & Scripts' );
 			$panels[] = $queryPanel;
 
 			return $panels;
