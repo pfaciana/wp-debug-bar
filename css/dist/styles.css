@@ -375,6 +375,14 @@
   line-height: 1;
 }
 
+.rwd-debug-bar-content .tabulator-header input[type="search" i]::-webkit-search-cancel-button {
+  appearance: auto !important;
+}
+
+.rwd-debug-bar-content .tabulator-footer .tabulator-page-size {
+  width: auto !important;
+}
+
 ul.debug-bar-cards {
   margin: -10px;
   padding: 0;

@@ -123,4 +123,16 @@
 	.tabulator-col-title-wrap {
 		line-height: 1;
 	}
+
+	.tabulator-header {
+		input[type="search" i]::-webkit-search-cancel-button {
+			appearance: auto !important;
+		}
+	}
+
+	.tabulator-footer {
+		.tabulator-page-size {
+			width: auto !important;
+		}
+	}
 }
