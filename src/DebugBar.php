@@ -194,8 +194,8 @@ class DebugBar
 		wp_enqueue_style( $prefix . 'debug-bar', plugins_url( "/css/dist/styles{$suffix}.css", RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'admin-menu' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . "/css/dist/styles{$suffix}.css" ) );
 		wp_enqueue_script( $prefix . 'debug-bar', plugins_url( "/js/dist/scripts{$suffix}.js", RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'jquery-ui-resizable', 'common' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . "/js/dist/scripts{$suffix}.js" ), TRUE );
 
-		wp_enqueue_style( 'tabulator', "https://unpkg.com/tabulator-tables@5.4.1/dist/css/tabulator{$suffix}.css", [], NULL );
-		wp_enqueue_script( 'tabulator', "https://unpkg.com/tabulator-tables@5.4.1/dist/js/tabulator{$suffix}.js", [ 'jquery' ], NULL, FALSE );
+		wp_enqueue_style( 'tabulator', "https://unpkg.com/tabulator-tables@5.4.2/dist/css/tabulator{$suffix}.css", [], NULL );
+		wp_enqueue_script( 'tabulator', "https://unpkg.com/tabulator-tables@5.4.2/dist/js/tabulator{$suffix}.js", [ 'jquery' ], NULL, FALSE );
 
 		wp_enqueue_script( 'beautify-js', "https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.9.0-beta5/beautify{$suffix}.js" );
 
