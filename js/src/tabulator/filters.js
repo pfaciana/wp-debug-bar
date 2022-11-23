@@ -103,6 +103,34 @@ window.Tabulator.filters.args = function (headerValue, rowValueObj, rowData, fil
 	return Tabulator.filters.advanced(headerValue, rowValue.toString(), rowData, filterParams);
 };
 
+window.Tabulator.filters.list = function (headerValue, rowValue, rowData, filterParams) {
+	if (Array.isArray(rowValue)) {
+		rowValue = rowValue.join(' ');
+	}
+
+	if (typeof rowValue == 'object' && rowValue !== null) {
+		rowValue = JSON.stringify(rowValue, null, 4);
+	}
+
+	if ('strict' in filterParams && !filterParams.strict) {
+		headerValue = (headerValue || '').toLowerCase();
+		rowValue = (rowValue || '').toLowerCase();
+	}
+
+	if (!headerValue.includes(' ') && !headerValue.includes(':') && !headerValue.includes('-') && !headerValue.includes('+')) {
+		return rowValue.includes(headerValue);
+	}
+
+	var keywords = headerValue.match(/(?:[^\s"]+|"[^"]*")+/g);
+	for (var keyword of keywords) {
+		if (!Tabulator.search(keyword, rowValue)) {
+			return false;
+		}
+	}
+
+	return true;
+};
+
 window.Tabulator.filters.boolean = function (config) {
 	var base = {
 		sorter: 'boolean',

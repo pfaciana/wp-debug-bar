@@ -33,6 +33,24 @@ window.arrayColumn = function (array) {
     return typeof columnKey === 'function' ? columnKey(value) : getFromObjPath(value, columnKey);
   });
 };
+window.toAssociativeArray = function (obj) {
+  if (typeof obj === 'undefined') {
+    return [];
+  }
+  if (Array.isArray(obj)) {
+    return obj;
+  }
+  if (typeof obj !== 'object' || obj === null) {
+    return [obj];
+  }
+  var arr = [];
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key) || typeof arr[key] !== 'function') {
+      arr[key] = obj[key];
+    }
+  }
+  return arr;
+};
 "use strict";
 
 (function ($, window, document, undefined) {
@@ -763,6 +781,28 @@ window.Tabulator.filters.args = function (headerValue, rowValueObj, rowData, fil
   rowValue === null && (rowValue = '');
   return Tabulator.filters.advanced(headerValue, rowValue.toString(), rowData, filterParams);
 };
+window.Tabulator.filters.list = function (headerValue, rowValue, rowData, filterParams) {
+  if (Array.isArray(rowValue)) {
+    rowValue = rowValue.join(' ');
+  }
+  if (typeof rowValue == 'object' && rowValue !== null) {
+    rowValue = JSON.stringify(rowValue, null, 4);
+  }
+  if ('strict' in filterParams && !filterParams.strict) {
+    headerValue = (headerValue || '').toLowerCase();
+    rowValue = (rowValue || '').toLowerCase();
+  }
+  if (!headerValue.includes(' ') && !headerValue.includes(':') && !headerValue.includes('-') && !headerValue.includes('+')) {
+    return rowValue.includes(headerValue);
+  }
+  var keywords = headerValue.match(/(?:[^\s"]+|"[^"]*")+/g);
+  for (var keyword of keywords) {
+    if (!Tabulator.search(keyword, rowValue)) {
+      return false;
+    }
+  }
+  return true;
+};
 window.Tabulator.filters.boolean = function (config) {
   var base = {
     sorter: 'boolean',
@@ -831,6 +871,13 @@ window.Tabulator.formatters.args = function (cell, formatterParams, onRendered) 
   });
   return '<div>' + values.join("\n") + '</div>';
 };
+window.Tabulator.formatters.list = function (cell, formatterParams, onRendered) {
+  var values = cell.getValue();
+  if (!Array.isArray(values) && typeof values == 'object' && values !== null) {
+    return '<div style="white-space: pre">' + JSON.stringify(values, null, formatterParams.space || 0) + '</div>';
+  }
+  return toAssociativeArray(values).join(formatterParams.join || '<br>');
+};
 "use strict";
 
 window.Tabulator.sorter ??= {};
@@ -852,6 +899,34 @@ window.Tabulator.sorter.files = function (a, b, aRow, bRow, column, dir, sorterP
 window.Tabulator.sorter.args = function (o1, o2, aRow, bRow, column, dir, sorterParams) {
   var a = o1.text,
     b = o2.text;
+  if (!isNaN(a) && !isNaN(b)) {
+    return a - b;
+  }
+  a === true && (a = '1');
+  a === false && (a = '0');
+  a === null && (a = '');
+  b === true && (b = '1');
+  b === false && (b = '0');
+  b === null && (b = '');
+  return a.toString().localeCompare(b.toString());
+};
+window.Tabulator.sorter.list = function (array1, array2, aRow, bRow, column, dir, sorterParams) {
+  var a = array1,
+    b = array2;
+  if (typeof a == 'object' && a !== null) {
+    if (Array.isArray(a)) {
+      a = a.join('');
+    } else {
+      a = JSON.stringify(a);
+    }
+  }
+  if (typeof b == 'object' && b !== null) {
+    if (Array.isArray(b)) {
+      b = b.join('');
+    } else {
+      b = JSON.stringify(b);
+    }
+  }
   if (!isNaN(a) && !isNaN(b)) {
     return a - b;
   }
@@ -966,4 +1041,16 @@ window.Tabulator.common.valuesArray = {
   headerFilterFunc: function (search, value) {
     return value.includes(search);
   }
+};
+window.Tabulator.common.listArray = {
+  headerFilter: 'input',
+  headerFilterFuncParams: {
+    strict: false
+  },
+  headerFilterFunc: Tabulator.filters.list,
+  sorter: Tabulator.sorter.list,
+  formatterParams: {
+    join: "<br>"
+  },
+  formatter: Tabulator.formatters.list
 };

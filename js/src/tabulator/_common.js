@@ -105,3 +105,12 @@ window.Tabulator.common.valuesArray = {
 		return value.includes(search);
 	},
 };
+
+window.Tabulator.common.listArray = {
+	headerFilter: 'input',
+	headerFilterFuncParams: {strict: false},
+	headerFilterFunc: Tabulator.filters.list,
+	sorter: Tabulator.sorter.list,
+	formatterParams: {join: "<br>"},
+	formatter: Tabulator.formatters.list,
+};

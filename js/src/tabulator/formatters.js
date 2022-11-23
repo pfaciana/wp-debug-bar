@@ -39,3 +39,11 @@ window.Tabulator.formatters.args = function (cell, formatterParams, onRendered) 
 
 	return '<div>' + values.join("\n") + '</div>';
 };
+
+window.Tabulator.formatters.list = function (cell, formatterParams, onRendered) {
+	var values = cell.getValue();
+	if (!Array.isArray(values) && typeof values == 'object' && values !== null) {
+		return '<div style="white-space: pre">' + JSON.stringify(values, null, formatterParams.space || 0) + '</div>';
+	}
+	return toAssociativeArray(values).join(formatterParams.join || '<br>');
+};
