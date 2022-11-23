@@ -59,11 +59,17 @@ class Queries extends \Debug_Bar_Panel
 		$queries   = [];
 		$startTime = NULL;
 		foreach ( $wpdb->queries as $query ) {
-			$parser     = new PHPSQLParser();
-			$parsed     = $parser->parse( $query[0] );
-			$creator    = new PHPSQLCreator( $parser->parsed );
-			$created    = $creator->created;
-			$keywords   = array_keys( $parsed );
+			$created  = $query[0];
+			$parser   = new PHPSQLParser();
+			$parsed   = $parser->parse( $created );
+			$keywords = array_keys( $parsed );
+			try { // big fix: PHPSQLCreator
+				$creator = @new PHPSQLCreator( $parser->parsed );
+				$created = $creator->created;
+			}
+			catch ( \Exception $e ) {
+				$created = $query[0];
+			}
 			$statements = explode( "\n", trim( str_replace( $keywords, "\n", $created ) ) );
 			if ( count( $statements ) === count( $keywords ) ) {
 				foreach ( $statements as $index => &$statement ) {
@@ -73,6 +79,7 @@ class Queries extends \Debug_Bar_Panel
 			else {
 				$statements = $query[0];
 			}
+
 			if ( !array_key_exists( $created, $queries ) ) {
 				if ( empty( $startTime ) ) {
 					$startTime = $query[3];
@@ -117,14 +124,7 @@ class Queries extends \Debug_Bar_Panel
 						columns: [
 							{title: 'Type', field: 'type', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
 							{title: 'Function', field: 'caller', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							{
-								title: 'Args', field: 'args', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input', formatter: function (cell, formatterParams, onRendered) {
-									if (cell.getValue() === null) {
-										return '';
-									}
-									return '<div style="white-space: pre">' + JSON.stringify(cell.getValue(), null, 4) + '</div>';
-								},
-							},
+							{title: 'Args', field: 'args', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', ...T.common.listArray, formatterParams: {space: 4, join: "<br>"},},
 							{
 								maxWidth: 575,
 								title: 'SQL', field: 'sql', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input', formatter: function (cell, formatterParams, onRendered) {
