@@ -112,9 +112,18 @@ abstract class Panel
 			$this->_capability = '';
 		}
 
+		if ( is_object( $title ) ) {
+			if ( property_exists( $title, 'title' ) ) {
+				$title = $title->title;
+			}
+			elseif ( method_exists( $title, 'title' ) ) {
+				$title = $title->title();
+			}
+		}
+
 		$this->title( $title );
 
-		$this->_panel_id = preg_replace( '/[^a-zA-Z0-9_:.]/', '_', get_class( $this ) . '_' . $this->title() );
+		$this->_panel_id = preg_replace( '/[^a-zA-Z0-9_:.]/', '_', get_class( $this ) . '_' . $title );
 
 		$disabled_panels = \DebugBar\DebugBar::get_disabled_panels();
 
