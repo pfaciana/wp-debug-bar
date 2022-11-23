@@ -276,9 +276,15 @@ trait FormatTrait
 			if ( gettype( $callback ) === 'array' ) {
 				$ref = new \ReflectionMethod( is_object( $callback[0] ) ? get_class( $callback[0] ) : $callback[0], $callback[1] );
 			}
-			else {
+			elseif ( is_string( $callback ) || get_class( $callback ) === 'Closure' ) {
 				$ref = new \ReflectionFunction( $callback );
 
+			}
+			elseif ( gettype( $callback ) === 'object' ) {
+				$ref = new \ReflectionClass( $callback );
+			}
+			else {
+				return $onlyFile ? '' : [ '', '' ];
 			}
 			$file = $ref->getFileName();
 			$line = $ref->getStartLine();
