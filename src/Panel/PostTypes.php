@@ -10,7 +10,9 @@ class PostTypes extends \Debug_Bar_Panel
 	use FormatTrait;
 	use LayoutTrait;
 
+	public $_icon = 'dashicons-admin-post';
 	public $_panel_id;
+	public $_capability = 'edit_others_posts';
 	protected $scalarPostTypes = [
 		'name'                  => 'string',
 		'label'                 => 'string',

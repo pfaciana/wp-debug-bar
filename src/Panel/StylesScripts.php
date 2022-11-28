@@ -10,6 +10,7 @@ class StylesScripts extends \Debug_Bar_Panel
 	use FormatTrait;
 	use LayoutTrait;
 
+	public $_icon = 'dashicons-editor-code';
 	public $_panel_id;
 
 	public function render ()

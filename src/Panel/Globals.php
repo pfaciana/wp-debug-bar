@@ -10,7 +10,9 @@ class Globals extends \Debug_Bar_Panel
 	use FormatTrait;
 	use LayoutTrait;
 
+	public $_icon = 'fa fa-globe';
 	public $_panel_id;
+	public $_capability = 'manage_options';
 	protected $ignore = [
 		'str_starts_with' => [ 'EP_', 'DB_', "Sodium\\", 'SODIUM_', 'KINT_' ],
 		'str_ends_with'   => [ '_COOKIE', '_KEY', '_SALT', 'HASH' ],
@@ -172,7 +174,7 @@ class Globals extends \Debug_Bar_Panel
 				'str_ends_with'   => [ 'timestart', 'date_format', 'time_format' ],
 			],
 			'Styles/Scripts' => [
-				'equals'        => [ 'script' ],
+				'equals'        => [ 'script', 'compress_css' ],
 				'str_ends_with' => [ '_styles', '_scripts', '_script' ],
 			],
 			'Theme'          => [
@@ -217,7 +219,7 @@ class Globals extends \Debug_Bar_Panel
 		$user_defined_constants = $php_defined_constants['user'];
 		unset( $php_defined_constants['user'] );
 
-		$this->addTab( 'WP Constants', function () use ( $user_defined_constants ) { $this->getUserConstants( $user_defined_constants ); } );
+		$this->addTab( 'User Constants', function () use ( $user_defined_constants ) { $this->getUserConstants( $user_defined_constants ); } );
 		$this->addTab( 'WP Globals', [ $this, 'getGlobals' ] );
 		$this->addTab( 'WP Conditionals', [ $this, 'getConditionals' ] );
 		$this->addTab( 'Class Constants', [ $this, 'getClassInfo' ] );

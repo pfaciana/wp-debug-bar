@@ -10,6 +10,9 @@ class Blocks extends \Debug_Bar_Panel
 	use FormatTrait;
 	use LayoutTrait;
 
+	public $_icon = 'dashicons-block-default';
+	public $_capability = 'edit_others_posts';
+
 	public function render ()
 	{
 		$this->addTab( 'Block Types', [ $this, 'getBlockTypes' ] );

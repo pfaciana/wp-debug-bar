@@ -10,7 +10,9 @@ class UserRoles extends \Debug_Bar_Panel
 	use FormatTrait;
 	use LayoutTrait;
 
+	public $_icon = 'dashicons-admin-users';
 	public $_panel_id;
+	public $_capability = 'edit_others_posts';
 	protected $all_capabilities = [];
 	protected $roles = [];
 

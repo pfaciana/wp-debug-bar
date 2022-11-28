@@ -5,10 +5,11 @@ namespace DebugBar\Panel;
 use PHPSQLParser\PHPSQLCreator;
 use PHPSQLParser\PHPSQLParser;
 
-class Queries extends \Debug_Bar_Panel
+class Queries extends \DebugBar\Panel
 {
 	use \DebugBar\Traits\FormatTrait;
 
+	public $_icon = 'dashicons-database-view';
 	public $_title = 'Queries';
 	protected $ignoreFiles = [ 'class-wp.php', 'class-wpdb.php', 'class-wp-query.php' ];
 	protected $query_args = NULL;
@@ -146,3 +147,4 @@ class Queries extends \Debug_Bar_Panel
 		<?php
 	}
 }
+

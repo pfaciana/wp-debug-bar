@@ -4,7 +4,7 @@ namespace DebugBar\Panel;
 
 class Hooks extends \Debug_Bar_Panel
 {
-	//public $_icon = '';
+	public $_icon = 'fa fa-filter';
 
 	/**
 	 * @var callable
