@@ -10,12 +10,16 @@ class RewriteRules extends \Debug_Bar_Panel
 	use FormatTrait;
 	use LayoutTrait;
 
+	public $_icon = 'dashicons-editor-ol';
 	public $_panel_id;
+	public $_capability = 'edit_others_posts';
 
 	public function render ()
 	{
 		$this->addTab( 'Rules', [ $this, 'setRewriteRules' ] );
 		$this->addTab( 'Tags', [ $this, 'setRewriteTags' ] );
+		$this->addTab( 'Matched Query', [ $this, 'setMatchedQuery' ] );
+		$this->addTab( 'GET/POST', [ $this, 'setRequestQuery' ] );
 		$this->showTabs( $this->_panel_id );
 	}
 
@@ -110,5 +114,79 @@ class RewriteRules extends \Debug_Bar_Panel
 			});
 		</script>
 		<?php
+	}
+
+	protected function setMatchedQuery ()
+	{
+		$cards = [
+			'Matched Request' => 2,
+			'Query Vars'      => 2,
+		];
+
+		?>
+		<h3>Matched Query</h3>
+		<?php
+		foreach ( $cards as $card => $size ) {
+			if ( $size !== FALSE ) {
+				$cardId = str_replace( ' ', '_', strtolower( $card ) );
+				$this->addCard( $card, [ $this, "get_{$cardId}_card" ], $size );
+			}
+		}
+		$this->showCards();
+	}
+
+	protected function get_matched_request_card ()
+	{
+		global $wp;
+
+		$this->outputTable( [
+			'request'       => $wp->request,
+			'matched_rule'  => $wp->matched_rule,
+			'matched_query' => $wp->matched_query,
+		] );
+	}
+
+	protected function get_query_vars_card ()
+	{
+		global $wp;
+
+		$this->outputTable( $wp->query_vars );
+	}
+
+	protected function setRequestQuery ()
+	{
+		$requestQuery = [];
+
+		foreach ( $_REQUEST ?? [] as $key => $value ) {
+			$requestQuery[] = [ 'name' => $key, 'value' => $value, 'get' => in_array( $key, array_keys( $_GET ?? [] ) ), 'post' => in_array( $key, array_keys( $_POST ?? [] ) ), ];
+		}
+		?>
+		<h3>Request Query</h3>
+		<div id="request-query-table"></div>
+
+		<script type="application/javascript">
+			jQuery(function ($) {
+				var T = window.Tabulator;
+				var requestQuery = <?= json_encode( array_values( $requestQuery ?? [] ) ) ?>;
+
+				if (requestQuery.length) {
+					new Tabulator("#request-query-table", {
+						data: requestQuery,
+						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
+						columns: [
+							{title: 'Field', field: 'name', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
+							{title: 'Value', field: 'value', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
+							T.filters.boolean({title: 'GET', field: 'get', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', width: 75}),
+							T.filters.boolean({title: 'POST', field: 'post', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', width: 75}),
+						],
+					});
+				}
+			});
+		</script>
+		<?php
+
+		if ( empty( $requestQuery ) ) {
+			echo '<p><b>No Request parameters were found.</b></p>';
+		}
 	}
 }
