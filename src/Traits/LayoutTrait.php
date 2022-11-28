@@ -66,4 +66,18 @@ trait LayoutTrait
 
 		return $echo ? print $content : $content;
 	}
+
+	protected function outputTable ( $rows )
+	{
+		?>
+		<table><?php
+			foreach ( $rows as $header => $value ) : ?>
+				<tr>
+					<th><?= $header ?> &nbsp;</th>
+					<td><?= $value ?></td>
+				</tr>
+			<?php endforeach; ?>
+		</table>
+		<?php
+	}
 }

@@ -17,19 +17,19 @@ if ( isset( $GLOBALS['wp_version'] ) && !isset( $_GET['_wp-find-template'] ) && 
 
 	add_action( 'plugins_loaded', function () {
 		$queryPanel   = new DebugBar\Panel\Queries( 'Queries' );
-		$globalsPanel = new DebugBar\Panel\Globals( 'Globals' );
-		add_filter( 'debug_bar_panels', function ( $panels ) use ( $queryPanel, $globalsPanel ) {
-			$panels[] = $globalsPanel;
-			$panels[] = new DebugBar\Panel\PostTypes( 'Post Types' );
+		add_filter( 'debug_bar_panels', function ( $panels ) use ( $queryPanel ) {
+			$panels[] = new DebugBar\Panel\Environment( 'Environment' );
+			$panels[] = new DebugBar\Panel\Globals( 'Globals' );
 			$panels[] = new DebugBar\Panel\Template( 'Templating' );
 			$panels[] = new DebugBar\Panel\Blocks( 'Blocks' );
+			$panels[] = new DebugBar\Panel\PostTypes( 'Post Types' );
 			$panels[] = new DebugBar\Panel\UserRoles( 'User Roles' );
-			$panels[] = new DebugBar\Panel\RewriteRules( 'Rewrite Rules' );
 			$panels[] = new DebugBar\Panel\StylesScripts( 'Styles & Scripts' );
+			$panels[] = new DebugBar\Panel\RewriteRules( 'Rewrite Rules' );
 			$panels[] = $queryPanel;
 
 			return $panels;
-		}, );
+		} );
 
 		add_filter( 'debug_bar_panels', function ( $panels ) {
 			$panels[] = new DebugBar\Panel\Kint( 'Kint' );
