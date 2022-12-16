@@ -33,6 +33,10 @@
 			openSavedTabs();
 			$container.find('.debug-bar-tabs a').on('click', function () {
 				goToTab($(this).data('tab-id'));
+			}).on('keypress', function (e) {
+				if (e.which == 13 || e.which == 32) {
+					goToTab($(this).data('tab-id'));
+				}
 			});
 		}
 

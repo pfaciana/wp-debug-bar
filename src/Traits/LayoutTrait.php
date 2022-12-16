@@ -53,7 +53,7 @@ trait LayoutTrait
 		?>
 		<ul class="debug-bar-tabs">
 			<?php foreach ( $this->debugBarTabs as $header => $content ) : ?>
-				<li><a data-tab-id="<?= $tab_ids[$header] ?>"><?= $header ?></a></li>
+				<li><a tabindex="0" data-tab-id="<?= $tab_ids[$header] ?>"><?= $header ?></a></li>
 			<?php endforeach; ?>
 		</ul>
 		<div class="debug-bar-tabs-content" data-group-id="<?= $panel_id ?>">
