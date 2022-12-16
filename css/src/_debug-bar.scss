@@ -204,7 +204,7 @@
 					flex-direction: column;
 					overflow: auto;
 
-					[id$="-table"] {
+					&, [id$="-table"] {
 						position: static !important;
 					}
 				}

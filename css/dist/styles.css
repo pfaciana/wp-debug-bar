@@ -213,7 +213,7 @@
   overflow: auto;
 }
 
-#rwd-debug-bar-wrap .rwd-debug-bar-body .rwd-debug-bar-main .rwd-debug-bar-content .rwd-debug-menu-target [id$="-table"] {
+#rwd-debug-bar-wrap .rwd-debug-bar-body .rwd-debug-bar-main .rwd-debug-bar-content .rwd-debug-menu-target, #rwd-debug-bar-wrap .rwd-debug-bar-body .rwd-debug-bar-main .rwd-debug-bar-content .rwd-debug-menu-target [id$="-table"] {
   position: static !important;
 }
 
