@@ -334,14 +334,5 @@
 				autoScrollToBottom && (('debouncer' in window) ? debouncer('scrollToBottom', scrollToBottom) : scrollToBottom());
 			});
 		}
-
-		if (typeof add_action === 'function') {
-			add_action('rdb/activate-panel/RWD_Debug_Bar_Kint_Panel', function ($panel, firstTime) {
-				if (!firstTime && $('.kint-rich.kint-folder').hasClass('kint-rerendered')) {
-					$panel.animate({scrollTop: $panel.prop("scrollHeight")}, 1000);
-				}
-				$('.kint-rich.kint-folder').removeClass('kint-rerendered');
-			});
-		}
 	});
 }(jQuery, window, document));
