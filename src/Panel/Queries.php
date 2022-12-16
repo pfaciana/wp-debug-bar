@@ -114,31 +114,27 @@ class Queries extends \DebugBar\Panel
 				var queries = <?= json_encode( array_values( $queries ?? [] ) ) ?>;
 
 				if (queries.length) {
-					new Tabulator("#queries-table", {
+					T.Create("#queries-table", {
 						data: queries,
-						pagination: 'local',
 						paginationSize: 5,
-						paginationSizeSelector: [5, 10, 20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
-							{title: 'Type', field: 'type', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							{title: 'Function', field: 'caller', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							{title: 'Args', field: 'args', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', ...T.common.listArray, formatterParams: {space: 4, join: "<br>"},},
+							{title: 'Type', field: 'type', formatter: 'list'},
+							{title: 'Function', field: 'caller', formatter: 'list'},
+							{title: 'Args', field: 'args', formatterParams: {space: 4, join: "<br>"}, formatter: 'object'},
 							{
-								maxWidth: 575,
-								title: 'SQL', field: 'sql', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input', formatter: function (cell, formatterParams, onRendered) {
+								title: 'SQL', field: 'sql', hozAlign: 'left', headerFilter: 'input', maxWidth: 575,
+								formatter: function (cell, formatterParams, onRendered) {
 									if (cell.getValue() === null) {
 										return '';
 									}
 									return '<div style="white-space: normal">' + cell.getValue().split("\n").join('<br>') + '</div>';
 								},
 							},
-							T.filters.minMax(queries, {title: 'Time', field: 'runTime', formatter: Tabulator.formatters.timeMs, vertAlign: 'middle', hozAlign: 'right', headerHozAlign: 'center', headerSortStartingDir: 'desc',}),
-							T.filters.minMax(queries, {title: 'Start', field: 'startTime', formatter: Tabulator.formatters.timeMs, vertAlign: 'middle', hozAlign: 'right', headerHozAlign: 'center',}),
-							{title: 'Run', field: 'count', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							{title: 'Source', field: 'source', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', ...Tabulator.common.filesArray,},
+							{title: 'Time', field: 'runTime', headerSortStartingDir: 'desc', formatter: 'timeMs'},
+							{title: 'Start', field: 'startTime', formatter: 'timeMs'},
+							{title: 'Run', field: 'count', formatter: 'minMax'},
+							{title: 'Source', field: 'source', formatter: 'file'},
 						],
 					});
 				}
@@ -147,4 +143,3 @@ class Queries extends \DebugBar\Panel
 		<?php
 	}
 }
-

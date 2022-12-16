@@ -87,30 +87,25 @@ class Blocks extends \Debug_Bar_Panel
 				});
 
 				if (blocks.length) {
-					new Tabulator("#available-blocks-table", {
+					T.Create("#available-blocks-table", {
 						data: blocks,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [5, 10, 20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
-							{title: 'title', field: 'title', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input', frozen: true,},
-							{title: 'name', field: 'name', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input', frozen: true,},
-							{title: 'category', field: 'category', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							T.filters.boolean({title: 'Dynamic?', field: 'isDynamic', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
-							T.filters.minMax(blocks, {title: 'attributes', field: 'attributes', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
-							T.filters.minMax(blocks, {title: 'variations', field: 'variations', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
-							T.filters.boolean({title: 'Parent?', field: 'isParent', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
-							T.filters.boolean({title: 'Child?', field: 'isChild', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
-							{title: 'parent', field: 'parent', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',},
-							{title: 'supports', field: 'supports', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',},
-							{title: 'providesContext', field: 'providesContext', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',},
-							{title: 'usesContext', field: 'usesContext', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',},
-							{title: 'renderCallback', field: 'renderCallback', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', ...Tabulator.common.filesArray,},
-							{title: 'description', field: 'description', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',},
-							T.filters.minMax(blocks, {title: 'apiVersion', field: 'apiVersion', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
+							{title: 'title', field: 'title', hozAlign: 'left', frozen: true, formatter: 'string'},
+							{title: 'name', field: 'name', frozen: true, formatter: 'string'},
+							{title: 'category', field: 'category', formatter: 'list'},
+							{title: 'Dynamic?', field: 'isDynamic', formatter: 'boolean'},
+							{title: 'attributes', field: 'attributes', formatter: 'minMax'},
+							{title: 'variations', field: 'variations', formatter: 'minMax'},
+							{title: 'Parent?', field: 'isParent', formatter: 'boolean'},
+							{title: 'Child?', field: 'isChild', formatter: 'boolean'},
+							{title: 'parent', field: 'parent', hozAlign: 'left', formatter: 'string'},
+							{title: 'supports', field: 'supports', hozAlign: 'left', formatter: 'string'},
+							{title: 'providesContext', field: 'providesContext', hozAlign: 'left', formatter: 'string'},
+							{title: 'usesContext', field: 'usesContext', hozAlign: 'left', formatter: 'string'},
+							{title: 'renderCallback', field: 'renderCallback', formatter: 'files'},
+							{title: 'description', field: 'description', hozAlign: 'left', formatter: 'string'},
+							{title: 'apiVersion', field: 'apiVersion', formatter: 'minMax'},
 						],
 					});
 				}
@@ -212,23 +207,18 @@ class Blocks extends \Debug_Bar_Panel
 				var T = window.Tabulator;
 				var patterns = <?= json_encode( $patterns ?? [] ) ?>;
 				if (patterns.length) {
-					new Tabulator("#block-patterns-table", {
+					T.Create("#block-patterns-table", {
 						data: patterns,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						columns: [
-							{title: 'title', field: 'title', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input', frozen: true,},
-							{title: 'slug', field: 'slug', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input', frozen: true,},
-							{title: 'categories', field: 'categories', vertAlign: 'center', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
-							{title: 'keywords', field: 'keywords', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',},
-							{title: 'blockTypes', field: 'blockTypes', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',},
-							T.filters.minMax(patterns, {title: 'viewportWidth', field: 'viewportWidth', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
-							T.filters.boolean({title: 'inserter', field: 'inserter', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
-							{title: 'file', field: 'file', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', ...Tabulator.common.filesArray,},
-							{title: 'description', field: 'description', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',},
+							{title: 'title', field: 'title', hozAlign: 'left', frozen: true, formatter: 'string'},
+							{title: 'slug', field: 'slug', frozen: true, formatter: 'string'},
+							{title: 'categories', field: 'categories', formatter: 'string'},
+							{title: 'keywords', field: 'keywords', hozAlign: 'left', formatter: 'string'},
+							{title: 'blockTypes', field: 'blockTypes', hozAlign: 'left', formatter: 'string'},
+							{title: 'viewportWidth', field: 'viewportWidth', formatter: 'minMax'},
+							{title: 'inserter', field: 'inserter', formatter: 'boolean'},
+							{title: 'file', field: 'file', formatter: 'file'},
+							{title: 'description', field: 'description', hozAlign: 'left', formatter: 'string'},
 						],
 					});
 				}
@@ -249,16 +239,11 @@ class Blocks extends \Debug_Bar_Panel
 				var categories = <?= json_encode( \WP_Block_Pattern_Categories_Registry::get_instance()->get_all_registered() ?? [] ) ?>;
 
 				if (categories.length) {
-					new Tabulator("#block-categories-table", {
+					T.Create("#block-categories-table", {
 						data: categories,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						columns: [
-							{title: 'name', field: 'name', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input', frozen: true,},
-							{title: 'label', field: 'label', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input', frozen: true,},
+							{title: 'name', field: 'name', frozen: true, formatter: 'string'},
+							{title: 'label', field: 'label', hozAlign: 'left', frozen: true, formatter: 'string'},
 						],
 					});
 				}

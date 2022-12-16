@@ -1,58 +1,5 @@
 "use strict";
 
-(function () {
-  var timers = {};
-  window.debouncer = function (id, callback, ms) {
-    ms = typeof ms !== 'undefined' ? ms : 500;
-    if (timers[id]) {
-      clearTimeout(timers[id]);
-    }
-    timers[id] = setTimeout(callback, ms);
-  };
-})();
-window.getFromObjPath = function (obj, path) {
-  if (typeof path !== 'string' && !(path instanceof String)) {
-    return obj[path];
-  }
-  return path.split('.').reduce((o, i) => o[i], obj);
-};
-window.arrayColumn = function (array) {
-  let columnKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  let indexKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  if (indexKey !== null) {
-    let obj = {};
-    for (var index in array) {
-      if (array.hasOwnProperty(index) || typeof array[index] !== 'function') {
-        obj[getFromObjPath(array[index], indexKey)] = columnKey !== null ? typeof columnKey === 'function' ? columnKey(array[index]) : getFromObjPath(array[index], columnKey) : array[index];
-      }
-    }
-    return obj;
-  }
-  array = Array.isArray(array) ? array : Object.values(array);
-  return array.map(function (value, index) {
-    return typeof columnKey === 'function' ? columnKey(value) : getFromObjPath(value, columnKey);
-  });
-};
-window.toAssociativeArray = function (obj) {
-  if (typeof obj === 'undefined') {
-    return [];
-  }
-  if (Array.isArray(obj)) {
-    return obj;
-  }
-  if (typeof obj !== 'object' || obj === null) {
-    return [obj];
-  }
-  var arr = [];
-  for (var key in obj) {
-    if (obj.hasOwnProperty(key) || typeof arr[key] !== 'function') {
-      arr[key] = obj[key];
-    }
-  }
-  return arr;
-};
-"use strict";
-
 (function ($, window, document, undefined) {
   $(function () {
     window.$window = $(window);
@@ -225,7 +172,7 @@ window.toAssociativeArray = function (obj) {
       });
 
       // Resize the Console after window resize
-      $window.resize(function () {
+      $window.on('resize', function () {
         debouncer('rwdDebugBar', function () {
           if (!isConsoleHidden()) {
             resetConsolePosition();
@@ -314,9 +261,9 @@ window.toAssociativeArray = function (obj) {
       $('#rwd-debug-menu-link-' + id + ', #rwd-debug-menu-link-' + id + ' > a').removeClass('wp-not-current-submenu').addClass('wp-has-current-submenu');
       $container.show();
       $panel.show();
-      if (id !== panelStack[panelStack.length - 1]) {
-        do_action('rdb/activate-panel', id, $panel, firstTime);
-        do_action('rdb/activate-panel/' + id, $panel, firstTime);
+      if (id !== panelStack[panelStack.length - 1] && typeof $ === 'function' && 'publish' in $) {
+        $.publish('rdb/activate-panel', id, $panel, firstTime);
+        $.publish('rdb/activate-panel/' + id, $panel, firstTime);
         panelStack.push(id);
       }
       return false;
@@ -348,33 +295,13 @@ window.toAssociativeArray = function (obj) {
 "use strict";
 
 (function () {
-  var actions = {};
-  function get_action(tag) {
-    if (typeof tag === 'undefined') {
-      throw new Error('Invalid Signature!');
+  var timers = {};
+  window.debouncer = function (id, callback, ms) {
+    ms = typeof ms !== 'undefined' ? ms : 500;
+    if (timers[id]) {
+      clearTimeout(timers[id]);
     }
-    return actions[tag] || (actions[tag] = $.Callbacks());
-  }
-  window.do_action = function (tag) {
-    var action,
-      args = Array.prototype.slice.call(arguments);
-    if (typeof tag === 'undefined') {
-      throw new Error('Invalid Signature!');
-    }
-    action = get_action(args.shift());
-    action.fire.apply(action, args);
-  };
-  window.add_action = function (tag, callback) {
-    if (typeof tag === 'undefined' || typeof callback !== 'function') {
-      throw new Error('Invalid Signature!');
-    }
-    get_action(tag).add(callback);
-  };
-  window.remove_action = function (tag, callback) {
-    if (typeof tag === 'undefined' || typeof callback !== 'function') {
-      throw new Error('Invalid Signature!');
-    }
-    get_action(tag).remove(callback);
+    timers[id] = setTimeout(callback, ms);
   };
 })();
 "use strict";
@@ -673,161 +600,28 @@ window.toAssociativeArray = function (obj) {
         autoScrollToBottom && ('debouncer' in window ? debouncer('scrollToBottom', scrollToBottom) : scrollToBottom());
       });
     }
-    if (typeof add_action === 'function') {
-      add_action('rdb/activate-panel/RWD_Debug_Bar_Kint_Panel', function ($panel, firstTime) {
-        if (!firstTime && $('.kint-rich.kint-folder').hasClass('kint-rerendered')) {
-          $panel.animate({
-            scrollTop: $panel.prop("scrollHeight")
-          }, 1000);
-        }
-        $('.kint-rich.kint-folder').removeClass('kint-rerendered');
-      });
-    }
   });
 })(jQuery, window, document);
 "use strict";
 
-window.Tabulator.filters ??= {};
-window.Tabulator.filters.minMax = function (array, config) {
-  let filterMin = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-  let filterMax = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-  var values = arrayColumn(array, config.field);
-  var min = Math.min(...values);
-  var max = Math.max(...values);
-  var empty = window.Tabulator.empty;
-  config.sorter ??= function (a, b, aRow, bRow, column, dir, sorterParams) {
-    return empty.includes(a) ? dir === 'asc' ? 1 : -1 : empty.includes(b) ? dir === 'asc' ? -1 : 1 : a - b;
-  };
-  config.headerFilter ??= function (cell, onRendered, success, cancel, editorParams) {
-    var start = document.createElement('input'),
-      end = document.createElement('input'),
-      container = document.createElement('span');
-    function createInput(input, title) {
-      input.setAttribute('type', 'number');
-      input.setAttribute('placeholder', title);
-      input.setAttribute('min', Math.floor(min) || 0);
-      input.setAttribute('max', Math.ceil(max) || 100);
-      input.style.padding = '4px';
-      input.style.width = filterMin && filterMax ? '50%' : '100%';
-      input.style.boxSizing = 'border-box';
-      input.value = cell.getValue();
-      input.addEventListener('change', buildValues);
-      input.addEventListener('blur', buildValues);
-      input.addEventListener('keydown', keypress);
-      container.appendChild(input);
-    }
-    function buildValues() {
-      success({
-        start: start.value,
-        end: end.value
-      });
-    }
-    function keypress(e) {
-      e.keyCode === 13 && buildValues();
-      e.keyCode === 27 && cancel();
-    }
-    filterMin && createInput(start, 'Min');
-    filterMax && createInput(end, 'Max');
-    return container;
-  };
-  config.headerFilterFunc ??= function (headerValue, rowValue, rowData, filterParams) {
-    if ((headerValue.start !== "" || headerValue.end !== "") && rowValue === null) {
-      return false;
-    }
-    if (rowValue || rowValue === 0) {
-      if (headerValue.start !== "") {
-        if (headerValue.end !== "") {
-          return rowValue >= headerValue.start && rowValue <= headerValue.end;
-        } else {
-          return rowValue >= headerValue.start;
-        }
-      } else {
-        if (headerValue.end !== "") {
-          return rowValue <= headerValue.end;
-        }
-      }
-    }
-    return true;
-  };
-  config.headerFilterLiveFilter ??= false;
-  return config;
-};
-window.Tabulator.filters.advanced = function (headerValue, rowValue, rowData, filterParams) {
-  if (!headerValue.includes(' ') && !headerValue.includes(':') && !headerValue.includes('-') && !headerValue.includes('+')) {
-    return rowValue.includes(headerValue);
-  }
-  var keywords = headerValue.match(/(?:[^\s"]+|"[^"]*")+/g);
-  for (var keyword of keywords) {
-    if (!Tabulator.search(keyword, rowValue)) {
-      return false;
-    }
-  }
-  return true;
-};
-window.Tabulator.filters.advancedFile = function (headerValue, rowValue, rowData, filterParams) {
-  if (Array.isArray(rowValue)) {
-    rowValue = rowValue.map(x => x.text).join(' ');
-  }
-  if ('strict' in filterParams && !filterParams.strict) {
-    headerValue = (headerValue || '').toLowerCase();
-    rowValue = (rowValue || '').toLowerCase();
-  }
-  return Tabulator.filters.advanced(headerValue, rowValue, rowData, filterParams);
-};
-window.Tabulator.filters.args = function (headerValue, rowValueObj, rowData, filterParams) {
-  var rowValue = rowValueObj.text;
-  rowValue === true && (rowValue = '1');
-  rowValue === false && (rowValue = '0');
-  rowValue === null && (rowValue = '');
-  return Tabulator.filters.advanced(headerValue, rowValue.toString(), rowData, filterParams);
-};
-window.Tabulator.filters.list = function (headerValue, rowValue, rowData, filterParams) {
-  if (Array.isArray(rowValue)) {
-    rowValue = rowValue.join(' ');
-  }
-  if (typeof rowValue == 'object' && rowValue !== null) {
-    rowValue = JSON.stringify(rowValue, null, 4);
-  }
-  if ('strict' in filterParams && !filterParams.strict) {
-    headerValue = (headerValue || '').toLowerCase();
-    rowValue = (rowValue || '').toLowerCase();
-  }
-  if (!headerValue.includes(' ') && !headerValue.includes(':') && !headerValue.includes('-') && !headerValue.includes('+')) {
-    return rowValue.includes(headerValue);
-  }
-  var keywords = headerValue.match(/(?:[^\s"]+|"[^"]*")+/g);
-  for (var keyword of keywords) {
-    if (!Tabulator.search(keyword, rowValue)) {
-      return false;
-    }
-  }
-  return true;
-};
-window.Tabulator.filters.boolean = function (config) {
-  var base = {
-    sorter: 'boolean',
-    hozAlign: 'center',
-    formatter: 'tickCross',
-    formatterParams: {
-      allowEmpty: true,
-      allowTruthy: true
-    },
-    headerFilter: 'tickCross',
-    headerFilterParams: {
-      'tristate': true
-    },
-    width: 61
-  };
-  if ('src' in config) {
-    config.title = `<img alt="${config.title}" title="${config.title}" src="${config.src}" style="max-width: 100%;" />`;
-    delete config.src;
-  }
-  return {
-    ...base,
-    ...config
-  };
-};
 (function ($, window, document, undefined) {
+  if (typeof $ === 'function' && 'subscribe' in $) {
+    $.subscribe('tabulator-table-setup', function (options, element) {
+      options.pagination ??= 'local';
+      options.paginationSize ??= 20;
+      options.paginationSizeSelector ??= [5, 10, 20, 50, 100, true];
+      options.paginationButtonCount ??= 15;
+      options.footerElement ??= '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>';
+      return options;
+    });
+    $.subscribe('tabulator-column-setup', function (column, data, initial, options, element) {
+      if (['bool', 'boolean', 'tickCross'].includes(initial.formatter)) {
+        column.width ??= 75;
+        column.headerWordWrap ??= true;
+      }
+      return column;
+    });
+  }
   $(document).on('click', '.clear-all-table-filters', function () {
     $(this).closest('.tabulator').each(function () {
       $.each(window.Tabulator.findTable(this), function () {
@@ -836,221 +630,3 @@ window.Tabulator.filters.boolean = function (config) {
     });
   });
 })(jQuery, window, document);
-"use strict";
-
-window.Tabulator.formatters ??= {};
-window.Tabulator.formatters.files = function (cell, formatterParams, onRendered) {
-  var files = cell.getValue();
-  if (typeof files === 'object' && 'text' in files) {
-    files = [files];
-  }
-  if (!Array.isArray(files)) {
-    return files ? files : '';
-  }
-  var links = files.map(function (file) {
-    return file.url ? `<a href="${file.url}" target="_blank" class="debug-bar-file-link-format debug-bar-ide-link">${file.text}</a>` : file.text;
-  });
-  return links.join(formatterParams.join || " | ");
-};
-window.Tabulator.formatters.timeMs = function (cell, formatterParams, onRendered) {
-  return cell.getValue().toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }) + ' ms';
-};
-window.Tabulator.formatters.args = function (cell, formatterParams, onRendered) {
-  if (cell.getValue() === null) {
-    return '';
-  }
-  var values = [];
-  function formatArg(arg) {
-    return `<span title="(${arg.type}) ${arg.type === 'same' ? 'This value did not change' : arg.text}" data-type="${arg.type}">${arg.type === 'same' ? '(same)' : arg.text}</span>`;
-  }
-  $.each(Array.isArray(cell.getValue()) ? cell.getValue() : [cell.getValue()], function (i, arg) {
-    values.push(formatArg(arg));
-  });
-  return '<div>' + values.join("\n") + '</div>';
-};
-window.Tabulator.formatters.list = function (cell, formatterParams, onRendered) {
-  var values = cell.getValue();
-  if (!Array.isArray(values) && typeof values == 'object' && values !== null) {
-    return '<div style="white-space: pre">' + JSON.stringify(values, null, formatterParams.space || 0) + '</div>';
-  }
-  return toAssociativeArray(values).join(formatterParams.join || '<br>');
-};
-"use strict";
-
-window.Tabulator.sorter ??= {};
-window.Tabulator.sorter.files = function (a, b, aRow, bRow, column, dir, sorterParams) {
-  if (!a) {
-    a = '';
-  }
-  if (!b) {
-    b = '';
-  }
-  if (Array.isArray(a)) {
-    a = a.map(x => x.text).join(' ');
-  }
-  if (Array.isArray(b)) {
-    b = b.map(x => x.text).join(' ');
-  }
-  return a.localeCompare(b);
-};
-window.Tabulator.sorter.args = function (o1, o2, aRow, bRow, column, dir, sorterParams) {
-  var a = o1.text,
-    b = o2.text;
-  if (!isNaN(a) && !isNaN(b)) {
-    return a - b;
-  }
-  a === true && (a = '1');
-  a === false && (a = '0');
-  a === null && (a = '');
-  b === true && (b = '1');
-  b === false && (b = '0');
-  b === null && (b = '');
-  return a.toString().localeCompare(b.toString());
-};
-window.Tabulator.sorter.list = function (array1, array2, aRow, bRow, column, dir, sorterParams) {
-  var a = array1,
-    b = array2;
-  if (typeof a == 'object' && a !== null) {
-    if (Array.isArray(a)) {
-      a = a.join('');
-    } else {
-      a = JSON.stringify(a);
-    }
-  }
-  if (typeof b == 'object' && b !== null) {
-    if (Array.isArray(b)) {
-      b = b.join('');
-    } else {
-      b = JSON.stringify(b);
-    }
-  }
-  if (!isNaN(a) && !isNaN(b)) {
-    return a - b;
-  }
-  a === true && (a = '1');
-  a === false && (a = '0');
-  a === null && (a = '');
-  b === true && (b = '1');
-  b === false && (b = '0');
-  b === null && (b = '');
-  return a.toString().localeCompare(b.toString());
-};
-"use strict";
-
-window.Tabulator ??= {};
-window.Tabulator.empty = [null, ''];
-window.Tabulator.search = function search(keyword, content) {
-  if (keyword.startsWith('regex:i:')) {
-    if (!new RegExp(keyword.slice(8), 'i').test(content)) {
-      return false;
-    }
-  } else if (keyword.startsWith('i:')) {
-    if (!content.toLowerCase().includes(keyword.slice(2).toLowerCase())) {
-      return false;
-    }
-  } else if (keyword.startsWith('regex:')) {
-    if (!new RegExp(keyword.slice(6)).test(content)) {
-      return false;
-    }
-  } else if (keyword.startsWith('not:')) {
-    if (content.includes(keyword.slice(4))) {
-      return false;
-    }
-  } else if (keyword.startsWith('-')) {
-    if (content.includes(keyword.slice(1))) {
-      return false;
-    }
-  } else if (keyword.startsWith('+')) {
-    if (!content.includes(keyword.slice(1))) {
-      return false;
-    }
-  } else {
-    if (!content.includes(keyword)) {
-      return false;
-    }
-  }
-  return true;
-};
-window.Tabulator.common ??= {};
-window.Tabulator.common.arrayByLength = {
-  headerSortStartingDir: 'desc',
-  sorter: function (a, b, aRow, bRow, column, dir, sorterParams) {
-    return a.length - b.length;
-  },
-  headerFilterFunc: function (headerValue, rowValue, rowData, filterParams) {
-    rowValue = rowValue.length;
-    if ((headerValue.start !== "" || headerValue.end !== "") && rowValue === null) {
-      return false;
-    }
-    if (rowValue || rowValue === 0) {
-      if (headerValue.start !== "") {
-        if (headerValue.end !== "") {
-          return rowValue >= headerValue.start && rowValue <= headerValue.end;
-        } else {
-          return rowValue >= headerValue.start;
-        }
-      } else {
-        if (headerValue.end !== "") {
-          return rowValue <= headerValue.end;
-        }
-      }
-    }
-    return true;
-  },
-  formatter: function (cell, formatterParams, onRendered) {
-    return cell.getValue().length;
-  },
-  clickPopup: function (e, component, onRendered) {
-    if (!component.getValue().length) {
-      return '';
-    }
-    return Tabulator.formatters.files(component, {
-      join: "<br>"
-    }, onRendered);
-  }
-};
-window.Tabulator.common.filesArray = {
-  headerFilter: 'input',
-  headerFilterFuncParams: {
-    strict: false
-  },
-  headerFilterFunc: Tabulator.filters.advancedFile,
-  sorter: Tabulator.sorter.files,
-  formatterParams: {
-    join: " | "
-  },
-  formatter: Tabulator.formatters.files
-};
-window.Tabulator.common.valuesArray = {
-  headerFilter: 'list',
-  headerFilterParams: {
-    clearable: true,
-    valuesLookup: function (component, filterTerm) {
-      var values = new Set();
-      $.each(component.getColumn().getCells(), function (i, cell) {
-        $.each(cell.getValue(), function (i, value) {
-          values.add(value);
-        });
-      });
-      return values.size ? Array.from(values).sort() : [];
-    }
-  },
-  headerFilterFunc: function (search, value) {
-    return value.includes(search);
-  }
-};
-window.Tabulator.common.listArray = {
-  headerFilter: 'input',
-  headerFilterFuncParams: {
-    strict: false
-  },
-  headerFilterFunc: Tabulator.filters.list,
-  sorter: Tabulator.sorter.list,
-  formatterParams: {
-    join: "<br>"
-  },
-  formatter: Tabulator.formatters.list
-};

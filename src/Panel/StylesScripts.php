@@ -70,30 +70,17 @@ class StylesScripts extends \Debug_Bar_Panel
 				var wpStyles = <?= json_encode( array_values( $styles ?? [] ) ) ?>;
 
 				if (wpStyles.length) {
-					new Tabulator("#wp-styles-table", {
+					T.Create("#wp-styles-table", {
 						data: wpStyles,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [5, 10, 20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
-							T.filters.boolean({title: 'Loaded', field: 'loaded', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
-							{title: 'Handle', field: 'handle', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',},
-							{
-								title: 'Location', field: 'src', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',
-								minWidth: 375, formatter: function (cell, formatterParams, onRendered) {
-									if (cell.getValue() === null || cell.getValue() === '') {
-										return '';
-									}
-									return `<a href="${cell.getValue()}" target="_blank">${cell.getValue()}</a>`;
-								},
-							},
-							{title: 'Deps', field: 'deps', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', ...T.common.listArray},
-							{title: 'Ver', field: 'ver', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
-							{title: 'Args', field: 'args', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
-							{title: 'Extra', field: 'extra', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', ...T.common.listArray},
+							{title: 'Loaded', field: 'loaded', formatter: 'boolean'},
+							{title: 'Handle', field: 'handle', formatter: 'string'},
+							{title: 'Location', field: 'src', minWidth: 375, formatter: 'url',},
+							{title: 'Deps', field: 'deps', hozAlign: 'center', formatter: 'object'},
+							{title: 'Ver', field: 'ver', formatter: 'string'},
+							{title: 'Args', field: 'args', formatter: 'string'},
+							{title: 'Extra', field: 'extra', formatter: 'object'},
 						],
 					});
 				}
@@ -136,31 +123,18 @@ class StylesScripts extends \Debug_Bar_Panel
 				var wpScripts = <?= json_encode( array_values( $scripts ?? [] ) ) ?>;
 
 				if (wpScripts.length) {
-					new Tabulator("#wp-scripts-table", {
+					T.Create("#wp-scripts-table", {
 						data: wpScripts,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [5, 10, 20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
-							T.filters.boolean({title: 'Loaded', field: 'loaded', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
-							T.filters.boolean({title: 'Footer', field: 'in_footer', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
-							{title: 'Handle', field: 'handle', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',},
-							{
-								title: 'Location', field: 'src', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',
-								minWidth: 375, formatter: function (cell, formatterParams, onRendered) {
-									if (cell.getValue() === null || cell.getValue() === '') {
-										return '';
-									}
-									return `<a href="${cell.getValue()}" target="_blank">${cell.getValue()}</a>`;
-								},
-							},
-							{title: 'Deps', field: 'deps', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', ...T.common.listArray},
-							{title: 'Ver', field: 'ver', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
-							{title: 'Args', field: 'args', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
-							{title: 'Extra', field: 'extra', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', ...T.common.listArray},
+							{title: 'Loaded', field: 'loaded', formatter: 'boolean'},
+							{title: 'Footer', field: 'in_footer', formatter: 'boolean'},
+							{title: 'Handle', field: 'handle', hozAlign: 'left', formatter: 'string'},
+							{title: 'Location', field: 'src', formatter: 'url'},
+							{title: 'Deps', field: 'deps', formatter: 'object'},
+							{title: 'Ver', field: 'ver', formatter: 'string'},
+							{title: 'Args', field: 'args', formatter: 'string'},
+							{title: 'Extra', field: 'extra', formatter: 'object'},
 						],
 					});
 				}

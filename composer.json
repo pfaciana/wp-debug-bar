@@ -1,6 +1,6 @@
 {
 	"name": "pfaciana/wp-debug-bar",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"description": "Debug Bar that adds a debug menu to the admin bar that shows query, cache, and other helpful debugging information.",
 	"keywords": [],
 	"homepage": "https://renderdev.com/",

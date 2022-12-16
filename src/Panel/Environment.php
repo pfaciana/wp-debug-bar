@@ -367,38 +367,16 @@ class Environment extends \Debug_Bar_Panel
 				var wpConstants = <?= json_encode( array_values( $wp_constants ?? [] ) ) ?>;
 
 				if (wpConstants.length) {
-					new Tabulator("#wp-constants-table", {
+					T.Create("#wp-constants-table", {
 						data: wpConstants,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [5, 10, 20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
-							{title: 'Group', field: 'group', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							{
-								title: 'Name', field: 'name', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',
-								formatter: function (cell, formatterParams, onRendered) {
-									if (cell.getValue() === null) {
-										return '';
-									}
-
-									return `<span data-type="string">${cell.getValue()}</span>`;
-								}
-							},
-							{
-								title: 'Value', field: 'value', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center',
-								headerFilter: 'input', headerFilterFunc: T.filters.args,
-								formatter: T.formatters.args, sorter: T.sorter.args,
-							},
-							T.filters.boolean({title: 'Default?', field: 'isDefault', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
-							{
-								title: 'Default', field: 'default', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center',
-								headerFilter: 'input', headerFilterFunc: T.filters.args,
-								formatter: T.formatters.args, sorter: T.sorter.args,
-							},
-							{title: 'Type', field: 'type', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
+							{title: 'Group', field: 'group', formatter: 'list'},
+							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args'},
+							{title: 'Value', field: 'value', formatter: 'args'},
+							{title: 'Default?', field: 'isDefault', formatter: 'boolean'},
+							{title: 'Default', field: 'default', formatter: 'args'},
+							{title: 'Type', field: 'type', formatter: 'list'},
 						],
 					});
 				}
@@ -433,12 +411,11 @@ class Environment extends \Debug_Bar_Panel
 				var phpExtensions = <?= json_encode( $exts ) ?>;
 
 				if (phpExtensions.length) {
-					new Tabulator("#php-extensions-table", {
+					T.Create("#php-extensions-table", {
 						data: phpExtensions,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						columns: [
-							{title: 'Name', field: 'name', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
-							{title: 'Version', field: 'version', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
+							{title: 'Name', field: 'name', formatter: 'list'},
+							{title: 'Version', field: 'version', formatter: 'list'},
 						],
 					});
 				}
@@ -488,13 +465,12 @@ class Environment extends \Debug_Bar_Panel
 				var errorReporting = <?= json_encode( $errorReporting ) ?>;
 
 				if (errorReporting.length) {
-					new Tabulator("#error-reporting-table", {
+					T.Create("#error-reporting-table", {
 						data: errorReporting,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						columns: [
-							T.filters.boolean({title: 'Show', field: 'show', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
-							{title: 'Level', field: 'level', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
-							T.filters.minMax(errorReporting, {title: 'Value', field: 'value', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
+							{title: 'Show', field: 'show', formatter: 'boolean'},
+							{title: 'Level', field: 'level', formatter: 'string'},
+							{title: 'Value', field: 'value', formatter: 'minMax'},
 						],
 					});
 				}
@@ -504,7 +480,6 @@ class Environment extends \Debug_Bar_Panel
 
 	}
 }
-
 
 
 /*

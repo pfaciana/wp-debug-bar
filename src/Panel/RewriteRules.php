@@ -41,30 +41,22 @@ class RewriteRules extends \Debug_Bar_Panel
 
 		<script type="application/javascript">
 			jQuery(function ($) {
-				var T = window.Tabulator;
-				var rewriteRules = <?= json_encode( array_values( $rewriteRules ?? [] ) ) ?>;
+					var T = window.Tabulator;
+					var rewriteRules = <?= json_encode( array_values( $rewriteRules ?? [] ) ) ?>;
 
-				if (rewriteRules.length) {
-					new Tabulator("#rewrite-rules-table", {
-						data: rewriteRules,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
-						columns: [
-							{title: 'Pos', field: 'position', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
-							{
-								title: 'Regex', field: 'regex', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',
-								headerFilterFunc: function (userValue, fieldValue, rowData, filterParams) {
-									return (new RegExp(fieldValue)).test(userValue);
-								}
-							},
-							{title: 'Query', field: 'query', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',},
-						],
-					});
+					if (rewriteRules.length) {
+						T.Create("#rewrite-rules-table", {
+							data: rewriteRules,
+							columns: [
+								{title: 'Pos', field: 'position', formatter: 'string'},
+								{title: 'Regex', field: 'regex', formatter: 'regex'},
+								{title: 'Query', field: 'query', hozAlign: 'left', formatter: 'string'},
+							],
+						});
+					}
 				}
-			});
+			)
+			;
 		</script>
 		<?php
 	}
@@ -92,22 +84,12 @@ class RewriteRules extends \Debug_Bar_Panel
 				var rewriteTags = <?= json_encode( array_values( $rewriteTags ?? [] ) ) ?>;
 
 				if (rewriteTags.length) {
-					new Tabulator("#rewrite-tags-table", {
+					T.Create("#rewrite-tags-table", {
 						data: rewriteTags,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						columns: [
-							{title: 'Tag', field: 'tag', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
-							{
-								title: 'Regex', field: 'regex', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',
-								headerFilterFunc: function (userValue, fieldValue, rowData, filterParams) {
-									return (new RegExp(fieldValue)).test(userValue);
-								}
-							},
-							{title: 'Query', field: 'query', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',},
+							{title: 'Tag', field: 'tag', formatter: 'string'},
+							{title: 'Regex', field: 'regex', formatter: 'regex'},
+							{title: 'Query', field: 'query', hozAlign: 'left', formatter: 'string'},
 						],
 					});
 				}
@@ -170,14 +152,13 @@ class RewriteRules extends \Debug_Bar_Panel
 				var requestQuery = <?= json_encode( array_values( $requestQuery ?? [] ) ) ?>;
 
 				if (requestQuery.length) {
-					new Tabulator("#request-query-table", {
+					T.Create("#request-query-table", {
 						data: requestQuery,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						columns: [
-							{title: 'Field', field: 'name', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
-							{title: 'Value', field: 'value', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input',},
-							T.filters.boolean({title: 'GET', field: 'get', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', width: 75}),
-							T.filters.boolean({title: 'POST', field: 'post', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', width: 75}),
+							{title: 'Field', field: 'name', formatter: 'string'},
+							{title: 'Value', field: 'value', formatter: 'string'},
+							{title: 'GET', field: 'get', formatter: 'boolean'},
+							{title: 'POST', field: 'post', formatter: 'boolean'},
 						],
 					});
 				}

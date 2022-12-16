@@ -70,13 +70,8 @@ class UserRoles extends \Debug_Bar_Panel
 				var roles = <?= json_encode( array_values( $this->roles ?? [] ) ) ?>;
 
 				if (roles.length) {
-					new Tabulator("#roles-table", {
+					T.Create("#roles-table", {
 						data: roles,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: <?= json_encode( $rolesConfig ?? [] ) ?>,
 					});
@@ -108,13 +103,9 @@ class UserRoles extends \Debug_Bar_Panel
 				var capabilities = <?= json_encode( array_values( $capabilities ?? [] ) ) ?>;
 
 				if (capabilities.length) {
-					new Tabulator("#capabilities-table", {
+					T.Create("#capabilities-table", {
 						data: capabilities,
-						pagination: 'local',
 						paginationSize: true,
-						paginationSizeSelector: [20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						columns: <?= json_encode( $capabilitiesConfig ?? [] ) ?>,
 					});
 				}

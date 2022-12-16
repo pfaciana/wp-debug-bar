@@ -269,28 +269,30 @@ class Hooks
 				var tracking = <?= json_encode( $tracking ?? [] ) ?>;
 
 				if (tracking.length) {
-					new Tabulator("#tracking-table", {
+					T.Create("#tracking-table", {
 						data: tracking,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [10, 20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
-							{title: 'Tracking ID(s)', field: 'trackers', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', ...Tabulator.common.valuesArray},
-							{title: 'Hook Name', field: 'name', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input', headerFilterFunc: Tabulator.filters.advanced,},
-							{title: "Hook Type", field: 'type', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							T.filters.minMax(tracking, {title: 'Run Time', field: 'duration', formatter: Tabulator.formatters.timeMs, vertAlign: 'middle', hozAlign: 'right', headerHozAlign: 'center', headerSortStartingDir: 'desc',}),
-							T.filters.minMax(tracking, {title: 'Start Time', field: 'time', formatter: Tabulator.formatters.timeMs, vertAlign: 'middle', hozAlign: 'right', headerHozAlign: 'center',}),
-							{title: 'Input', field: 'input', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input', maxWidth: 250, formatter: Tabulator.formatters.args,},
-							{title: 'Output', field: 'value', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input', maxWidth: 250, formatter: Tabulator.formatters.args,},
-							{title: 'Arguments', field: 'args', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input', maxWidth: 250, formatter: Tabulator.formatters.args,},
-							{title: 'Parent Hook', field: 'parent', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input'},
-							T.filters.minMax(function () {
-								return arrayColumn(tracking, 'subscribers').map(x => ({subscribers: x.length}));
-							}(), {title: 'Subscribers', field: 'subscribers', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerSortStartingDir: 'desc', ...Tabulator.common.arrayByLength}),
-							{title: 'Publisher', field: 'publishers', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', ...Tabulator.common.filesArray},
+							{title: 'Tracking ID(s)', field: 'trackers', hozAlign: 'left', formatter: 'list[]'},
+							{title: 'Hook Name', field: 'name', hozAlign: 'left', headerFilter: 'input', headerFilterFunc: T.filters.advanced},
+							{title: "Hook Type", field: 'type', formatter: 'list'},
+							{title: 'Run Time', field: 'duration', headerSortStartingDir: 'desc', formatter: 'timeMs',},
+							{title: 'Start Time', field: 'time', formatter: 'timeMs',},
+							{title: 'Arguments', field: 'args', maxWidth: 250, formatter: 'args'},
+							{title: 'Input', field: 'input', maxWidth: 250, formatter: 'args'},
+							{title: 'Output', field: 'value', maxWidth: 250, formatter: 'args'},
+							{title: 'Parent Hook', field: 'parent', headerFilter: 'input'},
+							{
+								title: 'Subscribers', field: 'subscribers', formatter: 'minMax[]',
+								clickPopup: function (e, component, onRendered) {
+									if (!component.getValue().length) {
+										return '';
+									}
+
+									return T.formatters.files(component, {join: "<br>"}, onRendered);
+								}
+							},
+							{title: 'Publisher', field: 'publishers', formatter: 'files'},
 						],
 					});
 				}
@@ -298,26 +300,28 @@ class Hooks
 				var hooks = <?=json_encode( $hooks ) ?>;
 
 				if (hooks.length) {
-					new Tabulator("#hooks-table", {
+					T.Create("#hooks-table", {
 						data: hooks,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [10, 20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
-							{title: 'Hook Name', field: 'name', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input', headerFilterFunc: Tabulator.filters.advanced,},
-							{title: "Hook Type", field: 'type', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							T.filters.minMax(hooks, {title: 'Run Count', field: 'count', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerSortStartingDir: 'desc',}),
-							T.filters.minMax(hooks, {title: 'Total Run', field: 'total', formatter: Tabulator.formatters.timeMs, vertAlign: 'middle', hozAlign: 'right', headerHozAlign: 'center', headerSortStartingDir: 'desc',}),
-							T.filters.minMax(hooks, {title: 'Slowest Run', field: 'max', formatter: Tabulator.formatters.timeMs, vertAlign: 'middle', hozAlign: 'right', headerHozAlign: 'center', headerSortStartingDir: 'desc',}),
-							T.filters.minMax(hooks, {title: 'Start Time', field: 'start', formatter: Tabulator.formatters.timeMs, vertAlign: 'middle', hozAlign: 'right', headerHozAlign: 'center',}),
-							T.filters.minMax(hooks, {title: 'End Time', field: 'end', formatter: Tabulator.formatters.timeMs, vertAlign: 'middle', hozAlign: 'right', headerHozAlign: 'center', headerSortStartingDir: 'desc',}),
-							T.filters.minMax(function () {
-								return arrayColumn(hooks, 'subscribers').map(x => ({subscribers: x.length}));
-							}(), {title: 'Subscribers', field: 'subscribers', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', ...Tabulator.common.arrayByLength}),
-							{title: 'Publishers', field: 'publishers', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', ...Tabulator.common.filesArray},
+							{title: 'Hook Name', field: 'name', hozAlign: 'left', headerFilter: 'input', headerFilterFunc: T.filters.advanced},
+							{title: "Hook Type", field: 'type', formatter: 'list'},
+							{title: 'Run Count', field: 'count', formatter: 'minMax'},
+							{title: 'Total Run', field: 'total', headerSortStartingDir: 'desc', formatter: 'timeMs',},
+							{title: 'Slowest Run', field: 'max', headerSortStartingDir: 'desc', formatter: 'timeMs',},
+							{title: 'Start Time', field: 'start', formatter: 'timeMs',},
+							{title: 'End Time', field: 'end', headerSortStartingDir: 'desc', formatter: 'timeMs'},
+							{
+								title: 'Subscribers', field: 'subscribers', formatter: 'minMax[]',
+								clickPopup: function (e, component, onRendered) {
+									if (!component.getValue().length) {
+										return '';
+									}
+
+									return T.formatters.files(component, {join: "<br>"}, onRendered);
+								}
+							},
+							{title: 'Publishers', field: 'publishers', formatter: 'files'},
 						],
 					});
 				}

@@ -242,8 +242,8 @@ class Globals extends \Debug_Bar_Panel
 		}
 		?>
 
-		<h3>WordPress Constants</h3>
-		<div id="wp-constants-table"></div>
+		<h3>User Constants</h3>
+		<div id="user-constants-table"></div>
 
 		<script type="application/javascript">
 			jQuery(function ($) {
@@ -251,32 +251,14 @@ class Globals extends \Debug_Bar_Panel
 				var userConstants = <?= json_encode( array_values( $user_constants ?? [] ) ) ?>;
 
 				if (userConstants.length) {
-					new Tabulator("#wp-constants-table", {
+					T.Create("#user-constants-table", {
 						data: userConstants,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [5, 10, 20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
-							{title: 'Group', field: 'group', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							{
-								title: 'Name', field: 'name', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',
-								formatter: function (cell, formatterParams, onRendered) {
-									if (cell.getValue() === null) {
-										return '';
-									}
-
-									return `<span data-type="string">${cell.getValue()}</span>`;
-								}
-							},
-							{
-								title: 'Value', field: 'value', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center',
-								headerFilter: 'input', headerFilterFunc: T.filters.args,
-								formatter: T.formatters.args, sorter: T.sorter.args,
-							},
-							{title: 'Type', field: 'type', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
+							{title: 'Group', field: 'group', formatter: 'list'},
+							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args'},
+							{title: 'Value', field: 'value', formatter: 'args'},
+							{title: 'Type', field: 'type', formatter: 'list'},
 						],
 					});
 				}
@@ -306,32 +288,15 @@ class Globals extends \Debug_Bar_Panel
 				var wpGlobals = <?= json_encode( $wp_globals ?? [] ) ?>;
 
 				if (wpGlobals.length) {
-					new Tabulator("#wp-globals-table", {
+					T.Create("#wp-globals-table", {
 						data: wpGlobals,
-						pagination: 'local',
-						paginationSize: 20,
 						paginationSizeSelector: [5, 10, 20, 50, 100],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
-							{title: 'Group', field: 'group', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							{
-								title: 'Name', field: 'name', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',
-								formatter: function (cell, formatterParams, onRendered) {
-									if (cell.getValue() === null) {
-										return '';
-									}
-
-									return `<span data-type="string">${cell.getValue()}</span>`;
-								}
-							},
-							{
-								title: 'Value', field: 'value', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center',
-								headerFilter: 'input', headerFilterFunc: T.filters.args,
-								formatter: T.formatters.args, sorter: T.sorter.args,
-							},
-							{title: 'Type', field: 'type', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
+							{title: 'Group', field: 'group', formatter: 'list'},
+							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args'},
+							{title: 'Value', field: 'value', formatter: 'args'},
+							{title: 'Type', field: 'type', formatter: 'list'},
 						],
 					});
 				}
@@ -374,32 +339,15 @@ class Globals extends \Debug_Bar_Panel
 				var classConstants = <?= json_encode( $class_constants ?? [] ) ?>;
 
 				if (classConstants.length) {
-					new Tabulator("#class-constants-table", {
+					T.Create("#class-constants-table", {
 						data: classConstants,
-						pagination: 'local',
-						paginationSize: 20,
 						paginationSizeSelector: [5, 10, 20, 50, 100],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
-							{title: 'Group', field: 'group', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							{
-								title: 'Name', field: 'name', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',
-								formatter: function (cell, formatterParams, onRendered) {
-									if (cell.getValue() === null) {
-										return '';
-									}
-
-									return `<span data-type="string">${cell.getValue()}</span>`;
-								}
-							},
-							{
-								title: 'Value', field: 'value', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center',
-								headerFilter: 'input', headerFilterFunc: T.filters.args,
-								formatter: T.formatters.args, sorter: T.sorter.args,
-							},
-							{title: 'Type', field: 'type', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
+							{title: 'Group', field: 'group', formatter: 'list'},
+							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args'},
+							{title: 'Value', field: 'value', formatter: 'args'},
+							{title: 'Type', field: 'type', formatter: 'list'},
 						],
 					});
 				}
@@ -415,32 +363,16 @@ class Globals extends \Debug_Bar_Panel
 				var classStatics = <?= json_encode( $class_statics ?? [] ) ?>;
 
 				if (classStatics.length) {
-					new Tabulator("#class-statics-table", {
+					T.Create("#class-statics-table", {
 						data: classStatics,
-						pagination: 'local',
 						paginationSize: 10,
 						paginationSizeSelector: [5, 10, 20, 50, 100],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
-							{title: 'Group', field: 'group', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							{
-								title: 'Name', field: 'name', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',
-								formatter: function (cell, formatterParams, onRendered) {
-									if (cell.getValue() === null) {
-										return '';
-									}
-
-									return `<span data-type="string">${cell.getValue()}</span>`;
-								}
-							},
-							{
-								title: 'Value', field: 'value', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center',
-								headerFilter: 'input', headerFilterFunc: T.filters.args,
-								formatter: T.formatters.args, sorter: T.sorter.args,
-							},
-							{title: 'Type', field: 'type', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
+							{title: 'Group', field: 'group', formatter: 'list'},
+							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args'},
+							{title: 'Value', field: 'value', formatter: 'args'},
+							{title: 'Type', field: 'type', formatter: 'list'},
 						],
 					});
 				}
@@ -469,32 +401,15 @@ class Globals extends \Debug_Bar_Panel
 				var phpConstants = <?= json_encode( $php_constants ?? [] ) ?>;
 
 				if (phpConstants.length) {
-					new Tabulator("#php-constants-table", {
+					T.Create("#php-constants-table", {
 						data: phpConstants,
-						pagination: 'local',
-						paginationSize: 20,
 						paginationSizeSelector: [5, 10, 20, 50, 100],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
-							{title: 'Group', field: 'group', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							{
-								title: 'Name', field: 'name', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center', headerFilter: 'input',
-								formatter: function (cell, formatterParams, onRendered) {
-									if (cell.getValue() === null) {
-										return '';
-									}
-
-									return `<span data-type="string">${cell.getValue()}</span>`;
-								}
-							},
-							{
-								title: 'Value', field: 'value', vertAlign: 'middle', hozAlign: 'left', headerHozAlign: 'center',
-								headerFilter: 'input', headerFilterFunc: T.filters.args,
-								formatter: T.formatters.args, sorter: T.sorter.args,
-							},
-							{title: 'Type', field: 'type', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
+							{title: 'Group', field: 'group', formatter: 'list'},
+							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args'},
+							{title: 'Value', field: 'value', formatter: 'args'},
+							{title: 'Type', field: 'type', formatter: 'list'},
 						],
 					});
 				}
@@ -545,23 +460,19 @@ class Globals extends \Debug_Bar_Panel
 				var bools = <?= json_encode( $boolean_functions ?? [] ) ?>;
 
 				if (bools.length) {
-					new Tabulator("#bools-table", {
+					T.Create("#bools-table", {
 						data: bools,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [10, 20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: [
-							T.filters.boolean({title: 'Yes/No', field: 'return', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center',}),
+							{title: 'Yes/No', field: 'return', formatter: 'boolean'},
 							{
-								title: 'Name', field: 'name', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'input', formatter: function (cell, formatterParams, onRendered) {
+								title: 'Name', field: 'name', headerFilter: 'input',
+								formatter: function (cell, formatterParams, onRendered) {
 									return '<span style="font-weight: bold; color: ' + (cell.getData().return ? '#090' : '#C00') + '">' + cell.getValue() + '</span>';
 								},
 							},
-							{title: 'Group', field: 'group', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', headerFilter: 'list', headerFilterParams: {sort: 'asc', valuesLookup: true, clearable: true},},
-							{title: 'File', field: 'file', vertAlign: 'middle', hozAlign: 'center', headerHozAlign: 'center', ...Tabulator.common.filesArray,},
+							{title: 'Group', field: 'group', formatter: 'list'},
+							{title: 'File', field: 'file', formatter: 'file'},
 						],
 					});
 				}

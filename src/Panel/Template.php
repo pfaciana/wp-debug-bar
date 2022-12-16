@@ -212,13 +212,8 @@ class Template extends \Debug_Bar_Panel
 				var themeFeatures = <?= json_encode( array_values( $themeFeatures ?? [] ) ) ?>;
 
 				if (themeFeatures.length) {
-					new Tabulator("#theme-features-table", {
+					T.Create("#theme-features-table", {
 						data: themeFeatures,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: <?= json_encode( $themeFeaturesConfig ?? [] ) ?>,
 					});

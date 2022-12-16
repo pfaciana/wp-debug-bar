@@ -144,13 +144,8 @@ class PostTypes extends \Debug_Bar_Panel
 				var postTypes = <?= json_encode( array_values( $postTypes ?? [] ) ) ?>;
 
 				if (postTypes.length) {
-					new Tabulator("#post-types-table", {
+					T.Create("#post-types-table", {
 						data: postTypes,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [5, 10, 20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: <?= json_encode( $postTypesConfig ?? [] ) ?>,
 					});
@@ -192,13 +187,8 @@ class PostTypes extends \Debug_Bar_Panel
 				var taxonomies = <?= json_encode( array_values( $taxonomies ?? [] ) ) ?>;
 
 				if (taxonomies.length) {
-					new Tabulator("#taxonomies-table", {
+					T.Create("#taxonomies-table", {
 						data: taxonomies,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [5, 10, 20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: <?= json_encode( $taxonomiesConfig ?? [] ) ?>,
 					});
@@ -257,13 +247,9 @@ class PostTypes extends \Debug_Bar_Panel
 				var taxonomyPairings = <?= json_encode( array_values( $taxonomyPairings ?? [] ) ) ?>;
 
 				if (taxonomyPairings.length) {
-					new Tabulator("#taxonomy-pairings-table", {
+					T.Create("#taxonomy-pairings-table", {
 						data: taxonomyPairings,
-						pagination: 'local',
 						paginationSize: 10,
-						paginationSizeSelector: [5, 10, 20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						columns: <?= json_encode( $taxonomyPairingsConfig ?? [] ) ?>,
 					});
 				}
@@ -311,13 +297,9 @@ class PostTypes extends \Debug_Bar_Panel
 				var postTypePairings = <?= json_encode( array_values( $postTypePairings ?? [] ) ) ?>;
 
 				if (postTypePairings.length) {
-					new Tabulator("#post-type-pairings-table", {
+					T.Create("#post-type-pairings-table", {
 						data: postTypePairings,
-						pagination: 'local',
 						paginationSize: 10,
-						paginationSizeSelector: [5, 10, 20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						layout: 'fitDataStretch',
 						columns: <?= json_encode( $postTypePairingsConfig ?? [] ) ?>,
 					});
@@ -373,13 +355,8 @@ class PostTypes extends \Debug_Bar_Panel
 				var postStatuses = <?= json_encode( array_values( $postStatuses ?? [] ) ) ?>;
 
 				if (postStatuses.length) {
-					new Tabulator("#post-status-table", {
+					T.Create("#post-status-table", {
 						data: postStatuses,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						columns: <?= json_encode( $pairingsConfig ?? [] ) ?>,
 					});
 				}
@@ -426,13 +403,8 @@ class PostTypes extends \Debug_Bar_Panel
 				var imageSizes = <?= json_encode( array_values( $imageSizes ?? [] ) ) ?>;
 
 				if (imageSizes.length) {
-					new Tabulator("#image-sizes-table", {
+					T.Create("#image-sizes-table", {
 						data: imageSizes,
-						pagination: 'local',
-						paginationSize: 20,
-						paginationSizeSelector: [20, 50, 100, true],
-						paginationButtonCount: 15,
-						footerElement: '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>',
 						columns: <?= json_encode( $imageSizesConfig ?? [] ) ?>,
 					});
 				}

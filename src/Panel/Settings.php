@@ -117,9 +117,7 @@ class Settings extends \Debug_Bar_Panel
 								action: 'rwd_debug_bar_panels_min_role',
 								user_role: $this.val(),
 							},
-							success: function (response) {
-								console.log(response);
-							}
+							success: function (response) {}
 						});
 						return false;
 					});

@@ -11,37 +11,18 @@ trait FormatTrait
 
 	protected $tabulatorConfigs = [
 		'boolean' => [
-			'sorter'             => 'boolean',
-			'vertAlign'          => 'middle',
-			'hozAlign'           => 'center',
-			'headerHozAlign'     => 'center',
-			'formatter'          => 'tickCross',
-			'formatterParams'    => [ 'allowEmpty' => TRUE, 'allowTruthy' => TRUE, ],
-			'headerFilter'       => 'tickCross',
-			'headerFilterParams' => [ 'tristate' => TRUE ],
-			'width'              => 115,
-			'headerWordWrap'     => TRUE,
+			'formatter' => 'boolean',
+			'width'     => 115,
 		],
 		'string'  => [
-			'vertAlign'      => 'middle',
-			'hozAlign'       => 'left',
-			'headerHozAlign' => 'center',
-			'headerFilter'   => 'input',
+			'formatter' => 'string',
 		],
 		'integer' => [
-			'sorter'         => 'number',
-			'vertAlign'      => 'middle',
-			'hozAlign'       => 'center',
-			'headerHozAlign' => 'center',
-			'headerFilter'   => 'input',
-			'width'          => 100,
+			'formatter' => 'number',
+			'width'     => 100,
 		],
 		'list'    => [
-			'vertAlign'          => 'middle',
-			'hozAlign'           => 'center',
-			'headerHozAlign'     => 'center',
-			'headerFilter'       => 'list',
-			'headerFilterParams' => [ 'sort' => 'asc', 'valuesLookup' => TRUE, 'clearable' => TRUE ],
+			'formatter' => 'list',
 		],
 		'frozen'  => [
 			'frozen' => TRUE,
