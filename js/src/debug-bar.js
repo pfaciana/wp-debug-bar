@@ -182,7 +182,7 @@
 			});
 
 			// Resize the Console after window resize
-			$window.resize(function () {
+			$window.on('resize', function () {
 				debouncer('rwdDebugBar', function () {
 					if (!isConsoleHidden()) {
 						resetConsolePosition();
@@ -280,9 +280,9 @@
 			$('#rwd-debug-menu-link-' + id + ', #rwd-debug-menu-link-' + id + ' > a').removeClass('wp-not-current-submenu').addClass('wp-has-current-submenu');
 			$container.show();
 			$panel.show();
-			if (id !== panelStack[panelStack.length - 1]) {
-				do_action('rdb/activate-panel', id, $panel, firstTime);
-				do_action('rdb/activate-panel/' + id, $panel, firstTime);
+			if (id !== panelStack[panelStack.length - 1] && typeof $ === 'function' && 'publish' in $) {
+				$.publish('rdb/activate-panel', id, $panel, firstTime);
+				$.publish('rdb/activate-panel/' + id, $panel, firstTime);
 				panelStack.push(id);
 			}
 			return false;
