@@ -127,35 +127,6 @@ class Template extends \Debug_Bar_Panel
 		<?php
 	}
 
-	protected function get_shortcodes_card ()
-	{
-		global $shortcode_tags;
-		?>
-		<ul class="debug-bar-reset-list">
-			<?php foreach ( $shortcode_tags as $tag => $callback ) :
-				[ $file, $line ] = $this->getFileLine( $callback ); ?>
-				<li>[<?= $this->getFileLinkTag( [ 'file' => $file, 'line' => $line, 'text' => $tag, ] ) ?>]</li>
-			<?php endforeach; ?>
-		</ul>
-		<?php
-	}
-
-	protected function get_theme_features_card ()
-	{
-		global $_wp_theme_features;
-		$theme_features = $_wp_theme_features;
-		ksort( $theme_features );
-		?>
-		<ul class="debug-bar-reset-list">
-			<?php foreach ( $theme_features as $feature => $value ) :
-				if ( $value !== FALSE ) : ?>
-					<li><?= $feature ?></li>
-				<?php endif;
-			endforeach; ?>
-		</ul>
-		<?php
-	}
-
 	protected function getThemeFeatures ()
 	{
 		global $_wp_theme_features, $_wp_registered_theme_features;
@@ -223,6 +194,43 @@ class Template extends \Debug_Bar_Panel
 		<?php
 	}
 
+	protected function getShortcodes ()
+	{
+		global $shortcode_tags;
+
+		$shortcodes = [];
+
+		foreach ( $shortcode_tags as $tag => $callback ) {
+			[ $file, $line ] = $this->getFileLine( $callback );
+			$shortcodes[] = [ 'tag' => "[{$tag}]", 'file' => [ $this->getFileLinkArray( $file, $line ) ] ];
+		}
+
+		?>
+
+		<h3>Shortcodes</h3>
+		<div id="shortcodes-table"></div>
+
+		<script type="application/javascript">
+			jQuery(function ($) {
+				var T = window.Tabulator;
+				var shortcodes = <?= json_encode( array_values( $shortcodes ?? [] ) ) ?>;
+
+				if (shortcodes.length) {
+					T.Create("#shortcodes-table", {
+						data: shortcodes,
+						paginationSize: 5,
+						layout: 'fitDataStretch',
+						columns: [
+							{title: 'Tag', field: 'tag', formatter: 'string'},
+							{title: 'Render Callback', field: 'file', formatter: 'file'},
+						],
+					});
+				}
+			});
+		</script>
+		<?php
+	}
+
 	public function render ()
 	{
 		$cards = [
@@ -230,8 +238,6 @@ class Template extends \Debug_Bar_Panel
 			'template_file'      => NULL,
 			'template_hierarchy' => NULL,
 			'body_classes'       => NULL,
-			'shortcodes'         => NULL,
-			'theme_features'     => NULL,
 		];
 
 		?>
@@ -241,6 +247,7 @@ class Template extends \Debug_Bar_Panel
 			$this->addCard( $this->humanize( $card ), [ $this, "get_{$card}_card" ], $size );
 		}
 		$this->showCards();
+		$this->getShortcodes();
 		$this->getThemeFeatures();
 	}
 }
