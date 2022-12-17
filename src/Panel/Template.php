@@ -151,6 +151,10 @@ class Template extends \Debug_Bar_Panel
 		foreach ( $themeFeatures as $name => $themeFeature ) {
 			$themeFeatures[$name]['name']    = $name;
 			$themeFeatures[$name]['enabled'] = in_array( $name, $_theme_features );
+			$themeFeatures[$name]['value']   = '';
+			if ( array_key_exists( $name, $_wp_theme_features ) ) {
+				$themeFeatures[$name]['value'] = $this->formatValue( $_wp_theme_features[$name] );
+			}
 			unset( $themeFeatures[$name]['show_in_rest'] );
 		}
 
@@ -158,6 +162,7 @@ class Template extends \Debug_Bar_Panel
 
 		$themeScalars        = [
 			'name'        => 'string',
+			'value'       => 'args',
 			'type'        => 'list',
 			'enabled'     => 'boolean',
 			'variadic'    => 'boolean',

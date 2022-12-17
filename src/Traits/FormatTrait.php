@@ -24,6 +24,12 @@ trait FormatTrait
 		'list'    => [
 			'formatter' => 'list',
 		],
+		'object'  => [
+			'formatter' => 'object',
+		],
+		'args'    => [
+			'formatter' => 'args',
+		],
 		'frozen'  => [
 			'frozen' => TRUE,
 			'width'  => 175,
