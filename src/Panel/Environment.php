@@ -414,8 +414,8 @@ class Environment extends \Debug_Bar_Panel
 					T.Create("#php-extensions-table", {
 						data: phpExtensions,
 						columns: [
-							{title: 'Name', field: 'name', formatter: 'list'},
-							{title: 'Version', field: 'version', formatter: 'list'},
+							{title: 'Name', field: 'name', formatter: 'string'},
+							{title: 'Version', field: 'version', formatter: 'string'},
 						],
 					});
 				}
