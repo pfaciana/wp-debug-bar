@@ -212,7 +212,7 @@ class Blocks extends \Debug_Bar_Panel
 						columns: [
 							{title: 'title', field: 'title', hozAlign: 'left', frozen: true, formatter: 'string'},
 							{title: 'slug', field: 'slug', frozen: true, formatter: 'string'},
-							{title: 'categories', field: 'categories', formatter: 'string'},
+							{title: 'categories', field: 'categories', formatter: 'list'},
 							{title: 'keywords', field: 'keywords', hozAlign: 'left', formatter: 'string'},
 							{title: 'blockTypes', field: 'blockTypes', hozAlign: 'left', formatter: 'string'},
 							{title: 'viewportWidth', field: 'viewportWidth', formatter: 'minMax'},
