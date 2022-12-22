@@ -615,6 +615,7 @@
       options.paginationSize ??= 20;
       options.paginationSizeSelector ??= [5, 10, 20, 50, 100, true];
       options.paginationButtonCount ??= 15;
+      options.movableColumns ??= true;
       options.footerElement ??= '<button class="clear-all-table-filters tabulator-page">Clear Filters</button>';
       return options;
     });
