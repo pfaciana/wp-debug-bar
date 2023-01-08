@@ -10,7 +10,8 @@
 			isAdmin = $body.hasClass('wp-admin'),
 			hiddenKey = isAdmin ? 'rwdDebugBarAdminHidden' : 'rwdDebugBarHidden',
 			allStates = 'minimized restored maximized',
-			panelStack = [];
+			panelStack = [],
+			jqXHR = false;
 
 		function defineLocalStorage() {
 			var defaults = {
@@ -133,6 +134,7 @@
 
 			// WordPress Top Bar Sub Links for 'RWD Debug Bar' parent
 			$('.rwd-debug-admin-bar-link a').on('click', function () {
+				localStorage[hiddenKey] = '0';
 				return goToPanel(this.hash.substring(1));
 			});
 
@@ -167,9 +169,16 @@
 
 			// Each panel's activate/deactivate toggle controls
 			$('.rwd-debug-panel-action').on('click', function (e) {
+				if (jqXHR.readyState && jqXHR.readyState < 4) {
+					return;
+				}
 				var $this = $(this);
+				if ($this.find('i.fa').hasClass('fa-ellipsis-h')) {
+					return;
+				}
+				$this.find('i.fa').removeClass('fa-toggle-on').removeClass('fa-toggle-off').addClass('fa-ellipsis-h');
 
-				$.ajax(ajaxUrl, {
+				jqXHR = $.ajax(ajaxUrl, {
 					method: 'POST',
 					data: {
 						action: 'rwd_debug_bar_panels_status',
@@ -179,8 +188,9 @@
 					success: function (response) {
 						var active = (response == '1');
 						$this.attr('data-activate', active ? 0 : 1);
-						$this.find('i.fa').toggleClass('fa-toggle-off', active ? 0 : 1);
-						$this.find('i.fa').toggleClass('fa-toggle-on', active ? 1 : 0);
+						$this.find('i.fa').removeClass('fa-ellipsis-h');
+						$this.find('i.fa').toggleClass('fa-toggle-off', !active);
+						$this.find('i.fa').toggleClass('fa-toggle-on', active);
 					},
 				});
 			});
