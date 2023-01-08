@@ -2,13 +2,10 @@
 
 namespace DebugBar\Panel;
 
-use DebugBar\Traits\FormatTrait;
-use DebugBar\Traits\LayoutTrait;
-
 class RewriteRules extends \Debug_Bar_Panel
 {
-	use FormatTrait;
-	use LayoutTrait;
+	use \DebugBar\Traits\FormatTrait;
+	use \DebugBar\Traits\LayoutTrait;
 
 	public $_icon = 'dashicons-editor-ol';
 	public $_panel_id;
@@ -16,10 +13,9 @@ class RewriteRules extends \Debug_Bar_Panel
 
 	public function render ()
 	{
+		$this->addTab( 'Matched Query', [ $this, 'setMatchedQuery' ] );
 		$this->addTab( 'Rules', [ $this, 'setRewriteRules' ] );
 		$this->addTab( 'Tags', [ $this, 'setRewriteTags' ] );
-		$this->addTab( 'Matched Query', [ $this, 'setMatchedQuery' ] );
-		$this->addTab( 'GET/POST', [ $this, 'setRequestQuery' ] );
 		$this->showTabs( $this->_panel_id );
 	}
 
@@ -50,7 +46,7 @@ class RewriteRules extends \Debug_Bar_Panel
 							columns: [
 								{title: 'Pos', field: 'position', formatter: 'string'},
 								{title: 'Regex', field: 'regex', formatter: 'regex'},
-								{title: 'Query', field: 'query', hozAlign: 'left', formatter: 'string'},
+								{title: 'Query', field: 'query', formatter: 'text'},
 							],
 						});
 					}
@@ -115,6 +111,8 @@ class RewriteRules extends \Debug_Bar_Panel
 			}
 		}
 		$this->showCards();
+
+		$this->setRequestQuery();
 	}
 
 	protected function get_matched_request_card ()
