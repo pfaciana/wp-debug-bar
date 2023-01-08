@@ -188,7 +188,7 @@ trait FormatTrait
 		$this->prefixes[$wpThemeDir]                   = 'Theme';
 		$this->prefixes[$wpDir . 'wp-admin/']          = 'WP Admin';
 		$this->prefixes[$wpDir . 'wp-includes/']       = 'WP Core';
-		$this->prefixes[$wpDir]                        = 'Root';
+		$this->prefixes[$wpDir]                        = 'WP Root';
 
 		return $this->prefixes;
 	}
