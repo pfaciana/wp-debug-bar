@@ -4,7 +4,7 @@ namespace DebugBar;
 
 class Hooks
 {
-	use Traits\FormatTrait;
+	use \DebugBar\Traits\FormatTrait;
 
 	protected $panel;
 	protected $active = TRUE;
@@ -165,6 +165,14 @@ class Hooks
 		}
 		$data['level'] = max( array_column( $calls, 'level' ) );
 
+		foreach ( $data['subscribers'] as &$subscriber ) {
+			$subscriber['text'] .= " [{$subscriber['priority']}]";
+			if ( array_key_exists( 'count', $subscriber ) && $subscriber['count'] > 1 ) {
+				$subscriber['text'] .= " (x{$subscriber['count']})";
+			}
+		}
+		$data['subscribers'] = array_values( $data['subscribers'] );
+
 		$publishers = [];
 		foreach ( $calls as $call ) {
 			$publishers[] = $call['file'] . '::' . $call['line'];
@@ -207,6 +215,22 @@ class Hooks
 		return $hook;
 	}
 
+	protected function addToSubscribers ( $subscribers, $fileLink, $priority = NULL )
+	{
+		$text = $fileLink['text'];
+
+		if ( !array_key_exists( $text, $subscribers ) ) {
+			$fileLink['priority'] = $priority == PHP_INT_MIN ? 'PHP_INT_MIN' : ( $priority == PHP_INT_MAX ? 'PHP_INT_MAX' : $priority );
+			$fileLink['count']    = 1;
+			$subscribers[$text]   = $fileLink;
+		}
+		else {
+			$subscribers[$text]['count']++;
+		}
+
+		return $subscribers;
+	}
+
 	public function render ()
 	{
 		global $wp_filter;
@@ -226,14 +250,11 @@ class Hooks
 						[ $file, $line ] = $this->getFileLine( $args['function'] );
 						if ( !empty( $file ) ) {
 							if ( !str_starts_with( $file, __DIR__ ) ) {
-								$data['subscribers'][] = $this->getFileLinkArray( $file, $line );
+								$data['subscribers'] = $this->addToSubscribers( $data['subscribers'], $this->getFileLinkArray( $file, $line ), $priority );
 							}
 						}
 						else {
-							$data['subscribers'][] = [
-								'url'  => FALSE,
-								'text' => $args['function'],
-							];
+							$data['subscribers'] = $this->addToSubscribers( $data['subscribers'], [ 'url' => FALSE, 'text' => $args['function'] ], $priority );
 						}
 					}
 				}
@@ -274,30 +295,21 @@ class Hooks
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Tracking ID(s)', field: 'trackers', hozAlign: 'left', formatter: 'list[]'},
-							{title: 'Hook Name', field: 'name', hozAlign: 'left', headerFilter: 'input', headerFilterFunc: T.filters.advanced},
+							{title: 'Hook Name', field: 'name', formatter: 'text'},
 							{title: "Hook Type", field: 'type', formatter: 'list'},
-							{title: 'Run Time', field: 'duration', headerSortStartingDir: 'desc', formatter: 'timeMs',},
+							{title: 'Run Time', field: 'duration', headerSortStartingDir: 'desc', formatter: 'timeMs', formatterParams: {bottomSum: true}, bottomCalcParams: {suffix: ' ms'}},
 							{title: 'Start Time', field: 'time', formatter: 'timeMs',},
 							{title: 'Arguments', field: 'args', maxWidth: 250, formatter: 'args'},
 							{title: 'Input', field: 'input', maxWidth: 250, formatter: 'args'},
 							{title: 'Output', field: 'value', maxWidth: 250, formatter: 'args'},
 							{title: 'Parent Hook', field: 'parent', headerFilter: 'input'},
-							{
-								title: 'Subscribers', field: 'subscribers', formatter: 'minMax[]',
-								clickPopup: function (e, component, onRendered) {
-									if (!component.getValue().length) {
-										return '';
-									}
-
-									return T.formatters.files(component, {join: "<br>"}, onRendered);
-								}
-							},
+							{title: 'Subscribers', field: 'subscribers', formatter: 'subscribers'},
 							{title: 'Publisher', field: 'publishers', formatter: 'files'},
 						],
 					});
 				}
 
-				var hooks = <?=json_encode( $hooks ) ?>;
+				var hooks = <?= json_encode( $hooks ) ?>;
 
 				if (hooks.length) {
 					T.Create("#hooks-table", {
@@ -306,21 +318,12 @@ class Hooks
 						columns: [
 							{title: 'Hook Name', field: 'name', hozAlign: 'left', headerFilter: 'input', headerFilterFunc: T.filters.advanced},
 							{title: "Hook Type", field: 'type', formatter: 'list'},
-							{title: 'Run Count', field: 'count', formatter: 'minMax'},
-							{title: 'Total Run', field: 'total', headerSortStartingDir: 'desc', formatter: 'timeMs',},
+							{title: 'Run Count', field: 'count', formatter: 'minMax', formatterParams: {bottomSum: true}},
+							{title: 'Total Run', field: 'total', headerSortStartingDir: 'desc', formatter: 'timeMs', formatterParams: {bottomSum: true}, bottomCalcParams: {suffix: ' ms'}},
 							{title: 'Slowest Run', field: 'max', headerSortStartingDir: 'desc', formatter: 'timeMs',},
 							{title: 'Start Time', field: 'start', formatter: 'timeMs',},
 							{title: 'End Time', field: 'end', headerSortStartingDir: 'desc', formatter: 'timeMs'},
-							{
-								title: 'Subscribers', field: 'subscribers', formatter: 'minMax[]',
-								clickPopup: function (e, component, onRendered) {
-									if (!component.getValue().length) {
-										return '';
-									}
-
-									return T.formatters.files(component, {join: "<br>"}, onRendered);
-								}
-							},
+							{title: 'Subscribers', field: 'subscribers', formatter: 'subscribers'},
 							{title: 'Publishers', field: 'publishers', formatter: 'files'},
 						],
 					});
