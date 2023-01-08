@@ -383,6 +383,10 @@
   width: auto !important;
 }
 
+.rwd-debug-bar-content .tabulator-popup:empty, .rwd-debug-bar-content .tabulator-popup-container:empty {
+  display: none;
+}
+
 ul.debug-bar-cards {
   margin: -10px;
   padding: 0;

@@ -135,4 +135,10 @@
 			width: auto !important;
 		}
 	}
+
+	.tabulator-popup, .tabulator-popup-container {
+		&:empty {
+			display: none;
+		}
+	}
 }
