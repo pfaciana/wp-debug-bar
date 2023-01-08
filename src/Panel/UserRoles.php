@@ -2,13 +2,10 @@
 
 namespace DebugBar\Panel;
 
-use DebugBar\Traits\FormatTrait;
-use DebugBar\Traits\LayoutTrait;
-
 class UserRoles extends \Debug_Bar_Panel
 {
-	use FormatTrait;
-	use LayoutTrait;
+	use \DebugBar\Traits\FormatTrait;
+	use \DebugBar\Traits\LayoutTrait;
 
 	public $_icon = 'dashicons-admin-users';
 	public $_panel_id;

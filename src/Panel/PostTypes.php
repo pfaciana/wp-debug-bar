@@ -2,13 +2,10 @@
 
 namespace DebugBar\Panel;
 
-use DebugBar\Traits\FormatTrait;
-use DebugBar\Traits\LayoutTrait;
-
 class PostTypes extends \Debug_Bar_Panel
 {
-	use FormatTrait;
-	use LayoutTrait;
+	use \DebugBar\Traits\FormatTrait;
+	use \DebugBar\Traits\LayoutTrait;
 
 	public $_icon = 'dashicons-admin-post';
 	public $_panel_id;
@@ -300,7 +297,6 @@ class PostTypes extends \Debug_Bar_Panel
 					T.Create("#post-type-pairings-table", {
 						data: postTypePairings,
 						paginationSize: 10,
-						layout: 'fitDataStretch',
 						columns: <?= json_encode( $postTypePairingsConfig ?? [] ) ?>,
 					});
 				}

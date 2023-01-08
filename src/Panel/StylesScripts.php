@@ -2,13 +2,10 @@
 
 namespace DebugBar\Panel;
 
-use DebugBar\Traits\FormatTrait;
-use DebugBar\Traits\LayoutTrait;
-
 class StylesScripts extends \Debug_Bar_Panel
 {
-	use FormatTrait;
-	use LayoutTrait;
+	use \DebugBar\Traits\FormatTrait;
+	use \DebugBar\Traits\LayoutTrait;
 
 	public $_icon = 'dashicons-editor-code';
 	public $_panel_id;
@@ -72,15 +69,15 @@ class StylesScripts extends \Debug_Bar_Panel
 				if (wpStyles.length) {
 					T.Create("#wp-styles-table", {
 						data: wpStyles,
-						layout: 'fitDataStretch',
+						layout: 'fitDataFill',
 						columns: [
 							{title: 'Loaded', field: 'loaded', formatter: 'boolean'},
 							{title: 'Handle', field: 'handle', formatter: 'string'},
 							{title: 'Location', field: 'src', minWidth: 375, formatter: 'url',},
-							{title: 'Deps', field: 'deps', hozAlign: 'center', formatter: 'object'},
-							{title: 'Ver', field: 'ver', formatter: 'string'},
-							{title: 'Args', field: 'args', formatter: 'string'},
-							{title: 'Extra', field: 'extra', formatter: 'object'},
+							{title: 'Dependencies', field: 'deps', hozAlign: 'center', formatter: 'object'},
+							{title: 'Version', field: 'ver', formatter: 'string'},
+							{title: 'Property', field: 'args', formatter: 'string'},
+							{title: 'Extra', field: 'extra', formatter: 'object', formatterParams: {showKeys: true}},
 						],
 					});
 				}
@@ -125,16 +122,16 @@ class StylesScripts extends \Debug_Bar_Panel
 				if (wpScripts.length) {
 					T.Create("#wp-scripts-table", {
 						data: wpScripts,
-						layout: 'fitDataStretch',
+						layout: 'fitDataFill',
 						columns: [
 							{title: 'Loaded', field: 'loaded', formatter: 'boolean'},
 							{title: 'Footer', field: 'in_footer', formatter: 'boolean'},
 							{title: 'Handle', field: 'handle', hozAlign: 'left', formatter: 'string'},
 							{title: 'Location', field: 'src', formatter: 'url'},
-							{title: 'Deps', field: 'deps', formatter: 'object'},
-							{title: 'Ver', field: 'ver', formatter: 'string'},
-							{title: 'Args', field: 'args', formatter: 'string'},
-							{title: 'Extra', field: 'extra', formatter: 'object'},
+							{title: 'Dependencies', field: 'deps', formatter: 'object'},
+							{title: 'Version', field: 'ver', formatter: 'string'},
+							{title: 'Property', field: 'args', formatter: 'string'},
+							{title: 'Extra', field: 'extra', formatter: 'object', formatterParams: {showKeys: true}},
 						],
 					});
 				}

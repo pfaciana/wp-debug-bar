@@ -2,13 +2,10 @@
 
 namespace DebugBar\Panel;
 
-use DebugBar\Traits\FormatTrait;
-use DebugBar\Traits\LayoutTrait;
-
 class Globals extends \Debug_Bar_Panel
 {
-	use FormatTrait;
-	use LayoutTrait;
+	use \DebugBar\Traits\FormatTrait;
+	use \DebugBar\Traits\LayoutTrait;
 
 	public $_icon = 'fa fa-globe';
 	public $_panel_id;
@@ -256,7 +253,7 @@ class Globals extends \Debug_Bar_Panel
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Group', field: 'group', formatter: 'list'},
-							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args'},
+							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args', headerFilterFuncParams: {strict: false}},
 							{title: 'Value', field: 'value', formatter: 'args'},
 							{title: 'Type', field: 'type', formatter: 'list'},
 						],
@@ -294,7 +291,7 @@ class Globals extends \Debug_Bar_Panel
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Group', field: 'group', formatter: 'list'},
-							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args'},
+							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args', headerFilterFuncParams: {strict: false}},
 							{title: 'Value', field: 'value', formatter: 'args'},
 							{title: 'Type', field: 'type', formatter: 'list'},
 						],
@@ -345,7 +342,7 @@ class Globals extends \Debug_Bar_Panel
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Group', field: 'group', formatter: 'list'},
-							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args'},
+							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args', headerFilterFuncParams: {strict: false}},
 							{title: 'Value', field: 'value', formatter: 'args'},
 							{title: 'Type', field: 'type', formatter: 'list'},
 						],
@@ -370,7 +367,7 @@ class Globals extends \Debug_Bar_Panel
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Group', field: 'group', formatter: 'list'},
-							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args'},
+							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args', headerFilterFuncParams: {strict: false}},
 							{title: 'Value', field: 'value', formatter: 'args'},
 							{title: 'Type', field: 'type', formatter: 'list'},
 						],
@@ -407,7 +404,7 @@ class Globals extends \Debug_Bar_Panel
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Group', field: 'group', formatter: 'list'},
-							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args'},
+							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args', headerFilterFuncParams: {strict: false}},
 							{title: 'Value', field: 'value', formatter: 'args'},
 							{title: 'Type', field: 'type', formatter: 'list'},
 						],
