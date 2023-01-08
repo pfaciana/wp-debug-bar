@@ -6,11 +6,17 @@ class Environment extends \Debug_Bar_Panel
 {
 	use \DebugBar\Traits\FormatTrait;
 	use \DebugBar\Traits\LayoutTrait;
+	use \DebugBar\Traits\VersionsTrait;
 
 	public $_title = 'Server';
 	public $_icon = 'fa fa-server';
 	public $_panel_id;
 	public $_capability = 'manage_options';
+
+	public function init ()
+	{
+		add_action( '_core_updated_successfully', [ $this, 'getGutenbergVersion' ] );
+	}
 
 	public function render ()
 	{
@@ -37,11 +43,11 @@ class Environment extends \Debug_Bar_Panel
 	protected function getDetails ()
 	{
 		$cards = [
-			'PHP Setup'  => 2,
-			'INI Config' => 2,
-			'Database'   => 2,
-			'Web Server' => 2,
-			'INI Dirs'   => strlen( php_ini_scanned_files() ) ? 2 : FALSE,
+			'PHP Setup'      => 2,
+			'PHP INI Config' => 2,
+			'Database'       => 2,
+			'Web Server'     => 2,
+			'INI Dirs'       => strlen( php_ini_scanned_files() ) ? 2 : FALSE,
 		];
 
 		?>
@@ -63,6 +69,8 @@ class Environment extends \Debug_Bar_Panel
 		$php['WP Version']     = '<a href="https://wordpress.org/about/history/" target="_blank">' . get_bloginfo( 'version' ) . '</a>';
 		$php['WP Environment'] = wp_get_environment_type();
 		$php['WP Timezone']    = wp_timezone_string();
+
+		$php['Gutenberg Version'] = $this->getGutenbergVersion() ?: 'Not Installed';
 
 		$majorMinor          = explode( '.', $versionNumber = phpversion() );
 		$majorMinor          = $majorMinor[0] . $majorMinor[1];
@@ -243,7 +251,7 @@ class Environment extends \Debug_Bar_Panel
 		echo implode( '<br>', $files );
 	}
 
-	protected function get_ini_config_card ()
+	protected function get_php_ini_config_card ()
 	{
 		$ini = [];
 
@@ -276,6 +284,7 @@ class Environment extends \Debug_Bar_Panel
 		$constants = [
 			'Admin'          => [
 				'AUTOSAVE_INTERVAL' => MINUTE_IN_SECONDS,
+				'GUTENBERG_VERSION' => defined( 'GUTENBERG_VERSION' ) ? GUTENBERG_VERSION : NULL,
 				'EMPTY_TRASH_DAYS'  => 30,
 				'MEDIA_TRASH'       => FALSE,
 				'WP_POST_REVISIONS' => TRUE,
@@ -372,8 +381,8 @@ class Environment extends \Debug_Bar_Panel
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Group', field: 'group', formatter: 'list'},
-							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args'},
-							{title: 'Value', field: 'value', formatter: 'args'},
+							{title: 'Name', field: 'name', formatterParams: {type: 'string'}, formatter: 'args', headerFilterFuncParams: {strict: false}},
+							{title: 'Value', field: 'value', formatter: 'args', headerFilterFuncParams: {strict: false}},
 							{title: 'Default?', field: 'isDefault', formatter: 'boolean'},
 							{title: 'Default', field: 'default', formatter: 'args'},
 							{title: 'Type', field: 'type', formatter: 'list'},
@@ -480,28 +489,3 @@ class Environment extends \Debug_Bar_Panel
 
 	}
 }
-
-
-/*
-
-SERVER
-
-DOCUMENT_ROOT
-HTTP2
-HTTPS
-HTTP_HOST
-PHP_SELF
-REMOTE_ADDR
-REMOTE_HOST
-REMOTE_PORT
-REMOTE_USER
-REQUEST_URI
-SCRIPT_FILENAME
-SCRIPT_NAME
-SERVER_ADDR
-SERVER_NAME
-SERVER_PORT
-SERVER_PROTOCOL
-SERVER_SOFTWARE
-
-*/
