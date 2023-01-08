@@ -57,8 +57,7 @@ class Queries extends \DebugBar\Panel
 	{
 		global $wpdb;
 
-		$queries   = [];
-		$startTime = NULL;
+		$queries = [];
 		foreach ( $wpdb->queries as $query ) {
 			$created  = $query[0];
 			$parser   = new PHPSQLParser();
@@ -82,24 +81,21 @@ class Queries extends \DebugBar\Panel
 			}
 
 			if ( !array_key_exists( $created, $queries ) ) {
-				if ( empty( $startTime ) ) {
-					$startTime = $query[3];
-				}
 				$queries[$created] = [
 					'type'      => $keywords[0],
 					'caller'    => !empty( $query[4] ) ? ( $query[4]['class'] === 'WP_Query' ? 'get_posts' : $query[4]['function'] ) : NULL,
 					'args'      => !empty( $query[4] ) && array_key_exists( 'args', $query[4] ) ? $query[4]['args'] : NULL,
 					'sql'       => htmlspecialchars( is_array( $statements ) ? implode( "\n", $statements ) : $statements ),
-					'runTime'   => round( $query[1], 5 ),
-					'startTime' => round( $query[3] - $startTime, 3 ),
-					'endTime'   => round( $query[3] - $startTime + $query[1], 3 ),
+					'runTime'   => round( $query[1] * 1e3, 5 ),
+					'startTime' => round( ( $query[3] - WP_START_TIMESTAMP ) * 1e3, 3 ),
+					'endTime'   => round( ( $query[3] - WP_START_TIMESTAMP + $query[1] ) * 1e3, 3 ),
 					'source'    => [ $this->getFileLinkArray( $query[4]['file'] ?? NULL, $query[4]['line'] ?? NULL ) ],
 					'count'     => 1,
 				];
 			}
 			else {
 				$queries[$created]['count']++;
-				$queries[$created]['endTime']  = round( $query[3] - $startTime + $query[1], 3 );
+				$queries[$created]['endTime']  = round( ( $query[3] - WP_START_TIMESTAMP + $query[1] ) * 1e3, 3 );
 				$queries[$created]['source'][] = $this->getFileLinkArray( $query[4]['file'] ?? NULL, $query[4]['line'] ?? NULL );
 			}
 		}
@@ -121,17 +117,26 @@ class Queries extends \DebugBar\Panel
 						columns: [
 							{title: 'Type', field: 'type', formatter: 'list'},
 							{title: 'Function', field: 'caller', formatter: 'list'},
-							{title: 'Args', field: 'args', formatterParams: {space: 4, join: "<br>"}, formatter: 'object'},
+							{title: 'Args', field: 'args', formatterParams: {space: 4, textLimit: T.helpers.indexOf.nl(7)}, formatter: 'object'},
 							{
-								title: 'SQL', field: 'sql', hozAlign: 'left', headerFilter: 'input', maxWidth: 575,
-								formatter: function (cell, formatterParams, onRendered) {
-									if (cell.getValue() === null) {
-										return '';
-									}
-									return '<div style="white-space: normal">' + cell.getValue().split("\n").join('<br>') + '</div>';
+								title: 'SQL', field: 'sql', formatter: 'text', maxWidth: 575,
+								formatterParams: {
+									prefix: '<div style="white-space: normal">', suffix: '</div>',
+									textLimit: T.helpers.indexOf.fn('<br>', 5),
+									modify: function (content, params) {
+										return content.split("\n").join('<br>');
+									},
+									showPopup: true,
 								},
 							},
-							{title: 'Time', field: 'runTime', headerSortStartingDir: 'desc', formatter: 'timeMs'},
+							{
+								title: 'Time', field: 'runTime', headerSortStartingDir: 'desc', formatter: 'timeMs',
+								bottomCalc: function (values, data, params) {
+									return Math.round(data.reduce(function (accumulator, row) {
+										return accumulator + (row.runTime * row.count);
+									}, 0)) + ' ms';
+								}
+							},
 							{title: 'Start', field: 'startTime', formatter: 'timeMs'},
 							{title: 'Run', field: 'count', formatter: 'minMax'},
 							{title: 'Source', field: 'source', formatter: 'file'},
