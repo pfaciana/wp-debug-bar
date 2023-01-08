@@ -155,10 +155,15 @@ if ( !class_exists( 'console' ) ) {
 
 		public static function time ( $label = 'default' )
 		{
-			Timers::start( $label ?? 'default' );
-			$context = static::shift_args( func_get_args() );
+			$duration = Timers::start( $label ?? 'default' );
+			$context  = static::shift_args( func_get_args() );
 
 			static::message( static::getIcon( 'timer', ' ' . Timers::getLastMessage() ), Timers::getLastWarning(), $context );
+
+			// Reset the timer because the previous lines of cost a small amount of time
+			if ( empty( $duration ) ) {
+				Timers::reset( $label ?? 'default' );
+			}
 
 			return 0;
 		}

@@ -41,7 +41,7 @@ class Timers
 
 		$duration = microtime( TRUE ) - static::$timers[$label];
 
-		static::$message = "Timer '{$label}': " . static::formatTime( $duration ) . ".";
+		static::$message = "Timer '{$label}': " . static::formatTime( $duration * 1000 ) . ".";
 
 		return $duration;
 	}
@@ -50,16 +50,35 @@ class Timers
 	{
 		$duration = static::get( $label );
 
-		static::$message = "Timer '{$label}': " . static::formatTime( $duration ) . " - Ended.";
+		static::$message = "Timer '{$label}': " . static::formatTime( $duration * 1000 ) . " - Ended.";
 
 		unset( static::$timers[$label] );
 
 		return $duration;
 	}
 
-	public static function formatTime ( $duration )
+	public static function reset ( $label = 'default' )
 	{
-		return round( $duration, 3 ) . ' ms';
+		if ( array_key_exists( $label, static::$timers ) ) {
+			static::$timers[$label] = microtime( TRUE );
+		}
+	}
+
+	public static function formatTime ( $duration, $decimals = NULL, $unit = 'ms' )
+	{
+		if ( is_null( $decimals ) ) {
+			if ( $duration >= 100 ) {
+				$decimals = 0;
+			}
+			elseif ( $duration >= 10 ) {
+				$decimals = 1;
+			}
+			else {
+				$decimals = 2;
+			}
+		}
+
+		return trim( number_format( $duration, $decimals ) . ' ' . ( $unit ?? '' ) );
 	}
 
 	protected static function clearMessages ()
