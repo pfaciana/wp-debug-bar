@@ -24,7 +24,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 You can install WP Debug Bar in all your plugins, but only the first instance run will get loaded. The rest will be ignored.
 
-A couple differences between the original Debug Bar by wordpressdotorg and this, is the option to quickly disable a Panel without having to disable the entire plugin. You just click on the toggle icon next to the Panel name, and that code won't run on next page load. This is extremely helpful since some Panel are resource intensive, and you may not want to be constantly enabling and disabling plugins while debugging a stubborn issue.
+A couple differences between the original Debug Bar by wordpressdotorg and this, is the option to quickly disable a Panel without having to disable the entire plugin. You just click on the toggle icon next to the Panel name, and that code won't run on next page load. This is extremely helpful since some Panels are resource intensive, and you may not want to be constantly enabling and disabling plugins while debugging a stubborn issue.
 
 This project also allows for easy changing of which User Roles can use the tool. Sometimes (on staging) you want to debug something only a Guest sees. You can temporarily change that Settings Panel. By default, Panels can decide the minimum capability required for a Panel to run. If not set, defaults to `edit_posts`. This is usually because a Panel might display sensitive data, that should not be accessed by a guest or user with lesser capabilities. However, if you're absolutely sure you want to expose that data in a controlled environment, you can override this with the `debug_bar_panel_capability` filter, shown here...
 
