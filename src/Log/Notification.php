@@ -23,6 +23,28 @@ class Notification
 	const CRITICAL = 'critical';
 	const EMERGENCY = 'emergency';
 
+	const RFC_5424_LEVELS = [
+		7 => self::DEBUG,
+		6 => self::INFO,
+		5 => self::NOTICE,
+		4 => self::WARN,
+		3 => self::ERROR,
+		2 => self::CRITICAL,
+		1 => self::ALERT,
+		0 => self::EMERGENCY,
+	];
+
+	const MONOLOG_LEVELS = [
+		100 => self::DEBUG,
+		200 => self::INFO,
+		250 => self::NOTICE,
+		300 => self::WARN,
+		400 => self::ERROR,
+		500 => self::CRITICAL,
+		550 => self::ALERT,
+		600 => self::EMERGENCY,
+	];
+
 	public function __construct ( $config = [] )
 	{
 		$this->set( ...func_get_args() );
