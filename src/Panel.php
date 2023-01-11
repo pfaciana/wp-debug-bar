@@ -104,14 +104,6 @@ abstract class Panel
 
 	public function __construct ( $title = '' )
 	{
-		if ( !isset( $this->_capability ) ) {
-			$this->_capability = get_option( 'rwd_debug_bar_min_role', 'edit_posts' );
-		}
-
-		if ( in_array( $this->_capability, [ '*', 'any', 'all' ] ) ) {
-			$this->_capability = '';
-		}
-
 		if ( is_object( $title ) ) {
 			if ( property_exists( $title, 'title' ) ) {
 				$title = $title->title;
@@ -126,6 +118,16 @@ abstract class Panel
 		$this->_panel_id = preg_replace( '/[^a-zA-Z0-9_:.]/', '_', get_class( $this ) . '_' . $title );
 
 		$disabled_panels = \DebugBar\DebugBar::get_disabled_panels();
+
+		if ( !isset( $this->_capability ) ) {
+			$this->_capability = get_option( 'rwd_debug_bar_min_role', 'edit_posts' );
+		}
+
+		$this->_capability = apply_filters( 'debug_bar_panel_capability', $this->_capability, $this->_title, $this );
+
+		if ( in_array( $this->_capability, [ '*', 'any', 'all' ] ) ) {
+			$this->_capability = '';
+		}
 
 		if ( empty( $has_access = ( empty( $this->_capability ) || current_user_can( $this->_capability ) ) ) ) {
 			$this->set_visible( FALSE );
