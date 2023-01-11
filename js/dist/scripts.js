@@ -634,6 +634,41 @@
         column.width ??= 75;
         column.headerWordWrap ??= true;
       }
+      if (['files', 'file'].includes(initial.formatter)) {
+        if (!('headerFilter' in column) && !('headerFilterFunc' in column)) {
+          column.bottomCalcFormatter ??= 'html';
+          column.bottomCalcParams ??= {};
+          jQuery.extend(true, column.bottomCalcParams, {
+            table: element,
+            name: column.field,
+            data
+          });
+          column.bottomCalc ??= function (values, data, params) {
+            var set = new Set();
+            const allValues = Tabulator.helpers.arrayColumn(params.data, params.name);
+            allValues.forEach(function (files) {
+              if (Tabulator.helpers.isObject(files) && ('text' in files || 'url' in files)) {
+                files = [files];
+              }
+              const names = Tabulator.helpers.arrayColumn(files, 'text');
+              names.forEach(function (name) {
+                if (name && name.includes(' > ')) {
+                  const path = name.split(' > ')[0] + ' > ';
+                  path && set.add(path);
+                }
+              });
+            });
+            const paths = Array.from(set).sort();
+            if (!paths.length) {
+              return '';
+            }
+            return `<select name="${params.name}" data-table="${params.table}" class="files-picker">
+									<option>Filter by Section</option>
+									${paths.map(path => `<option value='regex:"${path}"'>${path}</option>`)}
+								</select>`;
+          };
+        }
+      }
       if (['subscribers'].includes(initial.formatter)) {
         column.headerFilter ??= 'input';
         column.headerFilterFuncParams ??= {
@@ -700,5 +735,9 @@
         this.clearSort();
       });
     });
+  });
+  $(document).on('change', '.files-picker', function () {
+    const $this = $(this);
+    Tabulator.findTable($this.data('table'))[0].setHeaderFilterValue($this.attr('name'), $this.val());
   });
 })(jQuery, window, document);
