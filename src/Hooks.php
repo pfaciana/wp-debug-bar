@@ -109,7 +109,6 @@ class Hooks
 		$hook_name = current_filter();
 
 		if ( $hook_name === 'debugbar/watch' ) {
-
 			return function () use ( $value ) {
 				$this->trackers[$value] = FALSE;
 
@@ -233,6 +232,8 @@ class Hooks
 
 	public function render ()
 	{
+		remove_action( 'all', [ $this, 'all' ] );
+
 		global $wp_filter;
 
 		$diff = $this->diff( $this->end_time = microtime( TRUE ) );
@@ -264,7 +265,9 @@ class Hooks
 		$subscribers = array_column( $hooks, 'subscribers', 'name' );
 		foreach ( $this->tracking as $hook ) {
 			$hook['subscribers'] = $subscribers[$hook['name']] ?? [];
-			$tracking[]          = $this->formatHook( $hook );
+			if ( apply_filters( 'debugbar/watch/filter', TRUE, $hook = $this->formatHook( $hook ) ) ) {
+				$tracking[] = $hook;
+			}
 		}
 
 		if ( !empty( $tracking ) ) : ?>
@@ -295,13 +298,13 @@ class Hooks
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Tracking ID(s)', field: 'trackers', hozAlign: 'left', formatter: 'list[]'},
-							{title: 'Hook Name', field: 'name', formatter: 'text'},
 							{title: "Hook Type", field: 'type', formatter: 'list'},
+							{title: 'Hook Name', field: 'name', formatter: 'text'},
+							{title: 'Output', field: 'value', maxWidth: 250, formatter: 'args'},
+							{title: 'Input', field: 'input', maxWidth: 250, formatter: 'args'},
+							{title: 'Arguments', field: 'args', maxWidth: 250, formatter: 'args'},
 							{title: 'Run Time', field: 'duration', headerSortStartingDir: 'desc', formatter: 'timeMs', formatterParams: {bottomSum: true}, bottomCalcParams: {suffix: ' ms'}},
 							{title: 'Start Time', field: 'time', formatter: 'timeMs',},
-							{title: 'Arguments', field: 'args', maxWidth: 250, formatter: 'args'},
-							{title: 'Input', field: 'input', maxWidth: 250, formatter: 'args'},
-							{title: 'Output', field: 'value', maxWidth: 250, formatter: 'args'},
 							{title: 'Parent Hook', field: 'parent', headerFilter: 'input'},
 							{title: 'Subscribers', field: 'subscribers', formatter: 'subscribers'},
 							{title: 'Publisher', field: 'publishers', formatter: 'files'},

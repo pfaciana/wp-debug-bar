@@ -1,8 +1,8 @@
 <?php
 
-use DebugBar\Log\Timers;
 use DebugBar\Log\Counters;
 use DebugBar\Log\Notification;
+use DebugBar\Log\Timers;
 
 if ( !class_exists( 'console' ) ) {
 
@@ -106,7 +106,7 @@ if ( !class_exists( 'console' ) ) {
 		public static function trace ( $debug_backtrace_args = NULL )
 		{
 			if ( wp_doing_ajax() ) {
-				static::warn( 'You can run BACKTRACE while doing ajax' );
+				static::warn( "You can't run BACKTRACE while doing ajax" );
 
 				return [];
 			}
@@ -185,6 +185,9 @@ if ( !class_exists( 'console' ) ) {
 
 			static::message( static::getIcon( 'timer', ' ' . Timers::getLastMessage() ), Timers::getLastWarning(), $context );
 
+			do_action( 'console/time', $label, $duration, $context );
+			do_action( "console/time/{$label}", $duration, $context );
+
 			return $duration;
 		}
 
@@ -214,8 +217,9 @@ if ( !class_exists( 'console' ) ) {
 
 			$message = $condition ? static::getIcon( 'pass', ' Test Passed' ) : static::getIcon( 'fail', ' Test failed' );
 
+			$user_message = NULL;
 			if ( count( $context ) && is_string( $context[0] ) ) {
-				$message .= ': ' . array_shift( $context );
+				$message .= ': ' . ( $user_message = array_shift( $context ) ?? '' );
 			}
 			else {
 				$message .= '!';
@@ -223,26 +227,37 @@ if ( !class_exists( 'console' ) ) {
 
 			static::message( [ $message, $condition ? Notification::DEBUG : Notification::ERROR ], NULL, $context );
 
+			do_action( 'console/test', $condition, $user_message, $context );
+			do_action( 'console/condition', 'test', $condition, $user_message, $context );
+
 			return $condition;
 		}
 
 		public static function assert ( $condition )
 		{
+			$context      = static::shift_args( func_get_args() );
+			$user_message = array_shift( $context ) ?? '';
+
 			if ( $condition ) {
+				do_action( 'console/assert', $condition, $user_message, $context );
+				do_action( 'console/condition', 'assert', $condition, $user_message, $context );
+
 				return TRUE;
 			}
 
-			$context = static::shift_args( func_get_args() );
 			$message = static::getIcon( 'assert', ' Assertion failed' );
 
 			if ( count( $context ) && is_string( $context[0] ) ) {
-				$message .= ': ' . array_shift( $context );
+				$message .= ': ' . $user_message;
 			}
 			else {
 				$message .= '!';
 			}
 
 			static::message( [ $message, Notification::ERROR ], NULL, $context );
+
+			do_action( 'console/assert', $condition, $user_message, $context );
+			do_action( 'console/condition', 'assert', $condition, $user_message, $context );
 
 			return $condition;
 		}
@@ -263,7 +278,21 @@ if ( !class_exists( 'console' ) ) {
 
 			static::message( [ $message, $level ], NULL, $context );
 
-			return trim( strip_tags( $message ) );
+			$message = trim( strip_tags( $message ) );
+
+			$rfc5424 = array_search( $level, Notification::RFC_5424_LEVELS );
+			$monolog = array_search( $level, Notification::MONOLOG_LEVELS );
+
+			$context[] = $level;
+
+			do_action( 'console/level', $level, $message, $context );
+			do_action( 'console/level/rfc5424', $rfc5424, $message, $context );
+			do_action( 'console/level/monolog', $monolog, $message, $context );
+			do_action( "console/level/{$level}", $message, $context );
+			do_action( "console/level/rfc5424/{$rfc5424}", $message, $context );
+			do_action( "console/level/monolog/{$monolog}", $message, $context );
+
+			return $message;
 		}
 
 		public static function info ()
