@@ -33,10 +33,15 @@ class DebugBar
 	function __construct ()
 	{
 		add_action( 'plugins_loaded', function () { $this->set_alias(); }, -9e9 );
-		add_action( 'plugins_loaded', function () { $this->pre_init(); } );
-		add_action( 'init', function () { $this->init(); } );
+		add_action( 'plugins_loaded', function () { $this->pre_init(); }, PHP_INT_MIN );
+		add_action( 'plugins_loaded', function () { $this->init(); }, PHP_INT_MIN );
 		add_action( wp_doing_ajax() ? 'admin_init' : 'admin_bar_init', function () { $this->admin_bar_init(); } );
 		add_action( 'activate_debug-bar/debug-bar.php', function () { $this->orig_debug_bar_activated(); } );
+	}
+
+	protected function pre_init ()
+	{
+		do_action( 'debug_bar_pre_init', is_admin_bar_showing(), is_user_logged_in(), is_super_admin(), wp_doing_ajax(), $this->is_wp_login() );
 	}
 
 	protected function init ()
@@ -123,12 +128,6 @@ class DebugBar
 		class_alias( 'DebugBar\DebugBar', 'Debug_Bar' );
 		class_alias( 'DebugBar\Panel', 'Debug_Bar_Panel' );
 		$GLOBALS['debug_bar'] = $GLOBALS['rwd_debug_bar'];
-	}
-
-
-	protected function pre_init ()
-	{
-		do_action( 'debug_bar_pre_init', is_admin_bar_showing(), is_user_logged_in(), is_super_admin(), wp_doing_ajax(), $this->is_wp_login() );
 	}
 
 	public static function get_disabled_panels ()

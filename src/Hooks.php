@@ -31,7 +31,7 @@ class Hooks
 	{
 		global $wp_actions;
 
-		if ( in_array( 'DebugBar_Panel_Hooks_Hooks', \DebugBar\DebugBar::get_disabled_panels() ) ) {
+		if ( !is_admin_bar_showing() || in_array( 'DebugBar_Panel_Hooks_Hooks', \DebugBar\DebugBar::get_disabled_panels() ) ) {
 			return ( $this->active = FALSE );
 		}
 
