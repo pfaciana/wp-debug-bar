@@ -8,7 +8,6 @@ trait BlocksTrait
 
 	protected $registeredBlocks = [];
 	protected $activeBlocks = [];
-	protected $blockCurrentIndex = -1;
 
 	public function setupBlockHooks ()
 	{
@@ -19,8 +18,7 @@ trait BlocksTrait
 		}
 
 		$hasSetup = TRUE;
-		add_filter( 'pre_render_block', [ $this, 'pre_render_block_pre' ], PHP_INT_MIN, 3 );
-		add_filter( 'pre_render_block', [ $this, 'pre_render_block_post' ], PHP_INT_MAX, 3 );
+		add_filter( 'pre_render_block', [ $this, 'pre_render_block' ], PHP_INT_MAX, 3 );
 		add_filter( 'render_block_data', [ $this, 'render_block_data' ], PHP_INT_MAX, 3 );
 		add_filter( 'render_block_context', [ $this, 'render_block_context' ], PHP_INT_MAX, 3 );
 		add_filter( 'render_block', [ $this, 'render_block' ], PHP_INT_MAX, 3 );
@@ -69,10 +67,21 @@ trait BlocksTrait
 		return $levels;
 	}
 
-	protected function addBlock ( $block, $parentIndex = NULL )
+	protected function getCurrentParentIndex ()
 	{
-		$levels = $this->getLevelsFromParentIndex( $parentIndex );
+		$currentParentIndex = NULL;
 
+		foreach ( $this->activeBlocks as $index => $block ) {
+			if ( !empty( $block['start_time'] ) && empty( $block['end_time'] ) ) {
+				$currentParentIndex = $index;
+			}
+		}
+
+		return $currentParentIndex;
+	}
+
+	protected function blockStart ( $block, $data = [] )
+	{
 		foreach ( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) as $data ) {
 			if ( ( ( !isset( $data['class'] ) || !str_starts_with( $data['class'], 'DebugBar' ) ) //
 					&& ( isset( $data['file'] ) && !str_starts_with( $this->getWordPressPathText( $data['file'] ), 'WP Core' ) ) ) //
@@ -91,7 +100,10 @@ trait BlocksTrait
 			$title = '<a href="' . get_edit_post_link( $reusable_block ) . '" target="_blank">' . $reusable_block->post_title . '</a>&nbsp;(' . $title . ')';
 		}
 
-		$this->activeBlocks[] = [
+		$parentIndex = $this->getCurrentParentIndex();
+		$levels      = $this->getLevelsFromParentIndex( $parentIndex );
+
+		$this->activeBlocks[] = array_merge( [
 			'index'           => ( $index = count( $this->activeBlocks ) ),
 			'level'           => implode( '.', $levels ),
 			'levels'          => $levels,
@@ -102,7 +114,7 @@ trait BlocksTrait
 			'parent'          => $parentIndex,
 			'children'        => [],
 			'html'            => $block['innerHTML'],
-			'start_time'      => NULL,
+			'start_time'      => microtime( TRUE ),
 			'end_time'        => NULL,
 			'total_time'      => NULL,
 			'time'            => NULL,
@@ -112,7 +124,8 @@ trait BlocksTrait
 			'renderCallback'  => $matchingBlock['renderCallback'] ?? NULL,
 			'initiator'       => $fileLink,
 			'initiatorLabel'  => $fileLink['text'],
-		];
+		], $data );
+
 
 		if ( !is_null( $parentIndex ) ) {
 			$this->activeBlocks[$parentIndex]['children'][] = $index;
@@ -121,35 +134,31 @@ trait BlocksTrait
 		return $index;
 	}
 
-
-	protected function addBlocks ( $blocks, $parentIndex = NULL )
+	protected function addToBlock ( $index = NULL, $data = [] )
 	{
-		foreach ( $blocks as $block ) {
-			$thisIndex = $this->addBlock( $block, $parentIndex );
-			if ( array_key_exists( 'innerBlocks', $block ) && !empty( $block['innerBlocks'] ) ) {
-				$this->addBlocks( $block['innerBlocks'], $thisIndex );
-			}
+		if ( is_null( $index ) || !array_key_exists( $index, $this->activeBlocks ) ) {
+			return;
 		}
+
+		$this->activeBlocks[$index] = array_merge( $this->activeBlocks[$index], $data );
+
+		return;
 	}
 
-	protected function addToBlock ( $data, $index = NULL )
+	protected function blockCompleted ( $index = NULL, $data = [] )
 	{
-		$this->activeBlocks[$index = $index ?? $this->blockCurrentIndex] = array_merge( $this->activeBlocks[$index], $data );
-	}
+		if ( is_null( $index ) || !array_key_exists( $index, $this->activeBlocks ) ) {
+			return;
+		}
 
-	protected function blockStart ( $index = NULL )
-	{
-		$this->addToBlock( [
-			'start_time' => microtime( TRUE ),
-		], $index );
-	}
-
-	protected function blockCompleted ( $index = NULL )
-	{
-		$this->addToBlock( [
+		$data += [
 			'end_time'   => microtime( TRUE ),
 			'total_time' => round( microtime( TRUE ) - $this->activeBlocks[$index]['start_time'], 5 ) * 1e3,
-		], $index );
+		];
+
+		$this->addToBlock( $index, $data );
+
+		return;
 	}
 
 	protected function isNullBlock ( $block )
@@ -157,38 +166,11 @@ trait BlocksTrait
 		return empty( $block['blockName'] ) && empty( trim( $block['innerHTML'] ) );
 	}
 
-	protected function getCurrentRootIndex ()
-	{
-		$currentRootIndex = count( $this->activeBlocks );
-		foreach ( $this->activeBlocks as $index => $block ) {
-			if ( empty( $block['total_time'] ) ) {
-				$currentRootIndex = $index;
-			}
-		}
-
-		return $currentRootIndex;
-	}
-
-	public function pre_render_block_pre ( $pre_render, $parsed_block, $parent_block )
+	public function pre_render_block ( $pre_render, $parsed_block, $parent_block )
 	{
 		if ( !$this->isNullBlock( $parsed_block ) ) {
-			$this->blockCurrentIndex++;
-			if ( empty( $parent_block ) ) {
-				$currentRootIndex = $this->getCurrentRootIndex();
-				$this->addBlocks( [ $parsed_block ], $currentRootIndex == count( $this->activeBlocks ) ? NULL : $currentRootIndex );
-			}
-		}
-
-		return $pre_render;
-	}
-
-	public function pre_render_block_post ( $pre_render, $parsed_block, $parent_block )
-	{
-		if ( !$this->isNullBlock( $parsed_block ) ) {
-			$this->blockStart();
 			if ( !is_null( $pre_render ) ) {
-				$this->addToBlock( [ 'content' => $pre_render, ] );
-				$this->blockCompleted();
+				$this->blockCompleted( $this->blockStart( $parsed_block, [ 'content' => $pre_render, ] ) );
 			}
 		}
 
@@ -198,7 +180,7 @@ trait BlocksTrait
 	public function render_block_data ( $parsed_block, $source_block, $parent_block )
 	{
 		if ( !$this->isNullBlock( $parsed_block ) ) {
-			$parsed_block['_debug_bar'] = $this->blockCurrentIndex;
+			$parsed_block['_debug_bar'] = $this->blockStart( $parsed_block );
 		}
 
 		return $parsed_block;
@@ -207,7 +189,7 @@ trait BlocksTrait
 	public function render_block_context ( $context, $parsed_block, $parent_block )
 	{
 		if ( !$this->isNullBlock( $parsed_block ) ) {
-			$this->addToBlock( [ 'context' => $context, ] );
+			$this->addToBlock( $parsed_block["_debug_bar"] ?? NULL, [ 'context' => $context, ] );
 		}
 
 		return $context;
@@ -216,8 +198,7 @@ trait BlocksTrait
 	public function render_block ( $block_content, $parsed_block, $WP_Block )
 	{
 		if ( !$this->isNullBlock( $parsed_block ) ) {
-			$this->addToBlock( [ 'content' => $block_content, ], $parsed_block["_debug_bar"] ?? NULL );
-			$this->blockCompleted( $parsed_block["_debug_bar"] ?? NULL );
+			$this->blockCompleted( $parsed_block["_debug_bar"] ?? NULL, [ 'content' => $block_content, ] );
 		}
 
 		return $block_content;
