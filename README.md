@@ -68,22 +68,24 @@ d($_SERVER); // d() is a shortcut for Kint::dump()
 t(); // t() is a shortcut for Kint::trace()
 ```
 
-...it is recommended to use the new `console` instance created by WP Debug Bar over the `Kint` instance for methods, because there are a few enhancements that improve the experience.
+...it is recommended to use the new `console` instance created by WP Debug Bar (instead of the `Kint` instance) for methods, because there are a few enhancements that improve the experience.
 
 ### WP Debug Bar `console`
 
-`console` is a replacement for the `Kint` methods `dump` and `trace`, along with additional methods designed to act and function similar to the `console` [in the browser](https://developer.mozilla.org/en-US/docs/Web/API/console). So `Kint::dump()` becomes `console::log()` and `Kint::trace()` becomes `console::trace()`. And if you're familiar with `console.log()` or `console.assert()`, etc, this will function in a similar way. In addition to displaying content to the Kint Panel, these methods also return relevant data to be used in your code. Here are rest of the methods available...
+`console` is a replacement for the `Kint` methods `dump` and `trace`, along with additional methods designed to act and function similar to the `console` [in the browser](https://developer.mozilla.org/en-US/docs/Web/API/console). So `Kint::dump()` becomes `console::log()` and `Kint::trace()` becomes `console::trace()`. And if you're familiar with `console.log()` or `console.assert()`, etc, those will function in a similar way. In addition to displaying content to the Kint Panel, these methods also return relevant data to be used in your code. Here are the rest of the methods available...
 
 ```php
 // `console::log` is same as `Kint::dump`, accepts unlimited arguments and dumps them to the Panel
 // Each call to log groups all the arguments together in one section
-// Returns the value of the first agrument passed
+// Returns the value of the first argument passed
+
 console::log( ...$args ) : mixed
 
 // `console::trace` is same as `Kint::trace`, accept the same signature as php's debug_backtrace
 // If $options is true, then response is debug_backtrace() with the default arguments
 // If $options and/or $limit is defined, then the response is debug_backtrace($options, $limit)
 // Returns the backtrace array, or NULL if no arguments are defined
+// Alias: console::backtrace()
 console::trace( true|int $options = NULL, int $limit = 0 ) : null|array
 ```
 
@@ -191,7 +193,7 @@ console::memoryReset( ...$context ) : float
 
 #### WordPress Hooks
 
-While it is not recommended to use debugging tools like this on production, you may want to use it on a dev, staging or testing environment. And there may be concerns of pushing code with `console` to different environments where WP Debug Bar is not installed. If that were the case, then the missing `console` would throw an error. So, if you are concerned about this, you can use WordPress Hooks to output to the Kint Panel. In that scenario, even if that code gets pushed accidentally, the hook will simply do nothing, avoiding a production error. Hook names accept both `::` and `.` concatenation for classes and methods. So BOTH `console::info` and `console.log` work. I find it easier and quicker to type dot notion, so I prefer that.
+While it is not recommended to use debugging tools like this on production, you may want to use it on a dev, staging or testing environment. To that point, there may be concerns of accidentally pushing code with `console` to different environments where WP Debug Bar is not installed. If that were the case, then the missing `console` would throw an error. So, if you are concerned about this, you can use WordPress Hooks to output to the Kint Panel. In that scenario, even if that code gets pushed by mistake, the hook will simply do nothing, avoiding a PHP error. Hook names accept both `::` and `.` concatenation for classes and methods. So BOTH `console::log` and `console.log` action names work. I find it easier and quicker to type dot notion, so I added that extra option.
 
 ```php
 // Usage
@@ -223,7 +225,7 @@ do_action( "console/time/{$label}", float $duration, mixed[] $context );
 // Usage
 add_action( 'console/level/monolog', function ( int $level, string $message, array $context ) {
     if( $level >= 400 ) {
-        // The last item in the $context array is the string name of the $level
+        // The last item in the $context array is the $level's string name 
         $level_name = (string) array_pop( $context );
         notify_developer("There was a(n) {$level_name}");
     }
@@ -331,7 +333,7 @@ $hook = [
         'type' => 'same', // the filtered value did not change as a result of the filter
     ],
     
-    // This is additional context sent to the variable to be fitlred (argument 2+ in the hook)
+    // This is additional context sent to the variable to be filtered (argument 2+ in the hook)
     'args'     => [ // An array of $arg arrays
         [
             'text' => 'some text',
