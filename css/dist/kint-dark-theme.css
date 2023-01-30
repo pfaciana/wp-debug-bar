@@ -17,6 +17,10 @@
   overflow-y: scroll;
 }
 
+dd.kint-folder.kint-file-parent div.kint-file {
+  display: block;
+}
+
 .kint-rich {
   font-size: 13.5px;
   overflow-x: auto;
@@ -692,9 +696,9 @@
   margin-right: 10px;
 }
 
-.kint-rich .kint-message {
-  margin: 10px 0;
-  padding: 15px 10px;
+.kint-rich .kint-ajax {
+  margin: 40px 0 10px 0;
+  padding: 10px 5px;
   background-color: #0C1021;
   font-size: 14px;
   font-weight: bold;
@@ -703,28 +707,48 @@
   white-space: normal;
 }
 
-.kint-rich .kint-message pre {
+.kint-rich .kint-ajax pre, .kint-rich .kint-ajax pre * {
   white-space: pre-wrap;
+  color: #FFCC33;
 }
 
-.kint-rich .kint-message dl {
-  margin-right: 10px;
-  float: right !important;
-}
-
-.kint-rich .kint-message dl, .kint-rich .kint-message dt {
+.kint-rich .kint-ajax dl, .kint-rich .kint-ajax dt {
   margin: 0;
-  padding: 0;
   border: none;
   overflow: initial;
 }
 
-.kint-rich .kint-message a, .kint-rich .kint-message a * {
+.kint-rich .kint-ajax dl {
+  margin-left: 15px;
+  padding: 0;
+}
+
+.kint-rich .kint-ajax a, .kint-rich .kint-ajax a * {
   color: #99CCFF;
 }
 
-.kint-rich .kint-message svg {
+.kint-rich .kint-ajax svg {
   height: 15px;
+}
+
+.kint-rich .kint-parent-flex {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.kint-rich .kint-parent-flex > .kint-ajax-header {
+  flex: 1 1 auto;
+  text-align: center;
+  color: #CCFF00;
+}
+
+.kint-rich .kint-parent-flex > * {
+  flex: 0 0 auto;
+  order: 1;
+}
+
+.kint-rich .kint-parent-flex > *[data-action] {
+  order: 0;
 }
 
 .kint-rich .kint-header {
@@ -741,7 +765,6 @@
 .kint-rich .kint-log {
   color: #0F0;
   display: inline-block;
-  padding: 10px 7px;
   font-weight: bold;
 }
 
@@ -764,7 +787,6 @@
 .kint-rich .kint-debug {
   color: #AAEE33;
   display: inline-block;
-  padding: 10px 7px;
   font-weight: bold;
 }
 
@@ -787,7 +809,6 @@
 .kint-rich .kint-info {
   color: #FFFFFF;
   display: inline-block;
-  padding: 10px 7px;
   font-weight: bold;
 }
 
@@ -810,7 +831,6 @@
 .kint-rich .kint-notice {
   color: #FFFF00;
   display: inline-block;
-  padding: 10px 7px;
   font-weight: bold;
 }
 
@@ -833,7 +853,6 @@
 .kint-rich .kint-warning {
   color: #FFCC33;
   display: inline-block;
-  padding: 10px 7px;
   font-weight: bold;
 }
 
@@ -857,7 +876,6 @@
   color: #FF3333;
   animation: blinker 3.333s ease-out 0s 3;
   display: inline-block;
-  padding: 10px 7px;
   font-weight: bold;
 }
 
@@ -881,7 +899,6 @@
 .kint-rich .kint-error {
   color: #FF3333;
   display: inline-block;
-  padding: 10px 7px;
   font-weight: bold;
 }
 
@@ -906,7 +923,6 @@
   font-style: italic;
   animation: blinker 2s ease-out 0s 5;
   display: inline-block;
-  padding: 10px 7px;
   font-weight: bold;
 }
 
@@ -933,7 +949,6 @@
   font-style: italic;
   animation: blinker 1s ease-out 0s 10;
   display: inline-block;
-  padding: 10px 7px;
   font-weight: bold;
 }
 
