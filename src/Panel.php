@@ -15,6 +15,11 @@ abstract class Panel
 	protected $_panel_id;
 
 	/**
+	 * @var string unique panel css class
+	 */
+	protected $_panel_class;
+
+	/**
 	 * @var string user-friendly panel name
 	 */
 	public $_title = '';
@@ -116,6 +121,8 @@ abstract class Panel
 		$this->title( $title );
 
 		$this->_panel_id = preg_replace( '/[^a-zA-Z0-9_:.]/', '_', get_class( $this ) . '_' . $title );
+
+		$this->_panel_class = strtolower( str_replace( '_', '-', $this->_panel_id ) );
 
 		$disabled_panels = \DebugBar\DebugBar::get_disabled_panels();
 
@@ -235,6 +242,16 @@ abstract class Panel
 	public function get_panel_id ()
 	{
 		return $this->_panel_id;
+	}
+
+	/**
+	 * Panel css class getter
+	 *
+	 * @return string
+	 */
+	public function get_panel_class ()
+	{
+		return $this->_panel_class;
 	}
 
 	/**
