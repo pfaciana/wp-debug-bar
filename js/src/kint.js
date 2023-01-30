@@ -211,11 +211,13 @@
 			$('.kint-file:not(".kint-dark") .kint-access-path-trigger').attr('data-action', 'access-path');
 			$('.kint-file:not(".kint-dark") .kint-search-trigger').attr('data-action', 'search');
 
-			$('.kint-file.kint-message:not(".kint-dark")').prepend('<dl><dt></dt></dl>');
-
 			$('.kint-file.kint-header:not(".kint-dark") dt').append(
 				'<a class="action-visibility" data-action="previous">' + actionUp + '</a>'
 			);
+
+			$('.kint-file:not(".kint-dark") dl:not(:has(> dt))').each(function () {
+				$(this).children().wrapAll('<dt></dt>');
+			});
 
 			$('.kint-file:not(".kint-dark") dt').append(
 				'<a class="action-visibility" data-action="hide">' + actionShowAlt + '</a>' +
@@ -250,6 +252,10 @@
 			setTimeout(() => $kintParent.closest('[data-panel]').animate({scrollTop: $kintParent.height()}, 1000), 1);
 		}
 
+		function toHtmlEntities(input) {
+			return input.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\\n/g, '\n').replace(/\\t/g, '\t');
+		}
+
 		function json_beautify(json) {
 			if (typeof json === "undefined" || json == '') {
 				return null;
@@ -258,12 +264,25 @@
 				json = isJson(json) || isSerialized(json) || json;
 			}
 			if (typeof json === "object") {
-				json = JSON.stringify(json);
+				for (var key in json) {
+					if (json.hasOwnProperty(key)) {
+						json[key] = maybeParams(json[key]);
+					}
+				}
+				json = JSON.stringify(json, null, 4);
 			}
 
 			json = json.toString();
 
-			return typeof js_beautify !== "undefined" ? js_beautify(json) : json;
+			return json;
+		}
+
+		function beautify(input) {
+			if (typeof input !== "string" || isJson(input)) {
+				input = json_beautify(input);
+			}
+
+			return toHtmlEntities(input);
 		}
 
 		function isJson(str) {
@@ -286,6 +305,39 @@
 			return origStr === newStr ? json : false;
 		}
 
+		function maybeParams(str) {
+			var origStr, json, newStr;
+			if (typeof str !== 'string' || !str.includes('&') || !str.includes('=') || str.includes(' ')) {
+				return str;
+			}
+			try {
+				origStr = decodeURIComponent(str);
+				json = $.deparam(origStr, true);
+				newStr = decodeURIComponent($.param(json));
+			} catch (e) {
+				return str;
+			}
+			return json;
+		}
+
+		function getRequestData(request) {
+			var data = (request.data || ''), query = '';
+
+			if (request.url.includes('?')) {
+				var [url, ...params] = request.url.split('?');
+				query = params.join('?');
+				if (!data) {
+					return query;
+				}
+			}
+
+			if (data && query) {
+				return data + '&' + query;
+			}
+
+			return data;
+		}
+
 		// NOTE: If nothing was sent to Kint, then Kint will not create the kintShared object and this would throw an error
 		if (typeof window.kintShared !== "undefined" && typeof window.kintShared.runOnce === "function") {
 			window.kintShared.runOnce(function () {
@@ -298,29 +350,37 @@
 					return;
 				}
 
-				var counter = 0, kint, prefix = 'kint-file kint-message ',
-					contentLength = (xhr.responseText || '').toString().length,
+				var counter = 0, kint, prefix = 'kint-file kint-ajax ',
 					$kintParent = $('.kint-file-parent'),
+					requestData = $.deparam(getRequestData(request), true) || {},
+					responseData = (xhr.responseText || '').toString(),
+					contentLength = responseData.length,
 					defaultEmpty = '(empty)',
-					requestData = (json_beautify(request.data) || defaultEmpty),
-					responseData = (json_beautify(xhr.responseText) || defaultEmpty),
-					details = '<pre><u>Request</u>:\n\n' + requestData + '\n\n<u>Response</u>:\n\n' + responseData + '</pre>',
-					data = $.deparam(request.data, true),
-					action = data.action ? ' (' + data.action + ')' : '',
-					time = (new Date()).toLocaleTimeString(),
-					header = '<div class="' + prefix + 'kint-header"><time>' + time + '</time>' + request.type + ' ' + request.url + ' [' + xhr.status + ' ' + xhr.statusText + ']' + action + '</div>';
+					time = (new Date()).toLocaleTimeString();
 
-				$kintParent.append(header);
+				// Support for Debug Bar Ajax Injections
+				if (responseData && responseData.length && responseData.includes('<!--PARSE-FOR-RDB-->')) {
+					responseData = responseData.split('<!--PARSE-FOR-RDB-->');
+					responseData = responseData[0];
+				}
+
+				var url = `${request.type} ${request.url.split('?')[0]}`;
+				if (request.url.includes('wp-admin/admin-ajax.php') && requestData.action) {
+					url = `${request.type} ${requestData.action}`;
+				}
+
+				var header = `<span class="kint-ajax-header">${url} [${xhr.status} ${xhr.statusText}]</span><time>${time}</time>`;
+				var details = `<pre><u>Request</u>:<br><br>${beautify(requestData || defaultEmpty)}<br><br><u>Response</u>:<br><br>${beautify(responseData || defaultEmpty)}</pre>`;
 
 				if (xhr.status < 200 || xhr.status >= 400 || xhr.statusText === 'error') {
-					$kintParent.append('<div class="' + prefix + 'kint-error">' + details + 'Error: There was aa AJAX error. Check to make sure the headers are not too big.</div>');
+					details = `<div class="kint-error">${details}Error: There was aa AJAX error. Check to make sure the headers are not too big.</div>`;
 				} else {
-					if (contentLength > window.output_buffering) {
-						$kintParent.append('<div class="' + prefix + 'kint-warning">' + details + 'Warning: The response was greater than the server "output_buffering". It is possible some information is missing.</div>');
-					} else if (!xhr.getResponseHeader('RWD-Debug-Bar-Kint-' + counter)) {
-						$kintParent.append('<div class="' + prefix + 'kint-message">' + details + 'This Ajax Response did not return any debug information.</div>');
+					if (contentLength > window.output_buffering && !rdb.isCapturingAjax()) {
+						details = `<div class="kint-warning">${details}<p style="padding: 20px 0 10px 0; text-align: center;">Warning: The response was greater than the server "output_buffering". It is possible some information is missing.</p></div>`;
+					} else if (!xhr.getResponseHeader('RWD-Debug-Bar-Kint-' + counter) && !rdb.isCapturingAjax()) {
+						details = `<div class="">${details}<p style="padding: 20px 0 10px 0; text-align: center;">This Ajax Response did not return any debug information.</p></div>`;
 					} else {
-						$kintParent.append('<div class="' + prefix + 'kint-message">' + details + '</div>');
+						details = `<div class="">${details}</div>`;
 					}
 					while ((kint = xhr.getResponseHeader('RWD-Debug-Bar-Kint-' + counter++))) {
 						if (!kint || kint == '') {
@@ -330,8 +390,24 @@
 					}
 				}
 
+				$kintParent.append(`<div class="${prefix}">
+										<dl>
+											<dt class="kint-parent kint-parent-flex">${header}</dt>
+											<dd>${details}</dd>
+										</dl>
+									</div>`);
+
 				postRender();
-				autoScrollToBottom && (('debouncer' in window) ? debouncer('scrollToBottom', scrollToBottom) : scrollToBottom());
+				autoScrollToBottom && (('debouncer' in rdb) ? rdb.debouncer('scrollToBottom', scrollToBottom) : scrollToBottom());
+			});
+
+			$.subscribe('rdb/capture-ajax/response/Kint', function (responseData) {
+				// Append to Kint after the ajaxComplete event has fired
+				setTimeout(function () {
+					var $kintParent = $('.kint-file-parent');
+					$kintParent.append(responseData);
+					postRender();
+				}, 1);
 			});
 		}
 	});

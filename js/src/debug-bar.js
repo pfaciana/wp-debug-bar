@@ -197,7 +197,7 @@
 
 			// Resize the Console after window resize
 			$window.on('resize', function () {
-				debouncer('rwdDebugBar', function () {
+				rdb.debouncer('rwdDebugBar', function () {
 					if (!isConsoleHidden()) {
 						resetConsolePosition();
 						setConsolePosition(localStorage.rwdDebugBarState);
@@ -311,14 +311,61 @@
 
 	});
 	$(function () {
-		// Formatters
+		window.rdb = window.rdb || {};
+
+		rdb.isCapturingAjax = function () {
+			return +rdb.getCookie('rwdDebugBarCaptureAjax', 0) > 0;
+		};
+
+		rdb.isCapturingAjaxPersistent = function () {
+			return +rdb.getCookie('rwdDebugBarCaptureAjax', 0) > 1;
+		};
+
+		$.subscribe('rdb/capture-ajax/save', function (state, maxAge = 604800) {
+			rdb.setCookie('rwdDebugBarCaptureAjax', +state, maxAge);
+			$.publish('rdb/capture-ajax/change', +state);
+		});
+
+		$(document).ajaxSend(function (event, jqxhr, settings) {
+			!settings.crossDomain && rdb.isCapturingAjax() && jqxhr.setRequestHeader('X-WP-Debug-Bar', '1');
+
+			settings.dataFilter = function (raw_response, dataType) {
+				if (raw_response.includes('<!--PARSE-FOR-RDB-->')) {
+					const response = raw_response.split('<!--PARSE-FOR-RDB-->');
+					raw_response = response[0];
+
+					if (rdb.isCapturingAjax()) {
+						const debugBarResponse = JSON.parse(response[1]);
+						const today = new Date();
+						const localtime = [
+							(today.getMonth() + 1).toString().padStart(2, 0),
+							today.getDate().toString().padStart(2, 0),
+							today.getFullYear(),
+							today.getHours().toString().padStart(2, 0),
+							today.getMinutes().toString().padStart(2, 0),
+							today.getSeconds().toString().padStart(2, 0),
+							today.getMilliseconds().toString().padStart(3, 0)
+						].join('');
+						const persist = rdb.isCapturingAjaxPersistent();
+
+						$.publish('rdb/capture-ajax/response', debugBarResponse, localtime, persist);
+						$.each(debugBarResponse, function (key, value) {
+							$.publish('rdb/capture-ajax/response/' + key, value, localtime, persist);
+						});
+					}
+				}
+				return raw_response;
+			};
+		});
+	});
+	$(function () {
 		$(document).on('click', '[class*="ide-link"]', function (e) {
 			e.preventDefault();
 			$.ajax($(this).attr('href'), {data: {kint_ignore: 1}});
 			return false;
 		});
 	});
-	// Yes! Conflict
+	// Yes! Conflict (only if $ is not defined)
 	if (typeof window.$ === "undefined" && typeof jQuery !== "undefined") {
 		window.$ = jQuery;
 	}
