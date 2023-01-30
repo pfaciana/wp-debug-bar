@@ -1,6 +1,7 @@
 <?php
 
-if ( isset( $GLOBALS['wp_version'] ) && !isset( $_GET['_wp-find-template'] ) && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) ) {
+if ( isset( $GLOBALS['wp_version'] ) && !isset( $_GET['_wp-find-template'] ) //
+	&& !str_ends_with( explode( '?', $_SERVER['REQUEST_URI'] )[0], 'favicon.ico' ) && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) ) {
 
 	!defined( 'WP_START_TIMESTAMP' ) && define( 'WP_START_TIMESTAMP', $GLOBALS['timestart'] ?? NULL );
 	!defined( 'SAVEQUERIES' ) && define( "SAVEQUERIES", TRUE );
