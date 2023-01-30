@@ -124,6 +124,23 @@
 		});
 	});
 
+	$(document).on('click', '.delete-table', function () {
+		var $button = $(this);
+		$button.closest('.tabulator').each(function () {
+			var $table = $(this);
+			$.each(window.Tabulator.findTable(this), function () {
+				var $tabulator = $(this)[0];
+				$.publish('tabulator-table-delete', $table, $tabulator, $button);
+				$tabulator.destroy();
+				if ($button.hasClass('delete-container')) {
+					$table.parent().remove();
+				} else {
+					$table.remove();
+				}
+			});
+		});
+	});
+
 	$(document).on('change', '.files-picker', function () {
 		const $this = $(this);
 		Tabulator.findTable($this.data('table'))[0].setHeaderFilterValue($this.attr('name'), $this.val());
