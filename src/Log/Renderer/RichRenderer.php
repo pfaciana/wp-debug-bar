@@ -8,12 +8,13 @@ class RichRenderer extends \Kint\Renderer\RichRenderer
 
 	public function postRender ()
 	{
-		if ( !wp_doing_ajax() ) {
+		if ( !\DebugBar\DebugBar::wp_doing_ajax() || \DebugBar\DebugBar::running_for_ajax() ) {
 			return parent::postRender();
 		}
 
 		/*
 		// TODO: make a setting to turn this on/off to save on ajax payload size, for now leaving off
+		// NOTE: Using the `running_for_ajax` check now to as the setting for simple or details responses
 
 		$frame  = [];
 		$frames = array_reverse( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) );

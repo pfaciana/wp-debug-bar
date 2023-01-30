@@ -89,7 +89,16 @@ if ( defined( 'RWD_DEBUG_BAR_PLUGIN_DIR' ) ) {
 	\Kint\Renderer\RichRenderer::$theme = RWD_DEBUG_BAR_PLUGIN_DIR . '/css/dist/kint-dark-theme.css';
 }
 
-if ( function_exists( 'wp_doing_ajax' ) && !wp_doing_ajax() ) {
-	$GLOBALS['kint_buffer'] = str_replace( '<div class="kint-rich kint-file"></div>', '', ( new \Kint\Renderer\RichRenderer() )->preRender() . '</div>' );
+// Always call the preRender() here, regardless of doing ajax, so we can control the output
+// If we don't call it here, then Kint will automatically call preRender() as soon as we send something to Kint
+$GLOBALS['kint_buffer_prefix'] = str_replace( '<div class="kint-rich kint-file"></div>', '', ( new \Kint\Renderer\RichRenderer() )->preRender() . '</div>' );
+
+if ( function_exists( 'add_action' ) ) {
+	add_action( 'shutdown', function () {
+		if ( !\DebugBar\DebugBar::wp_doing_ajax() ) {
+			$GLOBALS['kint_buffer'] = ( $GLOBALS['kint_buffer_prefix'] ?? '' ) . ( $GLOBALS['kint_buffer'] ?? '' );
+		}
+	}, PHP_INT_MIN );
 }
+
 \Kint\Renderer\RichRenderer::$needs_pre_render = FALSE;

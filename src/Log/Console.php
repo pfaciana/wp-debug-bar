@@ -74,7 +74,7 @@ if ( !class_exists( 'console' ) ) {
 
 			$kint_buffer .= $buffer;
 
-			if ( wp_doing_ajax() && !headers_sent() ) {
+			if ( \DebugBar\DebugBar::wp_doing_ajax() && !\DebugBar\DebugBar::running_for_ajax() && !headers_sent() ) {
 				$buffer_size = +ini_get( 'output_buffering' );
 				$new_header  = 'RWD-Debug-Bar-Kint-' . static::$count++ . ': ' . rawurlencode( $buffer );
 				$header_size = strlen( implode( '', headers_list() ) . $new_header );
@@ -84,7 +84,7 @@ if ( !class_exists( 'console' ) ) {
 				else {
 					static::$count--;
 					$final_message = TRUE;
-					static::error( 'Buffer Size Full. Cannot add Kint debugging.' );
+					static::alert( 'Buffer Size Full. Cannot add Kint additional debugging.<br><br>Try turning "Capture Ajax Request" ON in the RWD Debug Bar Settings.' );
 					$buffer_full = TRUE;
 				}
 			}
@@ -103,9 +103,14 @@ if ( !class_exists( 'console' ) ) {
 			return func_get_arg( 0 );
 		}
 
+		public static function backtrace ( $debug_backtrace_args = NULL )
+		{
+			static::call( 'trace', func_get_args() );
+		}
+
 		public static function trace ( $debug_backtrace_args = NULL )
 		{
-			if ( wp_doing_ajax() ) {
+			if ( \DebugBar\DebugBar::wp_doing_ajax() && !\DebugBar\DebugBar::running_for_ajax() ) {
 				static::warn( "You can't run BACKTRACE while doing ajax" );
 
 				return [];
