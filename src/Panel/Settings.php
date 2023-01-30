@@ -74,6 +74,28 @@ class Settings extends \Debug_Bar_Panel
 					<hr>
 				</li>
 			<?php endif; ?>
+			<li>
+				<label for="capture_ajax"><b>Capture Ajax Request</b> (may break some ajax calls)</label>
+				<br>
+				<?php $capture_ajax = $_COOKIE['rwdDebugBarCaptureAjax'] ?? '0' ?>
+				<select id="capture_ajax" name="capture_ajax">
+					<?php foreach ( [ 'No', 'Yes', 'Yes (Persist)' ] as $index => $text ) : ?>
+						<option <?php selected( $capture_ajax, $index ); ?> value="<?= $index ?>"><?= $text ?></option>
+					<?php endforeach; ?>
+				</select>
+				<hr>
+			</li>
+			<li>
+				<label for="capture_page_change"><b>Capture Page Change</b></label>
+				<br>
+				<?php $capture_page_change = $_COOKIE['rwdDebugBarCapturePageChange'] ?? '0' ?>
+				<select id="capture_page_change" name="capture_page_change">
+					<?php foreach ( [ 'No', 'Yes' ] as $index => $text ) : ?>
+						<option <?php selected( $capture_page_change, $index ); ?> value="<?= $index ?>"><?= $text ?></option>
+					<?php endforeach; ?>
+				</select>
+				<hr>
+			</li>
 			<?php if ( current_user_can( 'read' ) ) : ?>
 				<li>
 					<button class="rwd-debug-panels-activate-all" data-activate-all="1">Enable All Panels</button>
@@ -108,16 +130,25 @@ class Settings extends \Debug_Bar_Panel
 						return panels;
 					}
 
-					$('#min_user_role').on('change', function () {
-						var $this = $(this);
+					$('#capture_ajax').on('change', function () {
+						$.publish('rdb/capture-ajax/save', +$(this).val());
+						return false;
+					});
 
+					$('#capture_page_change').on('change', function () {
+						rdb.setCookie('rwdDebugBarCapturePageChange', +$(this).val());
+						return false;
+					});
+
+					$('#min_user_role').on('change', function () {
 						$.ajax(ajaxUrl, {
 							method: 'POST',
 							data: {
 								action: 'rwd_debug_bar_panels_min_role',
-								user_role: $this.val(),
+								user_role: $(this).val(),
 							},
-							success: function (response) {}
+							success: function (response) {
+							}
 						});
 						return false;
 					});
@@ -153,6 +184,7 @@ class Settings extends \Debug_Bar_Panel
 								'rwdDebugBarState',
 								'rwdDebugBarHidden',
 								'rwdDebugBarAdminHidden',
+								'rwdDebugBarCaptureAjax',
 							];
 
 						$.each(keys, function (key, value) {
@@ -162,6 +194,12 @@ class Settings extends \Debug_Bar_Panel
 						localStorage[hiddenKey] = '0';
 
 						return false;
+					});
+
+					$(window).on('beforeunload', function () {
+						if (+rdb.getCookie('rwdDebugBarCapturePageChange', 0)) {
+							return '';
+						}
 					});
 
 				});

@@ -18,6 +18,6 @@ class Hooks extends \Debug_Bar_Panel
 
 	public function render ()
 	{
-		is_callable( $this->output ) && ( $this->output )();
+		is_callable( $this->output ) && ( $this->output )( $this->get_panel_class() );
 	}
 }

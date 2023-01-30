@@ -14,6 +14,7 @@ class Hooks
 	protected $actions = [];
 	protected $trackers = [];
 	protected $tracking = [];
+	protected $ajaxKey = 'Hooks';
 
 	function __construct ()
 	{
@@ -31,17 +32,22 @@ class Hooks
 	{
 		global $wp_actions;
 
-		if ( !is_admin_bar_showing() || in_array( 'DebugBar_Panel_Hooks_Hooks', \DebugBar\DebugBar::get_disabled_panels() ) ) {
+		if ( ( !is_admin_bar_showing() && DebugBar::running_for_ajax() === FALSE ) || in_array( 'DebugBar_Panel_Hooks_Hooks', \DebugBar\DebugBar::get_disabled_panels() ) ) {
 			return ( $this->active = FALSE );
 		}
 
 		$this->actions    = $wp_actions;
 		$this->start_time = WP_START_TIMESTAMP ?: microtime( TRUE );
 		add_action( 'all', [ $this, 'all' ] );
+		add_filter( 'rdb/ajax/response', [ $this, 'ajaxRender' ] );
 	}
 
 	public function all ()
 	{
+		if ( DebugBar::wp_doing_ajax() && !DebugBar::running_for_ajax() ) {
+			$this->active = FALSE;
+		}
+
 		if ( !$this->active ) {
 			return $this->hooks = [];
 		}
@@ -230,10 +236,8 @@ class Hooks
 		return $subscribers;
 	}
 
-	public function render ()
+	public function getResults ()
 	{
-		remove_action( 'all', [ $this, 'all' ] );
-
 		global $wp_filter;
 
 		$diff = $this->diff( $this->end_time = microtime( TRUE ) );
@@ -262,6 +266,9 @@ class Hooks
 			}
 			$hooks[] = $this->formatHookData( $data, $name );
 		}
+
+		$tracking = [];
+
 		$subscribers = array_column( $hooks, 'subscribers', 'name' );
 		foreach ( $this->tracking as $hook ) {
 			$hook['subscribers'] = $subscribers[$hook['name']] ?? [];
@@ -270,31 +277,65 @@ class Hooks
 			}
 		}
 
-		if ( !empty( $tracking ) ) : ?>
-			<h3>User Tracking</h3>
-			<div id="tracking-table"></div>
-		<?php endif; ?>
+		return [ $hooks, $tracking ];
+	}
 
-		<h3>Hooks (after plugins_loaded)</h3>
-		<div id="hooks-table" style="position: static !important;"></div>
+	public function ajaxRender ( $response = [] )
+	{
+		remove_action( 'all', [ $this, 'all' ] );
 
-		<h3>Actions (prior to plugins_loaded)</h3>
-		<?php
+		[ $hooks, $tracking ] = $this->getResults();
+
+		if ( !empty( $hooks ) || !empty( $tracking ) ) {
+			$response[$this->ajaxKey] = [
+				'hooks'    => $hooks,
+				'tracking' => $tracking,
+			];
+		}
+
+		return $response;
+	}
+
+	public function render ( $panel_class = '' )
+	{
+		remove_action( 'all', [ $this, 'all' ] );
+
+		[ $hooks, $tracking ] = $this->getResults();
+
 		$actions = [];
 		foreach ( $this->actions as $name => $count ) {
 			$actions[] = "{$name} ({$count}x)";
 		}
-		echo implode( ', ', $actions );
+		$actions = implode( ', ', $actions );
+
+		echo '<div class="hooks-tables"></div>';
+
 		?>
 
 		<script type="application/javascript">
 			jQuery(function ($) {
 				var T = window.Tabulator;
-				var tracking = <?= json_encode( $tracking ?? [] ) ?>;
+				var storageKey = 'rwdAdditionalHooks';
+				var ajaxHooksPrefix = 'hooks-table-';
+				var ajaxTrackingPrefix = 'tracking-table-';
+				var $container = $('.<?=$panel_class?> .hooks-tables');
 
-				if (tracking.length) {
-					T.Create("#tracking-table", {
-						data: tracking,
+				function createAccordion() {
+					$container.accordion({
+						animate: false,
+						header: 'h3',
+						heightStyle: 'content',
+					});
+				}
+
+				function updateAccordion() {
+					$container.accordion('refresh');
+				}
+
+				function createTrackingTable(heading, id, data, config = {}) {
+					$container.append(`<h3>${heading}</h3><div><div id="${id}"></div></div>`)
+					T.Create(`#${id}`, {
+						data: data,
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Tracking ID(s)', field: 'trackers', hozAlign: 'left', formatter: 'list[]'},
@@ -309,14 +350,14 @@ class Hooks
 							{title: 'Subscribers', field: 'subscribers', formatter: 'subscribers'},
 							{title: 'Publisher', field: 'publishers', formatter: 'files'},
 						],
+						...config,
 					});
 				}
 
-				var hooks = <?= json_encode( $hooks ) ?>;
-
-				if (hooks.length) {
-					T.Create("#hooks-table", {
-						data: hooks,
+				function createHooksTable(heading, id, data, config = {}) {
+					$container.append(`<h3>${heading}</h3><div><div id="${id}"></div></div>`)
+					T.Create(`#${id}`, {
+						data: data,
 						layout: 'fitDataStretch',
 						columns: [
 							{title: 'Hook Name', field: 'name', hozAlign: 'left', headerFilter: 'input', headerFilterFunc: T.filters.advanced},
@@ -329,8 +370,99 @@ class Hooks
 							{title: 'Subscribers', field: 'subscribers', formatter: 'subscribers'},
 							{title: 'Publishers', field: 'publishers', formatter: 'files'},
 						],
+						...config,
 					});
 				}
+
+				var tracking = <?= json_encode( $tracking ?? [] ) ?>;
+				if (tracking.length) {
+					createTrackingTable('User Tracking', 'tracking-table', tracking);
+				}
+
+				var hooks = <?= json_encode( $hooks ?? [] ) ?>;
+				if (hooks.length) {
+					createHooksTable('Hooks (after plugins_loaded)', 'hooks-table', hooks);
+				}
+
+				var actions = '<?= $actions ?? '' ?>';
+				if (actions.length) {
+					$container.append(`<h3>Actions (prior to plugins_loaded)</h3><div><div style="padding: 15px;">${actions}</div></div>`)
+				}
+
+				createAccordion();
+
+				/** Support for Ajax Calls **/
+
+				function displayAjaxTables(response, localtime) {
+					if (response.tracking.length) {
+						createTrackingTable(`Ajax User Tracking (${rdb.formatLocalTime(localtime)})`, `${ajaxTrackingPrefix}${localtime}`, response.tracking);
+					}
+					if (response.hooks.length) {
+						createHooksTable(`Ajax Hooks (${rdb.formatLocalTime(localtime)})`, `${ajaxHooksPrefix}${localtime}`, response.hooks);
+					}
+					updateAccordion();
+				}
+
+				function scrollToBottom() {
+					setTimeout(() => $container.closest('[data-panel]').animate({scrollTop: $container.height()}, 1000), 1);
+				}
+
+				if (!rdb.isCapturingAjaxPersistent()) {
+					localStorage.removeItem(storageKey);
+				} else {
+					let hooks = localStorage.getItem(storageKey);
+					if (hooks) {
+						hooks = JSON.parse(hooks);
+						$.each(hooks, function (localtime, response) {
+							displayAjaxTables(response, localtime);
+						});
+					}
+				}
+
+				$.subscribe('rdb/capture-ajax/change', function (state) {
+					!state && localStorage.removeItem(storageKey);
+				});
+
+				$.subscribe('rdb/capture-ajax/response/<?=$this->ajaxKey?>', function (response, localtime, persist) {
+					displayAjaxTables(response, localtime);
+					if (response.tracking.length || response.hooks.length) {
+						scrollToBottom();
+						if (persist) {
+							let hooks = localStorage.getItem(storageKey);
+							hooks = hooks ? JSON.parse(hooks) : {};
+							hooks[localtime] = response;
+							localStorage.setItem(storageKey, JSON.stringify(hooks));
+						}
+					}
+				});
+
+				$.subscribe('tabulator-table-delete', function ($table) {
+					if ($table && $table instanceof jQuery) {
+						let type, localtime = null, tableId = $table.attr('id');
+						if (tableId.startsWith(ajaxHooksPrefix)) {
+							localtime = $table.attr('id').replace(ajaxHooksPrefix, '');
+							type = 'hooks';
+						} else if (tableId.startsWith(ajaxTrackingPrefix)) {
+							localtime = $table.attr('id').replace(ajaxTrackingPrefix, '');
+							type = 'tracking';
+						} else {
+							return;
+						}
+						let hooks = localStorage.getItem(storageKey);
+						if (hooks) {
+							hooks = JSON.parse(hooks);
+							if (localtime in hooks) {
+								if (type in hooks[localtime]) {
+									delete hooks[localtime][type];
+									if (!Object.keys(hooks[localtime]).length) {
+										delete hooks[localtime];
+									}
+									localStorage.setItem(storageKey, JSON.stringify(hooks));
+								}
+							}
+						}
+					}
+				});
 			});
 		</script>
 		<?php

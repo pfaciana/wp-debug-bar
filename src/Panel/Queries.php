@@ -11,8 +11,11 @@ class Queries extends \DebugBar\Panel
 
 	public $_icon = 'dashicons-database-view';
 	public $_title = 'Queries';
+	public $init_only_if_active = TRUE;
 	protected $ignoreFiles = [ 'class-wp.php', 'class-wpdb.php', 'class-wp-query.php' ];
 	protected $query_args = NULL;
+	protected $ajaxKey = 'Queries';
+
 
 	public function init ()
 	{
@@ -20,6 +23,7 @@ class Queries extends \DebugBar\Panel
 		ini_set( "serialize_precision", -1 );
 		add_action( 'pre_get_posts', [ $this, 'pre_get_posts' ], 10, 1 );
 		add_filter( 'log_query_custom_data', [ $this, 'log_query_custom_data' ], 10, 5 );
+		add_filter( 'rdb/ajax/response', [ $this, 'ajaxRender' ] );
 	}
 
 	public function pre_get_posts ( $WP_Query )
@@ -53,7 +57,7 @@ class Queries extends \DebugBar\Panel
 		return $query_data;
 	}
 
-	public function render ()
+	public function getResults ()
 	{
 		global $wpdb;
 
@@ -99,19 +103,52 @@ class Queries extends \DebugBar\Panel
 				$queries[$created]['source'][] = $this->getFileLinkArray( $query[4]['file'] ?? NULL, $query[4]['line'] ?? NULL );
 			}
 		}
-		?>
 
-		<h3>Queries</h3>
-		<div id="queries-table"></div>
+		return $queries;
+	}
+
+	public function ajaxRender ( $response = [] )
+	{
+		$queries = array_values( $this->getResults() );
+
+		if ( !empty( $queries ) ) {
+			$response[$this->ajaxKey] = $queries;
+		}
+
+		return $response;
+	}
+
+	public function render ()
+	{
+		$queries = $this->getResults();
+
+		echo '<div class="queries-tables"></div>';
+
+		?>
 
 		<script type="application/javascript">
 			jQuery(function ($) {
 				var T = window.Tabulator;
-				var queries = <?= json_encode( array_values( $queries ?? [] ) ) ?>;
+				var storageKey = 'rwdAdditionalQueries';
+				var ajaxTablePrefix = 'queries-table-';
+				var $container = $('.<?=$this->get_panel_class()?> .queries-tables');
 
-				if (queries.length) {
-					T.Create("#queries-table", {
-						data: queries,
+				function createAccordion() {
+					$container.accordion({
+						animate: false,
+						header: 'h3',
+						heightStyle: 'content',
+					});
+				}
+
+				function updateAccordion() {
+					$container.accordion('refresh');
+				}
+
+				function createQueriesTable(heading, id, data, config = {}) {
+					$container.append(`<h3>${heading}</h3><div><div id="${id}"></div></div>`)
+					T.Create(`#${id}`, {
+						data: data,
 						paginationSize: 5,
 						layout: 'fitDataStretch',
 						columns: [
@@ -141,8 +178,72 @@ class Queries extends \DebugBar\Panel
 							{title: 'Run', field: 'count', formatter: 'minMax'},
 							{title: 'Source', field: 'source', formatter: 'file'},
 						],
+						...config,
 					});
 				}
+
+				var queries = <?= json_encode( array_values( $queries ?? [] ) ) ?>;
+				if (queries.length) {
+					createQueriesTable('Queries', 'queries-table', queries);
+				}
+
+				createAccordion();
+
+				/** Support for Ajax Calls **/
+
+				function displayAjaxTables(response, localtime) {
+					if (response.length) {
+						createQueriesTable(`Ajax Queries (${rdb.formatLocalTime(localtime)})`, `${ajaxTablePrefix}${localtime}`, response);
+						updateAccordion();
+					}
+				}
+
+				function scrollToBottom() {
+					setTimeout(() => $container.closest('[data-panel]').animate({scrollTop: $container.height()}, 1000), 1);
+				}
+
+				if (!rdb.isCapturingAjaxPersistent()) {
+					localStorage.removeItem(storageKey);
+				} else {
+					let queries = localStorage.getItem(storageKey);
+					if (queries) {
+						queries = JSON.parse(queries);
+						$.each(queries, function (localtime, response) {
+							displayAjaxTables(response, localtime);
+						});
+					}
+				}
+
+				$.subscribe('rdb/capture-ajax/change', function (state) {
+					!state && localStorage.removeItem(storageKey);
+				});
+
+				$.subscribe('rdb/capture-ajax/response/<?=$this->ajaxKey?>', function (response, localtime, persist) {
+					displayAjaxTables(response, localtime);
+					if (response.length) {
+						scrollToBottom();
+						if (persist) {
+							let queries = localStorage.getItem(storageKey);
+							queries = queries ? JSON.parse(queries) : {};
+							queries[localtime] = response;
+							localStorage.setItem(storageKey, JSON.stringify(queries));
+						}
+					}
+				});
+
+				$.subscribe('tabulator-table-delete', function ($table) {
+					if ($table && $table.attr('id').includes(ajaxTablePrefix)) {
+						var key = $table.attr('id').replace(ajaxTablePrefix, '');
+						let queries = localStorage.getItem(storageKey);
+						if (queries) {
+							queries = JSON.parse(queries);
+							if (key in queries) {
+								delete queries[key];
+								localStorage.setItem(storageKey, JSON.stringify(queries));
+							}
+						}
+					}
+				});
 			});
 		</script>
 		<?php
