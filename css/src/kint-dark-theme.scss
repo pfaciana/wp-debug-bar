@@ -70,6 +70,12 @@ $caret-background: $dark;
 	}
 }
 
+dd.kint-folder.kint-file-parent {
+	div.kint-file {
+		display: block;
+	}
+}
+
 .kint-rich {
 	font-size: $font-size * 1px;
 	overflow-x: auto;
@@ -809,9 +815,9 @@ $caret-background: $dark;
 		margin-right: 10px;
 	}
 
-	.kint-message {
-		margin: 10px 0;
-		padding: 15px 10px;
+	.kint-ajax {
+		margin: 40px 0 10px 0;
+		padding: 10px 5px;
 		background-color: $dark;
 		font-size: 14px;
 		font-weight: bold;
@@ -819,20 +825,23 @@ $caret-background: $dark;
 		overflow: auto;
 		white-space: normal;
 
-		pre {
+		pre, pre * {
 			white-space: pre-wrap;
-		}
-
-		dl {
-			margin-right: 10px;
-			float: right !important;
+			color: $orange;
 		}
 
 		dl, dt {
 			margin: 0;
-			padding: 0;
 			border: none;
 			overflow: initial;
+		}
+
+		dl {
+			margin-left: 15px;
+			padding: 0;
+		}
+
+		dt {
 		}
 
 		a {
@@ -843,6 +852,26 @@ $caret-background: $dark;
 
 		svg {
 			height: 15px;
+		}
+	}
+
+	.kint-parent-flex {
+		display: flex;
+		flex-direction: row-reverse;
+
+		> .kint-ajax-header {
+			flex: 1 1 auto;
+			text-align: center;
+			color: $glow;
+		}
+
+		> * {
+			flex: 0 0 auto;
+			order: 1;
+
+			&[data-action] {
+				order: 0;
+			}
 		}
 	}
 
@@ -860,7 +889,7 @@ $caret-background: $dark;
 	@mixin message-prefix($prefix) {
 		@content;
 		display: inline-block;
-		padding: 10px 7px;
+		//padding: 10px 7px;
 		font-weight: bold;
 		*, ::before, ::after {
 			color: currentColor;
