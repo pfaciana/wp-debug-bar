@@ -17,7 +17,7 @@ if ( isset( $GLOBALS['wp_version'] ) && !isset( $_GET['_wp-find-template'] ) //
 	$GLOBALS['rwd_debug_bar'] = new DebugBar\DebugBar();
 
 	add_action( 'plugins_loaded', function () {
-		$queryPanel   = new DebugBar\Panel\Queries( 'Queries' );
+		$queryPanel = new DebugBar\Panel\Queries( 'Queries' );
 		add_filter( 'debug_bar_panels', function ( $panels ) use ( $queryPanel ) {
 			$panels[] = new DebugBar\Panel\Environment( 'Environment' );
 			$panels[] = new DebugBar\Panel\Globals( 'Globals' );
@@ -32,8 +32,9 @@ if ( isset( $GLOBALS['wp_version'] ) && !isset( $_GET['_wp-find-template'] ) //
 			return $panels;
 		} );
 
-		add_filter( 'debug_bar_panels', function ( $panels ) {
-			$panels[] = new DebugBar\Panel\Kint( 'Kint' );
+		$kintPanel = new DebugBar\Panel\Kint( 'Kint' );
+		add_filter( 'debug_bar_panels', function ( $panels ) use ( $kintPanel ) {
+			$panels[] = $kintPanel;
 			$panels[] = new DebugBar\Panel\Settings( 'Settings' );
 
 			return $panels;
