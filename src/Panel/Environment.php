@@ -12,6 +12,7 @@ class Environment extends \Debug_Bar_Panel
 	public $_icon = 'fa fa-server';
 	public $_panel_id;
 	public $_capability = 'manage_options';
+	public $init_only_if_active = TRUE;
 
 	public function init ()
 	{
@@ -171,7 +172,7 @@ class Environment extends \Debug_Bar_Panel
 		if ( isset( $wpdb->use_mysqli ) && $wpdb->use_mysqli ) {
 			$db['Client Version'] = $wpdb->dbh->client_info;
 		}
-		elseif ( preg_match( '|[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}|', mysql_get_client_info(), $matches ) ) {
+		elseif ( preg_match( '|[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}|', mysqli_get_client_info(), $matches ) ) {
 			$db['Client Version'] = $matches[0];
 		}
 

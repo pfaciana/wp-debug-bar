@@ -10,6 +10,7 @@ class Blocks extends \Debug_Bar_Panel
 
 	public $_icon = 'dashicons-block-default';
 	public $_capability = 'edit_others_posts';
+	public $init_only_if_active = TRUE;
 	protected $_panel_id;
 
 	public function init ()
