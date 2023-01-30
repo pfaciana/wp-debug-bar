@@ -1,6 +1,6 @@
 <?php
 
-if ( isset( $GLOBALS['wp_version'] ) && !isset( $_GET['_wp-find-template'] ) && !wp_is_json_request() && !wp_is_jsonp_request() && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) ) {
+if ( isset( $GLOBALS['wp_version'] ) && !isset( $_GET['_wp-find-template'] ) && !defined( 'RWD_DEBUG_BAR_PLUGIN_FILE' ) ) {
 
 	!defined( 'WP_START_TIMESTAMP' ) && define( 'WP_START_TIMESTAMP', $GLOBALS['timestart'] ?? NULL );
 	!defined( 'SAVEQUERIES' ) && define( "SAVEQUERIES", TRUE );
