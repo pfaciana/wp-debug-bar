@@ -37,6 +37,7 @@ class DebugBar
 		add_action( 'plugins_loaded', function () { $this->init(); }, PHP_INT_MIN );
 		add_action( wp_doing_ajax() ? 'admin_init' : 'admin_bar_init', function () { $this->admin_bar_init(); } );
 		add_action( 'activate_debug-bar/debug-bar.php', function () { $this->orig_debug_bar_activated(); } );
+		add_action( 'shutdown', function () { $this->shutdown(); } );
 	}
 
 	protected function pre_init ()
@@ -55,7 +56,7 @@ class DebugBar
 	{
 		if ( $this->enable_debug_bar() ) {
 
-			if ( !wp_doing_ajax() ) {
+			if ( !static::wp_doing_ajax() ) {
 				add_action( 'wp_before_admin_bar_render', function () { $this->wp_before_admin_bar_render(); }, PHP_INT_MAX );
 
 				add_action( 'wp_enqueue_scripts', function () { $this->enqueue_scripts(); } );
@@ -192,13 +193,11 @@ class DebugBar
 
 		wp_enqueue_style( 'tabulator', "https://unpkg.com/tabulator-tables@5.4.2/dist/css/tabulator{$suffix}.css", [], NULL );
 		wp_enqueue_script( 'tabulator', "https://unpkg.com/tabulator-tables@5.4.2/dist/js/tabulator{$suffix}.js", [ 'jquery' ], NULL, TRUE );
-		wp_enqueue_script( 'jquery-small-pubsub', "https://unpkg.com/jquery-small-pubsub@0.1.0/dist/pubsub{$suffix}.js", [ 'jquery' ], NULL, TRUE );
+		wp_enqueue_script( 'jquery-small-pubsub', "https://unpkg.com/jquery-small-pubsub@0.2.0/dist/pubsub{$suffix}.js", [ 'jquery' ], NULL, TRUE );
 		wp_enqueue_script( 'tabulator-modules', "https://unpkg.com/tabulator-modules@1.0.1/dist/tabulator-modules{$suffix}.js", [ 'jquery', 'tabulator' ], NULL, TRUE );
 
 		wp_enqueue_style( $prefix . 'debug-bar', plugins_url( "/css/dist/styles{$suffix}.css", RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'admin-menu' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . "/css/dist/styles{$suffix}.css" ) );
-		wp_enqueue_script( $prefix . 'debug-bar', plugins_url( "/js/dist/scripts{$suffix}.js", RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'jquery-ui-resizable', 'common' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . "/js/dist/scripts{$suffix}.js" ), TRUE );
-
-		wp_enqueue_script( 'beautify-js', "https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.9.0-beta5/beautify{$suffix}.js" );
+		wp_enqueue_script( $prefix . 'debug-bar', plugins_url( "/js/dist/scripts.js", RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'jquery-ui-resizable', 'jquery-ui-accordion', 'common' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . "/js/dist/scripts{$suffix}.js" ), TRUE );
 
 		wp_enqueue_style( 'fontawesome', "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome{$suffix}.css", [], '4.7.0' );
 
@@ -266,9 +265,10 @@ class DebugBar
 				continue;
 			}
 
-			$panel_id = $panel->get_panel_id(); ?>
+			$panel_id    = $panel->get_panel_id();
+			$panel_class = $panel->get_panel_class(); ?>
 			<section id="debug-menu-target-<?= $panel_id ?>" class="rwd-debug-menu-target" data-panel="<?= $panel_id ?>">
-				<div>
+				<div class="<?= $panel_class ?>">
 					<?php
 					if ( $panel->is_active() ) :
 						$panel->render();
@@ -332,5 +332,77 @@ class DebugBar
 	protected function footer ()
 	{
 		echo '<em>Brought to you by Render Dev.</em>';
+	}
+
+	/*
+	 * Support for Ajax calls
+	 */
+
+	protected $hasShutdown = FALSE;
+
+	function __destruct ()
+	{
+		// Fallback in case `exit` language construct is called directly
+		if ( !$this->hasShutdown ) {
+			$this->shutdown();
+		}
+	}
+
+	protected function shutdown ()
+	{
+		if ( static::running_for_ajax() ) {
+			if ( !empty( $response = apply_filters( 'rdb/ajax/response', [], static::is_response_json() ) ) ) {
+				echo '<!--PARSE-FOR-RDB-->' . json_encode( $response );
+			}
+		}
+		$this->hasShutdown = TRUE;
+	}
+
+	static public function is_response_json ()
+	{
+		static $isResponseJson = NULL;
+
+		if ( is_bool( $isResponseJson ) ) {
+			return $isResponseJson;
+		}
+
+		$headers = headers_list();
+		foreach ( $headers as $header ) {
+			$header = strtolower( $header );
+			if ( str_starts_with( $header, 'content-type:' ) ) {
+				[ $key, $value ] = array_map( 'trim', explode( ':', $header, 2 ) );
+				$isResponseJson = ( (bool) preg_match( '/(^|\s|,)application\/([\w!#\$&-\^\.\+]+\+)?json(\+oembed)?($|\s|;|,)/i', $header ) );
+				do_action( 'rdb/response/content-type', $value, $key, $header, $headers );
+				do_action( 'rdb/response/content-type/is-json', $isResponseJson, $value, $key, $header, $headers );
+				if ( $isResponseJson ) {
+					do_action( 'rdb/response/content-type/json', $value, $key, $header, $headers );
+				}
+				else {
+					do_action( 'rdb/response/content-type/not-json', $value, $key, $header, $headers );
+				}
+
+				return $isResponseJson;
+			}
+		}
+
+		return NULL;
+	}
+
+	static public function wp_doing_ajax ()
+	{
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			return TRUE;
+		}
+
+		return static::is_response_json();
+	}
+
+	static public function running_for_ajax ()
+	{
+		if ( !isset( $_SERVER['HTTP_X_WP_DEBUG_BAR'] ) || !$_SERVER['HTTP_X_WP_DEBUG_BAR'] ) {
+			return FALSE;
+		}
+
+		return static::wp_doing_ajax();
 	}
 }
