@@ -272,7 +272,7 @@ These do the same thing, but may be a preferable alternative.
 
 ```php
 // Alternate Option #1
-$unwatch = add_filter( 'debugbar/watch', 'Some Watcher Name' );
+$unwatch = apply_filters( 'debugbar/watch', 'Some Watcher Name' );
 echo do_something();
 $unwatch();
 
