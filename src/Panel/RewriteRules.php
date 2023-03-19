@@ -117,12 +117,13 @@ class RewriteRules extends \Debug_Bar_Panel
 
 	protected function get_matched_request_card ()
 	{
-		global $wp;
+		global $wp, $wp_rewrite;
 
 		$this->outputTable( [
-			'request'       => $wp->request,
-			'matched_rule'  => $wp->matched_rule,
-			'matched_query' => $wp->matched_query,
+			'request'       => htmlspecialchars( $wp->request ),
+			'matched_regex' => htmlspecialchars( $wp->matched_rule ),
+			'matched_query' => htmlspecialchars( $wp_rewrite->rules[$wp->matched_rule] ?? 'Not Found' ),
+			'query_vars'    => htmlspecialchars( $wp->matched_query ),
 		] );
 	}
 
