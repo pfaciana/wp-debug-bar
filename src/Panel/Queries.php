@@ -175,7 +175,7 @@ class Queries extends \DebugBar\Panel
 								}
 							},
 							{title: 'Start', field: 'startTime', formatter: 'timeMs'},
-							{title: 'Run', field: 'count', formatter: 'minMax'},
+							{title: 'Run', field: 'count', formatter: 'minMax', bottomCalc: 'count'},
 							{title: 'Source', field: 'source', formatter: 'file'},
 						],
 						...config,
