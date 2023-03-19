@@ -14,6 +14,7 @@ class Hooks
 	protected $actions = [];
 	protected $trackers = [];
 	protected $tracking = [];
+	protected $trackingCounters = [];
 	protected $ajaxKey = 'Hooks';
 
 	function __construct ()
@@ -170,6 +171,12 @@ class Hooks
 		}
 		$data['level'] = max( array_column( $calls, 'level' ) );
 
+		$data['args'] = array_reduce( $calls, function ( $carry, $call ) {
+			return max( $carry, array_reduce( array_reverse( $call['args'] ), function ( $c, $value ) {
+				return $c + ( $value !== NULL || $c !== 0 );
+			}, 0 ), +!!count( $call['args'] ) );
+		}, 0 );
+
 		foreach ( $data['subscribers'] as &$subscriber ) {
 			$subscriber['text'] .= " [{$subscriber['priority']}]";
 			if ( array_key_exists( 'count', $subscriber ) && $subscriber['count'] > 1 ) {
@@ -197,11 +204,14 @@ class Hooks
 	{
 		$hook['input'] = NULL;
 		if ( $hook['type'] === 'filter' ) {
-			$hook['input'] = !empty( $hook['args'] ) ? array_shift( $hook['args'] ) : NULL;
-			$hook['input'] = $hook['input'] === $hook['value'] ? [ 'type' => 'same' ] : $this->formatValue( $hook['input'] );
-			$hook['value'] = $this->formatValue( $hook['value'] );
+			$hook['input']  = !empty( $hook['args'] ) ? array_shift( $hook['args'] ) : NULL;
+			$hook['input']  = $hook['input'] === $hook['value'] ? [ 'type' => 'same' ] : $this->formatValue( $hook['input'] );
+			$formattedValue = $this->formatValue( $hook['value'] );
+			$hook['value']  = $formattedValue;
+			$hook['typed']  = $formattedValue['type'];
 		}
 		else {
+			$hook['typed'] = NULL;
 			$hook['value'] = NULL;
 		}
 		foreach ( $hook['args'] as &$arg ) {
@@ -212,6 +222,8 @@ class Hooks
 		$hook['duration'] = floor( $hook['duration'] * 1e5 ) / 1e2;
 
 		$hook['publishers'] = [ $this->getFileLinkArray( $hook['file'], $hook['line'] ) ];
+
+		$hook['count'] = $this->trackingCounters[$hook['name']] ?? 1;
 
 		unset( $hook['level'] );
 		unset( $hook['file'] );
@@ -270,6 +282,8 @@ class Hooks
 		$tracking = [];
 
 		$subscribers = array_column( $hooks, 'subscribers', 'name' );
+
+		$this->trackingCounters = array_count_values( array_column( $this->tracking, 'name' ) );
 		foreach ( $this->tracking as $hook ) {
 			$hook['subscribers'] = $subscribers[$hook['name']] ?? [];
 			if ( apply_filters( 'debugbar/watch/filter', TRUE, $hook = $this->formatHook( $hook ) ) ) {
@@ -341,6 +355,8 @@ class Hooks
 							{title: 'Tracking ID(s)', field: 'trackers', hozAlign: 'left', formatter: 'list[]'},
 							{title: "Hook Type", field: 'type', formatter: 'list'},
 							{title: 'Hook Name', field: 'name', formatter: 'text'},
+							{title: 'Calls', field: 'count', formatter: 'minMax', formatterParams: {bottomSum: true}},
+							{title: 'Type', field: 'typed', formatter: 'list'},
 							{title: 'Output', field: 'value', maxWidth: 250, formatter: 'args'},
 							{title: 'Input', field: 'input', maxWidth: 250, formatter: 'args'},
 							{title: 'Arguments', field: 'args', maxWidth: 250, formatter: 'args'},
@@ -362,6 +378,16 @@ class Hooks
 						columns: [
 							{title: 'Hook Name', field: 'name', hozAlign: 'left', headerFilter: 'input', headerFilterFunc: T.filters.advanced},
 							{title: "Hook Type", field: 'type', formatter: 'list'},
+							{
+								title: 'Args', field: 'args', formatter: 'minMax', clickPopup: function (e, component, onRendered) {
+									const data = component.getData();
+									let args = [];
+									for (let i = 0; i < data.args; i++) {
+										args.push(`$arg${i}`);
+									}
+									return `<div onclick="navigator.clipboard.writeText($(this).text());" style="display:inline-block;cursor:pointer;">add_${data.type}( '${data.name}', function ( ${args.join(', ')} ) { ${data.type !== 'action' ? 'return $arg0;' : ''} }, 10${data.args > 0 ? `, ${data.args}` : ``} );</div>`;
+								}
+							},
 							{title: 'Run Count', field: 'count', formatter: 'minMax', formatterParams: {bottomSum: true}},
 							{title: 'Total Run', field: 'total', headerSortStartingDir: 'desc', formatter: 'timeMs', formatterParams: {bottomSum: true}, bottomCalcParams: {suffix: ' ms'}},
 							{title: 'Slowest Run', field: 'max', headerSortStartingDir: 'desc', formatter: 'timeMs',},
