@@ -388,7 +388,7 @@ class Environment extends \Debug_Bar_Panel
 							{title: 'Default', field: 'default', formatter: 'args'},
 							{title: 'Type', field: 'type', formatter: 'list'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -429,7 +429,7 @@ class Environment extends \Debug_Bar_Panel
 						],
 					});
 				}
-			});
+			}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 		</script>
 		<?php
 
@@ -482,7 +482,7 @@ class Environment extends \Debug_Bar_Panel
 							{title: 'Level', field: 'level', formatter: 'string'},
 							{title: 'Value', field: 'value', formatter: 'minMax'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>

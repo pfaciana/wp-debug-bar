@@ -7,6 +7,7 @@ if ( isset( $GLOBALS['wp_version'] ) && !isset( $_GET['_wp-find-template'] ) //
 	!defined( 'SAVEQUERIES' ) && define( "SAVEQUERIES", TRUE );
 	define( 'RWD_DEBUG_BAR_PLUGIN_DIR', ( __DIR__ ) );
 	define( 'RWD_DEBUG_BAR_PLUGIN_FILE', ( __FILE__ ) );
+	define( 'RWD_DEBUG_BAR_NAMESPACE', 'DebugBar' );
 	define( 'KINT_SKIP_HELPERS', !class_exists( 'console' ) );
 
 	require __DIR__ . '/src/Log/Kint.php';

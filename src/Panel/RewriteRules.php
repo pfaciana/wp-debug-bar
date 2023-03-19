@@ -48,7 +48,7 @@ class RewriteRules extends \Debug_Bar_Panel
 								{title: 'Regex', field: 'regex', formatter: 'regex'},
 								{title: 'Query', field: 'query', formatter: 'text'},
 							],
-						});
+						}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 					}
 				}
 			)
@@ -87,7 +87,7 @@ class RewriteRules extends \Debug_Bar_Panel
 							{title: 'Regex', field: 'regex', formatter: 'regex'},
 							{title: 'Query', field: 'query', hozAlign: 'left', formatter: 'string'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -159,7 +159,7 @@ class RewriteRules extends \Debug_Bar_Panel
 							{title: 'GET', field: 'get', formatter: 'boolean'},
 							{title: 'POST', field: 'post', formatter: 'boolean'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>

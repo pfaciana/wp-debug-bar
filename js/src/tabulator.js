@@ -1,6 +1,10 @@
 (function ($, window, document, undefined) {
 	if (typeof $ === 'function' && 'subscribe' in $) {
-		$.subscribe('tabulator-table-setup', function (options, element) {
+		$.subscribe('tabulator-table-setup', function (options, element, namespace = 'all') {
+			if (namespace !== 'DebugBar') {
+				return options;
+			}
+
 			options.pagination ??= 'local';
 			options.paginationSize ??= 20;
 			options.paginationSizeSelector ??= [5, 10, 20, 50, 100, true];
@@ -11,7 +15,11 @@
 			return options;
 		});
 
-		$.subscribe('tabulator-column-setup', function (column, data, initial, options, element) {
+		$.subscribe('tabulator-column-setup', function (column, data, initial, options, element, namespace = 'all') {
+			if (namespace !== 'DebugBar') {
+				return column;
+			}
+
 			if (['bool', 'boolean', 'tickCross'].includes(initial.formatter)) {
 				column.width ??= 75;
 				column.headerWordWrap ??= true;

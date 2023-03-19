@@ -367,7 +367,7 @@ class Hooks
 							{title: 'Publisher', field: 'publishers', formatter: 'files'},
 						],
 						...config,
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 
 				function createHooksTable(heading, id, data, config = {}) {
@@ -397,7 +397,7 @@ class Hooks
 							{title: 'Publishers', field: 'publishers', formatter: 'files'},
 						],
 						...config,
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 
 				var tracking = <?= json_encode( $tracking ?? [] ) ?>;

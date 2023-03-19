@@ -192,7 +192,7 @@ class Template extends \Debug_Bar_Panel
 						data: themeFeatures,
 						layout: 'fitDataStretch',
 						columns: <?= json_encode( $themeFeaturesConfig ?? [] ) ?>,
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -229,7 +229,7 @@ class Template extends \Debug_Bar_Panel
 							{title: 'Tag', field: 'tag', formatter: 'string'},
 							{title: 'Render Callback', field: 'file', formatter: 'file'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>

@@ -179,7 +179,7 @@ class Queries extends \DebugBar\Panel
 							{title: 'Source', field: 'source', formatter: 'file'},
 						],
 						...config,
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 
 				var queries = <?= json_encode( array_values( $queries ?? [] ) ) ?>;

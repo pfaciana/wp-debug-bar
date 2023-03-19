@@ -257,7 +257,7 @@ class Globals extends \Debug_Bar_Panel
 							{title: 'Value', field: 'value', formatter: 'args'},
 							{title: 'Type', field: 'type', formatter: 'list'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -295,7 +295,7 @@ class Globals extends \Debug_Bar_Panel
 							{title: 'Value', field: 'value', formatter: 'args'},
 							{title: 'Type', field: 'type', formatter: 'list'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -346,7 +346,7 @@ class Globals extends \Debug_Bar_Panel
 							{title: 'Value', field: 'value', formatter: 'args'},
 							{title: 'Type', field: 'type', formatter: 'list'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -371,7 +371,7 @@ class Globals extends \Debug_Bar_Panel
 							{title: 'Value', field: 'value', formatter: 'args'},
 							{title: 'Type', field: 'type', formatter: 'list'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -408,7 +408,7 @@ class Globals extends \Debug_Bar_Panel
 							{title: 'Value', field: 'value', formatter: 'args'},
 							{title: 'Type', field: 'type', formatter: 'list'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -471,7 +471,7 @@ class Globals extends \Debug_Bar_Panel
 							{title: 'Group', field: 'group', formatter: 'list'},
 							{title: 'File', field: 'file', formatter: 'file'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>

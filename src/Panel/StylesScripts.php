@@ -79,7 +79,7 @@ class StylesScripts extends \Debug_Bar_Panel
 							{title: 'Property', field: 'args', formatter: 'string'},
 							{title: 'Extra', field: 'extra', formatter: 'object', formatterParams: {showKeys: true}},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -133,7 +133,7 @@ class StylesScripts extends \Debug_Bar_Panel
 							{title: 'Property', field: 'args', formatter: 'string'},
 							{title: 'Extra', field: 'extra', formatter: 'object', formatterParams: {showKeys: true}},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>

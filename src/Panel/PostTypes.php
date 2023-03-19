@@ -145,7 +145,7 @@ class PostTypes extends \Debug_Bar_Panel
 						data: postTypes,
 						layout: 'fitDataStretch',
 						columns: <?= json_encode( $postTypesConfig ?? [] ) ?>,
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -188,7 +188,7 @@ class PostTypes extends \Debug_Bar_Panel
 						data: taxonomies,
 						layout: 'fitDataStretch',
 						columns: <?= json_encode( $taxonomiesConfig ?? [] ) ?>,
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -248,7 +248,7 @@ class PostTypes extends \Debug_Bar_Panel
 						data: taxonomyPairings,
 						paginationSize: 10,
 						columns: <?= json_encode( $taxonomyPairingsConfig ?? [] ) ?>,
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -298,7 +298,7 @@ class PostTypes extends \Debug_Bar_Panel
 						data: postTypePairings,
 						paginationSize: 10,
 						columns: <?= json_encode( $postTypePairingsConfig ?? [] ) ?>,
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -354,7 +354,7 @@ class PostTypes extends \Debug_Bar_Panel
 					T.Create("#post-status-table", {
 						data: postStatuses,
 						columns: <?= json_encode( $pairingsConfig ?? [] ) ?>,
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -402,7 +402,7 @@ class PostTypes extends \Debug_Bar_Panel
 					T.Create("#image-sizes-table", {
 						data: imageSizes,
 						columns: <?= json_encode( $imageSizesConfig ?? [] ) ?>,
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>

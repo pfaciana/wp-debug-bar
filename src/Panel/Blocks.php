@@ -130,7 +130,7 @@ class Blocks extends \Debug_Bar_Panel
 							},
 							{title: 'Callback File', field: 'renderCallback', formatter: 'files', hozAlign: 'left'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				} else {
 					$('#current-blocks-table').before('<p><b>NOTE: There were no blocks found on this page.</b></p>');
 				}
@@ -197,7 +197,7 @@ class Blocks extends \Debug_Bar_Panel
 							{title: 'description', field: 'description', hozAlign: 'left', formatter: 'text'},
 							{title: 'apiVersion', field: 'apiVersion', formatter: 'minMax'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -310,7 +310,7 @@ class Blocks extends \Debug_Bar_Panel
 							{title: 'file', field: 'file', formatter: 'file'},
 							{title: 'description', field: 'description', formatter: 'text'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -336,7 +336,7 @@ class Blocks extends \Debug_Bar_Panel
 							{title: 'slug', field: 'slug', frozen: true, formatter: 'string'},
 							{title: 'title', field: 'title', hozAlign: 'left', frozen: true, formatter: 'string'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -362,7 +362,7 @@ class Blocks extends \Debug_Bar_Panel
 							{title: 'name', field: 'name', frozen: true, formatter: 'string'},
 							{title: 'label', field: 'label', hozAlign: 'left', frozen: true, formatter: 'string'},
 						],
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>

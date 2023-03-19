@@ -71,7 +71,7 @@ class UserRoles extends \Debug_Bar_Panel
 						data: roles,
 						layout: 'fitDataStretch',
 						columns: <?= json_encode( $rolesConfig ?? [] ) ?>,
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>
@@ -104,7 +104,7 @@ class UserRoles extends \Debug_Bar_Panel
 						data: capabilities,
 						paginationSize: true,
 						columns: <?= json_encode( $capabilitiesConfig ?? [] ) ?>,
-					});
+					}, '<?= RWD_DEBUG_BAR_NAMESPACE ?>');
 				}
 			});
 		</script>

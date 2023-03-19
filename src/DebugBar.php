@@ -194,7 +194,7 @@ class DebugBar
 		wp_enqueue_style( 'tabulator', "https://unpkg.com/tabulator-tables@5.4.2/dist/css/tabulator{$suffix}.css", [], NULL );
 		wp_enqueue_script( 'tabulator', "https://unpkg.com/tabulator-tables@5.4.2/dist/js/tabulator{$suffix}.js", [ 'jquery' ], NULL, TRUE );
 		wp_enqueue_script( 'jquery-small-pubsub', "https://unpkg.com/jquery-small-pubsub@0.2.0/dist/pubsub{$suffix}.js", [ 'jquery' ], NULL, TRUE );
-		wp_enqueue_script( 'tabulator-modules', "https://unpkg.com/tabulator-modules@1.0.1/dist/tabulator-modules{$suffix}.js", [ 'jquery', 'tabulator' ], NULL, TRUE );
+		wp_enqueue_script( 'tabulator-modules', "https://unpkg.com/tabulator-modules@1.1.3/dist/tabulator-modules{$suffix}.js", [ 'jquery', 'tabulator' ], NULL, TRUE );
 
 		wp_enqueue_style( $prefix . 'debug-bar', plugins_url( "/css/dist/styles{$suffix}.css", RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'admin-menu' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . "/css/dist/styles{$suffix}.css" ) );
 		wp_enqueue_script( $prefix . 'debug-bar', plugins_url( "/js/dist/scripts.js", RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'jquery-ui-resizable', 'jquery-ui-accordion', 'common' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . "/js/dist/scripts{$suffix}.js" ), TRUE );

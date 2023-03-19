@@ -695,7 +695,7 @@
           url = `${request.type} ${requestData.action}`;
         }
         var header = `<span class="kint-ajax-header">${url} [${xhr.status} ${xhr.statusText}]</span><time>${time}</time>`;
-        var details = `<pre><u>Request</u>:<br></br>${beautify(requestData || defaultEmpty)}<br><br><u>Response</u>:<br><br>${beautify(responseData || defaultEmpty)}</pre>`;
+        var details = `<pre><u>Request</u>:<br><br>${beautify(requestData || defaultEmpty)}<br><br><u>Response</u>:<br><br>${beautify(responseData || defaultEmpty)}</pre>`;
         if (xhr.status < 200 || xhr.status >= 400 || xhr.statusText === 'error') {
           details = `<div class="kint-error">${details}Error: There was aa AJAX error. Check to make sure the headers are not too big.</div>`;
         } else {
@@ -738,6 +738,10 @@
 (function ($, window, document, undefined) {
   if (typeof $ === 'function' && 'subscribe' in $) {
     $.subscribe('tabulator-table-setup', function (options, element) {
+      let namespace = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'all';
+      if (namespace !== 'DebugBar') {
+        return options;
+      }
       options.pagination ??= 'local';
       options.paginationSize ??= 20;
       options.paginationSizeSelector ??= [5, 10, 20, 50, 100, true];
@@ -747,6 +751,10 @@
       return options;
     });
     $.subscribe('tabulator-column-setup', function (column, data, initial, options, element) {
+      let namespace = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 'all';
+      if (namespace !== 'DebugBar') {
+        return column;
+      }
       if (['bool', 'boolean', 'tickCross'].includes(initial.formatter)) {
         column.width ??= 75;
         column.headerWordWrap ??= true;
