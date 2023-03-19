@@ -29,7 +29,8 @@ class Hooks extends \Kint\Parser\Plugin
 
 	public function parse ( &$var, BasicObject &$o, $trigger )
 	{
-		if ( ( !property_exists( $o, 'name' ) || !property_exists( $o, 'access_path' ) || $o->name !== NULL || $o->access_path[0] !== '$' ) ) {
+		if ( ( !property_exists( $o, 'name' ) || !property_exists( $o, 'access_path' ) || //
+			$o->name !== NULL || empty( $o->access_path ) || $o->access_path[0] !== '$' ) ) {
 			return;
 		}
 
