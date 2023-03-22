@@ -736,12 +736,10 @@
 "use strict";
 
 (function ($, window, document, undefined) {
+  const projectName = 'DebugBar';
   if (typeof $ === 'function' && 'subscribe' in $) {
-    $.subscribe('tabulator-table-setup', function (options, element) {
+    $.subscribe(`${projectName}/tabulator-table-setup`, function (options, element) {
       let namespace = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'all';
-      if (namespace !== 'DebugBar') {
-        return options;
-      }
       options.pagination ??= 'local';
       options.paginationSize ??= 20;
       options.paginationSizeSelector ??= [5, 10, 20, 50, 100, true];
@@ -750,11 +748,8 @@
       options.footerElement = '<button class="clear-all-table-filters tabulator-page">Clear Filters</button> <button class="clear-all-table-sorting tabulator-page">Clear Sorting</button> ' + (options.footerElement ??= '');
       return options;
     });
-    $.subscribe('tabulator-column-setup', function (column, data, initial, options, element) {
+    $.subscribe(`${projectName}/tabulator-column-setup`, function (column, data, initial, options, element) {
       let namespace = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 'all';
-      if (namespace !== 'DebugBar') {
-        return column;
-      }
       if (['bool', 'boolean', 'tickCross'].includes(initial.formatter)) {
         column.width ??= 75;
         column.headerWordWrap ??= true;
@@ -847,21 +842,24 @@
       return column;
     });
   }
-  $(document).on('click', '.clear-all-table-filters', function () {
+  $(document).on('click', `.tabulator[namespace="${projectName}"] .clear-all-table-filters`, function (e) {
+    e.preventDefault();
     $(this).closest('.tabulator').each(function () {
       $.each(window.Tabulator.findTable(this), function () {
         this.clearHeaderFilter();
       });
     });
   });
-  $(document).on('click', '.clear-all-table-sorting', function () {
+  $(document).on('click', `.tabulator[namespace="${projectName}"] .clear-all-table-sorting`, function (e) {
+    e.preventDefault();
     $(this).closest('.tabulator').each(function () {
       $.each(window.Tabulator.findTable(this), function () {
         this.clearSort();
       });
     });
   });
-  $(document).on('click', '.delete-table', function () {
+  $(document).on('click', `.tabulator[namespace="${projectName}"] .delete-table`, function (e) {
+    e.preventDefault();
     var $button = $(this);
     $button.closest('.tabulator').each(function () {
       var $table = $(this);

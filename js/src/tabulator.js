@@ -1,10 +1,7 @@
 (function ($, window, document, undefined) {
+	const projectName = 'DebugBar';
 	if (typeof $ === 'function' && 'subscribe' in $) {
-		$.subscribe('tabulator-table-setup', function (options, element, namespace = 'all') {
-			if (namespace !== 'DebugBar') {
-				return options;
-			}
-
+		$.subscribe(`${projectName}/tabulator-table-setup`, function (options, element, namespace = 'all') {
 			options.pagination ??= 'local';
 			options.paginationSize ??= 20;
 			options.paginationSizeSelector ??= [5, 10, 20, 50, 100, true];
@@ -15,11 +12,7 @@
 			return options;
 		});
 
-		$.subscribe('tabulator-column-setup', function (column, data, initial, options, element, namespace = 'all') {
-			if (namespace !== 'DebugBar') {
-				return column;
-			}
-
+		$.subscribe(`${projectName}/tabulator-column-setup`, function (column, data, initial, options, element, namespace = 'all') {
 			if (['bool', 'boolean', 'tickCross'].includes(initial.formatter)) {
 				column.width ??= 75;
 				column.headerWordWrap ??= true;
@@ -116,7 +109,8 @@
 		});
 	}
 
-	$(document).on('click', '.clear-all-table-filters', function () {
+	$(document).on('click', `.tabulator[data-namespace="${projectName}"] .clear-all-table-filters`, function (e) {
+		e.preventDefault();
 		$(this).closest('.tabulator').each(function () {
 			$.each(window.Tabulator.findTable(this), function () {
 				this.clearHeaderFilter();
@@ -124,7 +118,8 @@
 		});
 	});
 
-	$(document).on('click', '.clear-all-table-sorting', function () {
+	$(document).on('click', `.tabulator[data-namespace="${projectName}"] .clear-all-table-sorting`, function (e) {
+		e.preventDefault();
 		$(this).closest('.tabulator').each(function () {
 			$.each(window.Tabulator.findTable(this), function () {
 				this.clearSort();
@@ -132,7 +127,8 @@
 		});
 	});
 
-	$(document).on('click', '.delete-table', function () {
+	$(document).on('click', `.tabulator[namespace="${projectName}"] .delete-table`, function (e) {
+		e.preventDefault();
 		var $button = $(this);
 		$button.closest('.tabulator').each(function () {
 			var $table = $(this);
