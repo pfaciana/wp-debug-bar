@@ -842,7 +842,7 @@
       return column;
     });
   }
-  $(document).on('click', `.tabulator[namespace="${projectName}"] .clear-all-table-filters`, function (e) {
+  $(document).on('click', `.tabulator[data-namespace="${projectName}"] .clear-all-table-filters`, function (e) {
     e.preventDefault();
     $(this).closest('.tabulator').each(function () {
       $.each(window.Tabulator.findTable(this), function () {
@@ -850,7 +850,7 @@
       });
     });
   });
-  $(document).on('click', `.tabulator[namespace="${projectName}"] .clear-all-table-sorting`, function (e) {
+  $(document).on('click', `.tabulator[data-namespace="${projectName}"] .clear-all-table-sorting`, function (e) {
     e.preventDefault();
     $(this).closest('.tabulator').each(function () {
       $.each(window.Tabulator.findTable(this), function () {
@@ -858,7 +858,7 @@
       });
     });
   });
-  $(document).on('click', `.tabulator[namespace="${projectName}"] .delete-table`, function (e) {
+  $(document).on('click', `.tabulator[data-namespace="${projectName}"] .delete-table`, function (e) {
     e.preventDefault();
     var $button = $(this);
     $button.closest('.tabulator').each(function () {

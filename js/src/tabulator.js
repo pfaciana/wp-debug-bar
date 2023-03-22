@@ -127,7 +127,7 @@
 		});
 	});
 
-	$(document).on('click', `.tabulator[namespace="${projectName}"] .delete-table`, function (e) {
+	$(document).on('click', `.tabulator[data-namespace="${projectName}"] .delete-table`, function (e) {
 		e.preventDefault();
 		var $button = $(this);
 		$button.closest('.tabulator').each(function () {
