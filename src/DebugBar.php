@@ -197,7 +197,7 @@ class DebugBar
 		wp_enqueue_script( 'tabulator-modules', "https://unpkg.com/tabulator-modules@1.2.0/dist/tabulator-modules{$suffix}.js", [ 'jquery', 'tabulator' ], NULL, TRUE );
 
 		wp_enqueue_style( $prefix . 'debug-bar', plugins_url( "/css/dist/styles{$suffix}.css", RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'admin-menu' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . "/css/dist/styles{$suffix}.css" ) );
-		wp_enqueue_script( $prefix . 'debug-bar', plugins_url( "/js/dist/scripts.js", RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'jquery-ui-resizable', 'jquery-ui-accordion', 'common' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . "/js/dist/scripts{$suffix}.js" ), TRUE );
+		wp_enqueue_script( $prefix . 'debug-bar', plugins_url( "/js/dist/scripts{$suffix}.js", RWD_DEBUG_BAR_PLUGIN_FILE ), [ 'jquery-ui-resizable', 'jquery-ui-accordion', 'common' ], filemtime( RWD_DEBUG_BAR_PLUGIN_DIR . "/js/dist/scripts{$suffix}.js" ), TRUE );
 
 		wp_enqueue_style( 'fontawesome', "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome{$suffix}.css", [], '4.7.0' );
 
